@@ -1,0 +1,145 @@
+\name{plot_model_prediction}
+\alias{plot_model_prediction}
+\title{Plot model predictions}
+\usage{
+plot_model_prediction(poped.db, model_num_points = 100, separate.groups = F,
+  sample.times = T, sample.times.IPRED = F, sample.times.DV = F,
+  PRED = T, IPRED = F, IPRED.lines = F, alpha.IPRED.lines = 0.1,
+  alpha.IPRED = 0.3, sample.times.size = 4, DV = F, alpha.DV = 0.3,
+  DV.lines = F, DV.points = F, alpha.DV.lines = 0.3,
+  alpha.DV.points = 0.3, sample.times.DV.points = F,
+  sample.times.DV.lines = F, alpha.sample.times.DV.points = 0.3,
+  alpha.sample.times.DV.lines = 0.3, y_lab = "Model Predictions",
+  facet_scales = "fixed", facet_label_names = T, ...)
+}
+\arguments{
+  \item{separate.groups}{Should there be separate plots for
+  each group.}
+
+  \item{sample.times}{Should sample times be shown on the
+  plots.}
+
+  \item{sample.times.IPRED}{Should sample times be shown
+  based on the IPRED y-values.}
+
+  \item{sample.times.DV}{Should sample times be shown based
+  on the DV y-values.}
+
+  \item{PRED}{Should a PRED line be drawn.}
+
+  \item{IPRED.lines}{Should IPRED lines be drawn?}
+
+  \item{alpha.IPRED.lines}{What should the transparency for
+  the IPRED.lines be?}
+
+  \item{alpha.IPRED}{What should the tranparency of the
+  IPRED CI?}
+
+  \item{sample.times.size}{What should the size of the
+  sample.times be?}
+
+  \item{alpha.DV}{What should the tranparency of the DV
+  CI?}
+
+  \item{DV.lines}{Should DV lines be drawn?}
+
+  \item{DV.points}{Should DV points be drawn?}
+
+  \item{alpha.DV.lines}{What should the transparency for
+  the DV.lines be?}
+
+  \item{alpha.DV.points}{What should the transparency for
+  the DV.points be?}
+
+  \item{sample.times.DV.points}{TRUE or FALSE.}
+
+  \item{sample.times.DV.lines}{TRUE or FALSE.}
+
+  \item{alpha.sample.times.DV.points}{What should the
+  transparency for the sample.times.DV.points be?}
+
+  \item{alpha.sample.times.DV.lines}{What should the
+  transparency for the sample.times.DV.lines be?}
+
+  \item{y_lab}{The label of the y-axis.}
+
+  \item{facet_scales}{Can be "free", "fixed", "free_x" or
+  "free_y"}
+
+  \item{facet_label_names}{TRUE or FALSE}
+
+  \item{poped.db}{A PopED database.}
+
+  \item{...}{arguments passed to \code{\link{evaluate.fim}}
+  and \code{\link{ofv_fim}}.}
+
+  \item{model_num_points}{How many points should be
+  plotted.  If not a number then the design in poped.db is
+  used.}
+
+  \item{IPRED}{Should we simulate individual predictions?}
+
+  \item{DV}{should we simulate observations?}
+}
+\value{
+A \link[ggplot2]{ggplot2} object.
+}
+\description{
+Function plots model predictions for the typical value in
+the population, individual predictions and data
+predictions.
+}
+\examples{
+## Warfarin example from software comparison in:
+## Nyberg et al., "Methods and software tools for design evaluation 
+##   for population pharmacokinetics-pharmacodynamics studies", 
+##   Br. J. Clin. Pharm., 2014. 
+
+library(PopED)
+
+## find the parameters that are needed to define from the structural model
+ff.PK.1.comp.oral.md.CL
+
+## -- parameter definition function 
+## -- names match parameters in function ff
+sfg <- function(x,a,bpop,b,bocc){
+  parameters=c(CL=bpop[1]*exp(b[1]),
+               V=bpop[2]*exp(b[2]),
+               KA=bpop[3]*exp(b[3]),
+               Favail=bpop[4],
+               DOSE=a[1])
+    return(parameters) 
+}
+
+## -- Define initial design  and design space
+poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
+                                  fg_file="sfg",
+                                  fError_file="feps.prop",
+                                  bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
+                                  notfixed_bpop=c(1,1,1,0),
+                                  d=c(CL=0.07, V=0.02, KA=0.6), 
+                                  sigma=0.01,
+                                  groupsize=32,
+                                  xt=c( 0.5,1,2,6,24,36,72,120),
+                                  minxt=0,
+                                  maxxt=120,
+                                  a=70)
+
+##  create plot of model without variability 
+plot_model_prediction(poped.db)
+
+##  create plot of model with variability 
+plot_model_prediction(poped.db,IPRED=TRUE,DV=TRUE)
+
+}
+\seealso{
+Other Graphics: \code{\link{plot_efficiency_of_windows}}
+
+Other Simulation: \code{\link{model_prediction}};
+\code{\link{plot_efficiency_of_windows}}
+
+Other evaluate_design: \code{\link{evaluate.fim}};
+\code{\link{get_rse}}; \code{\link{model_prediction}};
+\code{\link{plot_efficiency_of_windows}}
+}
+

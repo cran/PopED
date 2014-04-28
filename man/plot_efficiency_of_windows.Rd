@@ -1,0 +1,78 @@
+\name{plot_efficiency_of_windows}
+\alias{plot_efficiency_of_windows}
+\title{Plot the efficience of windows}
+\usage{
+plot_efficiency_of_windows(poped.db, xt_windows, iNumSimulations = 100, ...)
+}
+\arguments{
+  \item{poped.db}{A poped database}
+
+  \item{iNumSimulations}{The number of efficiency
+  calculations to make.}
+
+  \item{...}{Extra arguments passed to \code{evaluate.fim}}
+
+  \item{xt_windows}{The distance on one direction from the
+  optimal sample times.  Can be a number or a matrix of the
+  same size as the xt matrix found in \code{poped.db$gxt}.}
+}
+\value{
+A \link[ggplot2]{ggplot2} object.
+}
+\description{
+Function plots the efficiency of windows around the optimal
+design points.
+}
+\examples{
+## Warfarin example from software comparison in:
+## Nyberg et al., "Methods and software tools for design evaluation 
+##   for population pharmacokinetics-pharmacodynamics studies", 
+##   Br. J. Clin. Pharm., 2014. 
+
+library(PopED)
+
+## find the parameters that are needed to define from the structural model
+ff.PK.1.comp.oral.sd.CL
+
+## -- parameter definition function 
+## -- names match parameters in function ff
+sfg <- function(x,a,bpop,b,bocc){
+  parameters=c(CL=bpop[1]*exp(b[1]),
+               V=bpop[2]*exp(b[2]),
+               KA=bpop[3]*exp(b[3]),
+               Favail=bpop[4],
+               DOSE=a[1])
+  return(parameters) 
+}
+
+## -- Define initial design  and design space
+poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
+                                  fg_file="sfg",
+                                  fError_file="feps.prop",
+                                  bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
+                                  notfixed_bpop=c(1,1,1,0),
+                                  d=c(CL=0.07, V=0.02, KA=0.6), 
+                                  sigma=0.01,
+                                  groupsize=32,
+                                  xt=c( 0.5,1,2,6,24,36,72,120),
+                                  minxt=0,
+                                  maxxt=120,
+                                  a=70)
+
+# Examine efficiency of sampling windows
+plot_efficiency_of_windows(poped.db,xt_windows=0.5)
+plot_efficiency_of_windows(poped.db,xt_windows=1)
+
+
+}
+\seealso{
+Other Graphics: \code{\link{plot_model_prediction}}
+
+Other Simulation: \code{\link{model_prediction}};
+\code{\link{plot_model_prediction}}
+
+Other evaluate_design: \code{\link{evaluate.fim}};
+\code{\link{get_rse}}; \code{\link{model_prediction}};
+\code{\link{plot_model_prediction}}
+}
+

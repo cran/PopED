@@ -1,0 +1,42 @@
+\name{cell}
+\alias{cell}
+\title{MATLAB cell function}
+\usage{
+cell(...)
+}
+\arguments{
+  \item{...}{Dimensions for the cell array.}
+}
+\value{
+A list of empty lists.
+}
+\description{
+Create a cell array as in MATLAB.
+}
+\note{
+This is a modified version of the same function in
+\code{\link[matlab]{cell}}
+}
+\examples{
+
+cell(3)
+cell(2,3)
+
+## define possible values of 2 categorical design variable
+x.space <- cell(1,2)
+x.space[1,1] <- list(seq(10,100,10))
+x.space[1,2] <- list(seq(10,300,10))
+x.space
+x.space[1,1]
+x.space[1,2]
+}
+\seealso{
+Other MATLAB: \code{\link{diag_matlab}};
+\code{\link{feval}}; \code{\link{fileparts}};
+\code{\link{isempty}}; \code{\link{isfield}};
+\code{\link{ones}}; \code{\link{randn}};
+\code{\link{randperm}}; \code{\link{rand}};
+\code{\link{size}}; \code{\link{tic}}; \code{\link{toc}};
+\code{\link{zeros}}
+}
+

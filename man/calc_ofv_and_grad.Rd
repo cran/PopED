@@ -1,0 +1,158 @@
+\name{calc_ofv_and_grad}
+\alias{calc_ofv_and_grad}
+\title{Compute an objective function and gradient}
+\usage{
+calc_ofv_and_grad(x, optxt, opta, model_switch, aa, axt, groupsize, ni, xtopto,
+  xopto, aopto, bpop, d, sigma, docc_full, poped.db, only_fim = FALSE)
+}
+\arguments{
+  \item{aa}{The aa value}
+
+  \item{axt}{the axt value}
+
+  \item{xtopto}{the xtopto value}
+
+  \item{xopto}{the xopto value}
+
+  \item{optxt}{If sampling times are optimized}
+
+  \item{opta}{If continuous design variables are optimized}
+
+  \item{aopto}{the aopto value}
+
+  \item{only_fim}{Should the gradient be calculated?}
+
+  \item{x}{A matrix for the discrete design variables.
+  Each row is a group.}
+
+  \item{model_switch}{A matrix that is the same size as xt,
+  specifying which model each sample belongs to.}
+
+  \item{groupsize}{A vector of the numer of individuals in
+  each group.}
+
+  \item{ni}{A vector of the number of samples in each
+  group.}
+
+  \item{docc_full}{A between occasion variability matrix.}
+
+  \item{poped.db}{A PopED database.}
+
+  \item{bpop}{Matrix defining the fixed effects, per row
+  (row number = parameter_number) we should have: \itemize{
+  \item column 1 the type of the distribution for E-family
+  designs (0 = Fixed, 1 = Normal, 2 = Uniform, 3 = User
+  Defined Distribution, 4 = lognormal and 5 = truncated
+  normal) \item column 2 defines the mean. \item column 3
+  defines the variance of the distribution (or length of
+  uniform distribution). } Can also just supply the
+  parameter values as a vector \code{c()}}
+
+  \item{d}{Matrix defining the diagnonals of the IIV (same
+  logic as for the fixed efects). can also just supply the
+  parameter values as a \code{c()}.}
+
+  \item{sigma}{Matrix defining the variances can
+  covariances of the residual variability terms of the
+  model. can also just supply the diagnonal parameter
+  values (variances) as a \code{c()}.}
+}
+\value{
+A list containing: \item{f}{The objective function.}
+\item{g}{The gradient.}
+}
+\description{
+Compute an objective function and gradient with respect to
+the optimization parameters. This function can be passed to
+the Broyden Fletcher Goldfarb Shanno (BFGS) method for
+nonlinear minimization with box constraints implemented in
+\code{\link{bfgsb_min}}.
+}
+\examples{
+## Warfarin example from software comparison in:
+## Nyberg et al., "Methods and software tools for design evaluation 
+##   for population pharmacokinetics-pharmacodynamics studies", 
+##   Br. J. Clin. Pharm., 2014. 
+
+## Optimization using an additive + proportional reidual error to 
+##   avoid sample times at very low concentrations (time 0 or very late samoples).
+library(PopED)
+
+## find the parameters that are needed to define from the structural model
+ff.PK.1.comp.oral.sd.CL
+
+## -- parameter definition function 
+## -- names match parameters in function ff
+sfg <- function(x,a,bpop,b,bocc){
+  parameters=c(CL=bpop[1]*exp(b[1]),
+               V=bpop[2]*exp(b[2]),
+               KA=bpop[3]*exp(b[3]),
+               Favail=bpop[4],
+               DOSE=a[1])
+  return(parameters) 
+}
+
+## -- Define initial design  and design space
+poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
+                                  fg_file="sfg",
+                                  fError_file="feps.add.prop",
+                                  bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
+                                  notfixed_bpop=c(1,1,1,0),
+                                  d=c(CL=0.07, V=0.02, KA=0.6), 
+                                  sigma=c(0.01,0.25),
+                                  groupsize=32,
+                                  xt=c( 0.5,1,2,6,24,36,72,120),
+                                  minxt=0,
+                                  maxxt=120,
+                                  a=70,
+                                  mina=0,
+                                  maxa=100)
+# warfarin optimization model 
+
+opta=TRUE
+aa=opta*poped.db$cfaa*matrix(1,poped.db$m,poped.db$na)
+aa
+
+optxt=TRUE
+axt=optxt*poped.db$cfaxt*matrix(1,poped.db$m,poped.db$maxni)
+axt
+
+calc_ofv_and_grad(x=c(poped.db$gxt,poped.db$ga),
+                  optxt=optxt, opta=opta, 
+                  model_switch=poped.db$global_model_switch,
+                  aa=aa,
+                  axt=axt,
+                  groupsize=poped.db$groupsize,
+                  ni=poped.db$gni,
+                  xtopto=poped.db$gxt,
+                  xopto=poped.db$gx,
+                  aopto=poped.db$ga,
+                  bpop=poped.db$param.pt.val$bpop,
+                  d=poped.db$param.pt.val$d,
+                  sigma=poped.db$param.pt.val$sigma,
+                  docc_full=poped.db$param.pt.val$docc,
+                  poped.db,
+                  only_fim=FALSE)
+
+\dontrun{
+  
+  # BFGS search, DOSE and sample time optimization
+  bfgs.output <- poped_optimize(poped.db,opt_xt=1,opt_a=1,
+                                bUseRandomSearch= 0,
+                                bUseStochasticGradient = 0,
+                                bUseBFGSMinimizer = 1,
+                                bUseLineSearch = 0)
+  
+}
+
+
+
+
+}
+\seealso{
+Other Optimize: \code{\link{Doptim}}; \code{\link{RS_opt}};
+\code{\link{a_line_search}}; \code{\link{bfgsb_min}};
+\code{\link{calc_autofocus}}; \code{\link{mfea}};
+\code{\link{poped_optimize}}
+}
+

@@ -1,0 +1,30 @@
+\name{test_mat_size}
+\alias{test_mat_size}
+\title{Test to make sure that matricies are the right size}
+\usage{
+test_mat_size(correct_size, mat, name)
+}
+\arguments{
+  \item{correct_size}{the correct size of a matrix}
+
+  \item{mat}{The matrix to test.}
+
+  \item{name}{The name of the matrix as a string.}
+}
+\description{
+Test to make sure that matricies are the right size
+}
+\examples{
+
+test_mat_size(c(2,3),zeros(2,3),"foo")
+
+\dontrun{
+  test_mat_size(c(2,3),zeros(2,6),"foo")
+}
+
+test_mat_size(c(1,3),c(2,6,7),"foo")
+
+
+
+}
+

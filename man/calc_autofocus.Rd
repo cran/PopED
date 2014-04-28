@@ -1,0 +1,139 @@
+\name{calc_autofocus}
+\alias{calc_autofocus}
+\title{Compute the autofocus portion of the stochastic gradient routine}
+\usage{
+calc_autofocus(m, ni_var, dmf, varopt, varopto, maxvar, minvar, gradvar,
+  normgvar, avar, model_switch, groupsize, xtopt, xopt, aopt, ni, bpop, d,
+  sigma, docc, poped.db)
+}
+\arguments{
+  \item{ni_var}{The ni_var.}
+
+  \item{varopt}{The varopt.}
+
+  \item{varopto}{The varopto.}
+
+  \item{maxvar}{The maxvar.}
+
+  \item{minvar}{The minvar.}
+
+  \item{gradvar}{The gradvar.}
+
+  \item{normgvar}{The normgvar.}
+
+  \item{avar}{The avar.}
+
+  \item{xtopt}{The optimal sampling times matrix.}
+
+  \item{xopt}{The optimal discrete design variables
+  matrix.}
+
+  \item{aopt}{The optimal continuous design variables
+  matrix.}
+
+  \item{model_switch}{A matrix that is the same size as xt,
+  specifying which model each sample belongs to.}
+
+  \item{groupsize}{A vector of the numer of individuals in
+  each group.}
+
+  \item{ni}{A vector of the number of samples in each
+  group.}
+
+  \item{poped.db}{A PopED database.}
+
+  \item{dmf}{The inital OFV. If set to zero then it is
+  computed.}
+
+  \item{m}{Number of groups/individuals}
+
+  \item{bpop}{Matrix defining the fixed effects, per row
+  (row number = parameter_number) we should have: \itemize{
+  \item column 1 the type of the distribution for E-family
+  designs (0 = Fixed, 1 = Normal, 2 = Uniform, 3 = User
+  Defined Distribution, 4 = lognormal and 5 = truncated
+  normal) \item column 2 defines the mean. \item column 3
+  defines the variance of the distribution (or length of
+  uniform distribution). } Can also just supply the
+  parameter values as a vector \code{c()}}
+
+  \item{d}{Matrix defining the diagnonals of the IIV (same
+  logic as for the fixed efects). can also just supply the
+  parameter values as a \code{c()}.}
+
+  \item{sigma}{Matrix defining the variances can
+  covariances of the residual variability terms of the
+  model. can also just supply the diagnonal parameter
+  values (variances) as a \code{c()}.}
+
+  \item{docc}{Matrix defining the IOV, the IOV variances
+  and the IOV distribution}
+}
+\value{
+A list containing: \item{navar}{The autofocus parameter.}
+\item{poped.db}{PopED database.}
+}
+\description{
+Compute the autofocus portion of the stochastic gradient
+routine
+}
+\examples{
+## Warfarin example from software comparison in:
+## Nyberg et al., "Methods and software tools for design evaluation 
+##   for population pharmacokinetics-pharmacodynamics studies", 
+##   Br. J. Clin. Pharm., 2014. 
+
+## Optimization using an additive + proportional reidual error to 
+##   avoid sample times at very low concentrations (time 0 or very late samoples).
+library(PopED)
+
+## find the parameters that are needed to define from the structural model
+ff.PK.1.comp.oral.sd.CL
+
+## -- parameter definition function 
+## -- names match parameters in function ff
+sfg <- function(x,a,bpop,b,bocc){
+  parameters=c(CL=bpop[1]*exp(b[1]),
+               V=bpop[2]*exp(b[2]),
+               KA=bpop[3]*exp(b[3]),
+               Favail=bpop[4],
+               DOSE=a[1])
+  return(parameters) 
+}
+
+## -- Define initial design  and design space
+poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
+                                  fg_file="sfg",
+                                  fError_file="feps.add.prop",
+                                  bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
+                                  notfixed_bpop=c(1,1,1,0),
+                                  d=c(CL=0.07, V=0.02, KA=0.6), 
+                                  sigma=c(0.01,0.25),
+                                  groupsize=32,
+                                  xt=c( 0.5,1,2,6,24,36,72,120),
+                                  minxt=0,
+                                  maxxt=120,
+                                  a=70,
+                                  mina=0,
+                                  maxa=100)
+# warfarin optimization model 
+
+\dontrun{
+  
+# Stochastic gradient search, DOSE and sample time optimization
+sg.output <- poped_optimize(poped.db,opt_xt=1,opt_a=1, 
+                            bUseRandomSearch= 0,
+                            bUseStochasticGradient = 1,
+                            bUseBFGSMinimizer = 0,
+                            bUseLineSearch = 0,
+                            sgit=20)
+
+}
+}
+\seealso{
+Other Optimize: \code{\link{Doptim}}; \code{\link{RS_opt}};
+\code{\link{a_line_search}}; \code{\link{bfgsb_min}};
+\code{\link{calc_ofv_and_grad}}; \code{\link{mfea}};
+\code{\link{poped_optimize}}
+}
+

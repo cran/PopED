@@ -1,0 +1,198 @@
+\name{RS_opt}
+\alias{RS_opt}
+\title{Optimize the objective function using an adaptive random search algorithm.}
+\usage{
+RS_opt(poped.db, ni = NULL, xt = NULL, model_switch = NULL, x = NULL,
+  a = NULL, bpopdescr = NULL, ddescr = NULL, maxxt = NULL,
+  minxt = NULL, maxa = NULL, mina = NULL, fmf = 0, dmf = 0,
+  trflag = TRUE, opt_xt = poped.db$optsw[2], opt_a = poped.db$optsw[4],
+  opt_x = poped.db$optsw[3], cfaxt = poped.db$cfaxt, cfaa = poped.db$cfaa,
+  rsit = poped.db$rsit, rsit_output = poped.db$rsit_output,
+  fim.calc.type = poped.db$iFIMCalculationType,
+  approx_type = poped.db$iApproximationMethod, iter = 1, ...)
+}
+\arguments{
+  \item{cfaxt}{First step factor for sample times}
+
+  \item{opt_xt}{Should the sample times be optimized?}
+
+  \item{opt_a}{Should the continuous design variables be
+  optimized?}
+
+  \item{opt_x}{Should the discrete design variables be
+  optimized?}
+
+  \item{approx_type}{Approximation method for model, 0=FO,
+  1=FOCE, 2=FOCEI, 3=FOI.}
+
+  \item{iter}{The number of iterations entered into the
+  \code{blockheader_2} function.}
+
+  \item{...}{arguments passed to \code{\link{evaluate.fim}}
+  and \code{\link{ofv_fim}}.}
+
+  \item{poped.db}{A PopED database.}
+
+  \item{ni}{A vector of the number of samples in each
+  group.}
+
+  \item{xt}{A matrix of sample times.  Each row is a vector
+  of sample times for a group.}
+
+  \item{model_switch}{A matrix that is the same size as xt,
+  specifying which model each sample belongs to.}
+
+  \item{x}{A matrix for the discrete design variables.
+  Each row is a group.}
+
+  \item{a}{A matrix of covariates.  Each row is a group.}
+
+  \item{fim.calc.type}{The method used for calculating the
+  FIM. Potential values: \itemize{ \item 0 = Full FIM.  No
+  assumption that fixed and random effects are
+  uncorrelated.  See \code{\link{mftot0}}. \item 1 =
+  Reduced FIM. Assume that there is no correlation in the
+  FIM between the fixed and random effects, and set these
+  elements in the FIM to zero. See \code{\link{mftot1}}.
+  \item 2 = weighted models (placeholder). \item 3 = Not
+  currently used. \item 4 = Reduced FIM and computing all
+  derivatives with respect to the standard deviation of the
+  residual unexplained variation (sqrt(SIGMA) in NONMEM).
+  This matches what is done in PFIM, and assumes that the
+  standard deviation of the residual unexplained variation
+  is the estimated parameter (NOTE: NONMEM estimates the
+  variance of the resudual unexplained variation by
+  default). See \code{\link{mftot4}}. \item 5 = Full FIM
+  parameterized with A,B,C matrices & derivative of
+  variance. See \code{\link{mftot5}}. \item 6 = Calculate
+  one model switch at a time, good for large matrices. See
+  \code{\link{mftot6}}. \item 7 = Reduced FIM parameterized
+  with A,B,C matrices & derivative of variance See
+  \code{\link{mftot7}}. }}
+
+  \item{bpopdescr}{Matrix defining the fixed effects, per
+  row (row number = parameter_number) we should have:
+  \itemize{ \item column 1 the type of the distribution for
+  E-family designs (0 = Fixed, 1 = Normal, 2 = Uniform, 3 =
+  User Defined Distribution, 4 = lognormal and 5 =
+  truncated normal) \item column 2 defines the mean. \item
+  column 3 defines the variance of the distribution (or
+  length of uniform distribution). }}
+
+  \item{ddescr}{Matrix defining the diagnonals of the IIV
+  (same logic as for the \code{bpopdescr}).}
+
+  \item{maxxt}{Matrix or single value defining the maximum
+  value for each xt sample.  If a single value is supplied
+  then all xt values are given the same maximum value.}
+
+  \item{minxt}{Matrix or single value defining the minimum
+  value for each xt sample.  If a single value is supplied
+  then all xt values are given the same minimum value}
+
+  \item{maxa}{Vector defining the max value for each
+  covariate. IF a single value is supplied then all a
+  values are given the same max value}
+
+  \item{mina}{Vector defining the min value for each
+  covariate. IF a single value is supplied then all a
+  values are given the same max value}
+
+  \item{fmf}{The initial value of the FIM. If set to zero
+  then it is computed.}
+
+  \item{dmf}{The inital OFV. If set to zero then it is
+  computed.}
+
+  \item{trflag}{Should the optimization be output to the
+  screen and to a file?}
+
+  \item{cfaa}{Stochastic Gradient search first step factor
+  for covariates}
+
+  \item{rsit}{Number of Random search iterations}
+
+  \item{rsit_output}{Number of iterations in random search
+  between screen output}
+}
+\description{
+Optimize the objective function using an adaptive random
+search algorithm. The function works for both discrete and
+continuous optimization variables. This function takes
+information from the PopED database supplied as an
+argument. The PopED database supplies information about the
+the model, parameters, design and methods to use. Some of
+the arguments coming from the PopED database can be
+overwritten; by default these arguments are \code{NULL} in
+the function, if they are supplied then they are used
+instead of the arguments from the PopED database.
+}
+\examples{
+## Warfarin example from software comparison in:
+## Nyberg et al., "Methods and software tools for design evaluation 
+##   for population pharmacokinetics-pharmacodynamics studies", 
+##   Br. J. Clin. Pharm., 2014. 
+
+## Optimization using an additive + proportional reidual error to 
+##   avoid sample times at very low concentrations (time 0 or very late samoples).
+library(PopED)
+
+## find the parameters that are needed to define from the structural model
+ff.PK.1.comp.oral.sd.CL
+
+## -- parameter definition function 
+## -- names match parameters in function ff
+sfg <- function(x,a,bpop,b,bocc){
+  parameters=c(CL=bpop[1]*exp(b[1]),
+               V=bpop[2]*exp(b[2]),
+               KA=bpop[3]*exp(b[3]),
+               Favail=bpop[4],
+               DOSE=a[1])
+  return(parameters) 
+}
+
+## -- Define initial design  and design space
+poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
+                                  fg_file="sfg",
+                                  fError_file="feps.add.prop",
+                                  bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
+                                  notfixed_bpop=c(1,1,1,0),
+                                  d=c(CL=0.07, V=0.02, KA=0.6), 
+                                  sigma=c(0.01,0.25),
+                                  groupsize=32,
+                                  xt=c( 0.5,1,2,6,24,36,72,120),
+                                  minxt=0,
+                                  maxxt=120,
+                                  a=70,
+                                  mina=0,
+                                  maxa=100)
+# warfarin optimize model
+
+# Just a few iterations, optimize on DOSE and sample times using the full FIM
+rs.output <- RS_opt(poped.db,opt_xt=1,opt_a=1,rsit=20,fim.calc.type=0)
+
+\dontrun{
+  
+  # More iterations
+  rs.output <- RS_opt(poped.db)
+  
+}  
+}
+\references{
+\enumerate{ \item M. Foracchia, A.C. Hooker, P. Vicini and
+A. Ruggeri, "PopED, a software fir optimal experimental
+design in population kinetics", Computer Methods and
+Programs in Biomedicine, 74, 2004. \item J. Nyberg, S.
+Ueckert, E.A. Stroemberg, S. Hennig, M.O. Karlsson and A.C.
+Hooker, "PopED: An extended, parallelized, nonlinear mixed
+effects models optimal design tool", Computer Methods and
+Programs in Biomedicine, 108, 2012. }
+}
+\seealso{
+Other Optimize: \code{\link{Doptim}};
+\code{\link{a_line_search}}; \code{\link{bfgsb_min}};
+\code{\link{calc_autofocus}};
+\code{\link{calc_ofv_and_grad}}; \code{\link{mfea}};
+\code{\link{poped_optimize}}
+}
+
