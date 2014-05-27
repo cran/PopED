@@ -11,6 +11,7 @@
 #' @inheritParams Doptim
 #' @inheritParams create.poped.database
 #' @inheritParams Dtrace
+#' @inheritParams calc_ofv_and_fim
 #' @param ... arguments passed to other functions. See \code{\link{Doptim}}.
 #' 
 #' 
@@ -61,6 +62,7 @@ poped_optimize <- function(poped.db,
                            d_switch=poped.db$d_switch,
                            ED_samp_size = poped.db$ED_samp_size,
                            bLHS=poped.db$bLHS,
+                           use_laplace=poped.db$iEDCalculationType,
                            ...){
   
   ## update poped.db with options supplied in function
@@ -68,7 +70,8 @@ poped_optimize <- function(poped.db,
   default_args <- formals()
   for(i in names(called_args)[-1]){
     if(length(grep("^poped\\.db\\$",capture.output(default_args[[i]])))==1) {
-      eval(parse(text=paste(capture.output(default_args[[i]]),"<-",called_args[[i]])))
+      #eval(parse(text=paste(capture.output(default_args[[i]]),"<-",called_args[[i]])))
+      eval(parse(text=paste(capture.output(default_args[[i]]),"<-",i)))
     }
   }
   #=========================================
@@ -152,7 +155,7 @@ poped_optimize <- function(poped.db,
       #poped.db$groupsize = groupsize
     } else {
       #Using ea algorithm do this,
-      if((poped.db$bUseExchangeAlgorithm==TRUE)){
+      if((bUseExchangeAlgorithm==TRUE)){
         #if(opt_xt || opt_a) stop('MFEA algorithm does not work with xt and a right now')
         returnArgs <- mfea(poped.db,model_switch,ni,xt,x,a,bpop,d,maxxt,minxt,maxa,mina,fmf,dmf,...) 
         xt <- returnArgs[[1]]
@@ -162,8 +165,9 @@ poped_optimize <- function(poped.db,
         dmf <- returnArgs[[5]]
         poped.db <- returnArgs[[6]]
       } else {
-        if((poped.db$d_switch==TRUE) ){#D-optimal over continuous variables
-          returnArgs <- Doptim(poped.db,ni, xt, model_switch, x, a, bpop, d, maxxt, minxt,maxa,mina,fmf,dmf,...) 
+        if((d_switch==TRUE) ){#D-optimal over continuous variables
+          returnArgs <- Doptim(poped.db,ni, xt, model_switch, x, a, bpop, d, maxxt, minxt,maxa,mina,fmf,dmf,
+                               trflag=trflag,...) 
           xt <- returnArgs[[1]]
           x <- returnArgs[[2]]
           a <- returnArgs[[3]]
@@ -171,27 +175,42 @@ poped_optimize <- function(poped.db,
           dmf <- returnArgs[[5]]
           poped.db <- returnArgs[[6]]
         } else {
-          if((poped.db$iEDCalculationType>=1)){
-            #             returnArgs <- LEDoptim(poped.db,model_switch,ni,xt,x,a,bpop,d,maxxt,minxt,maxa,mina,fmf,dmf) 
-            #             xt <- returnArgs[[1]]
-            #             x <- returnArgs[[2]]
-            #             a <- returnArgs[[3]]
-            #             fmf <- returnArgs[[4]]
-            #             dmf <- returnArgs[[5]]
-            #             poped.db <- returnArgs[[6]]
-            stop('E-family optimization using the requested methods not implemented in the R-version of PopED yet')        
-            
-          } else {
-            #             returnArgs <- EDoptim(poped.db,model_switch,ni,xt,x,a,bpop,d,maxxt,minxt,maxa,mina,fmf,dmf) 
-            #             xt <- returnArgs[[1]]
-            #             x <- returnArgs[[2]]
-            #             a <- returnArgs[[3]]
-            #             fmf <- returnArgs[[4]]
-            #             dmf <- returnArgs[[5]]
-            #             poped.db <- returnArgs[[6]]
-            stop('E-family optimization using the requested methods not implemented in the R-version of PopED yet')        
-            
-          }
+          #if((poped.db$iEDCalculationType>=1)){
+          returnArgs <- LEDoptim(poped.db,
+                                 model_switch=model_switch,
+                                 ni=ni,
+                                 xt=xt,
+                                 x=x,
+                                 a=a,
+                                 bpopdescr=bpop,
+                                 ddescr=d,
+                                 maxxt=maxxt,
+                                 minxt=minxt,
+                                 maxa=maxa,
+                                 mina=mina,
+                                 ofv_init=dmf,
+                                 fim_init=fmf,
+                                 trflag=trflag,
+                                 d_switch=d_switch,
+                                 use_laplace=use_laplace,
+                                 ...)
+          xt <- returnArgs[[1]]
+          x <- returnArgs[[2]]
+          a <- returnArgs[[3]]
+          fmf <- returnArgs[[4]]
+          dmf <- returnArgs[[5]]
+          poped.db <- returnArgs[[6]]
+          # stop('E-family optimization using the requested methods not implemented in the R-version of PopED yet')        
+          #} else {
+          #             returnArgs <- EDoptim(poped.db,model_switch,ni,xt,x,a,bpop,d,maxxt,minxt,maxa,mina,fmf,dmf) 
+          #             xt <- returnArgs[[1]]
+          #             x <- returnArgs[[2]]
+          #             a <- returnArgs[[3]]
+          #             fmf <- returnArgs[[4]]
+          #             dmf <- returnArgs[[5]]
+          #             poped.db <- returnArgs[[6]]
+          #  stop('E-family optimization using the requested methods not implemented in the R-version of PopED yet')            
+          #}
         }
       }
     }

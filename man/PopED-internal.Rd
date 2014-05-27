@@ -3,7 +3,6 @@
 \alias{calc_k}
 \alias{blockoptwrt}
 \alias{blockother}
-\alias{blockother_2}
 \alias{cauchy_point}
 \alias{d2fimdalpha2}
 \alias{datestr_poped}
@@ -47,7 +46,6 @@
 \alias{numel}
 \alias{new_ferror_file}
 \alias{min_function}
-\alias{log_prior_pdf}
 \alias{linspace}
 \alias{line_search_uc}
 \alias{line_search}
