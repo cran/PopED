@@ -7,17 +7,26 @@
 #' input file or as function arguments. Default arguments are supplied in the Usage section 
 #' (easiest to use a text search to find values you are interested in).  
 #' 
+#' @inheritParams create_design_space
 #' @param popedInput An input file to PopED.  List elements should match the values seen in 
 #' the Usage section (the defaults to function arguments). Can also be an empty list \code{list()}. 
 #' @param ff_file  \itemize{
 #' \item \bold{******START OF MODEL DEFINITION OPTIONS**********}
 #' }
-#' Function name or Filname and path of the model file. The filename and the function name must be the same. 
-#' 
-#' @param fg_file Function name or Filname and path of the parameter model file. 
-#' The filename and the function name must be the same.
-#' @param fError_file Function name or Filname and path of the residual error model file. 
-#' The filename and the function name must be the same.
+#' A string giving the function name or filname and path of the structural model. 
+#' The filename and the function name must be the same if giving a filename. 
+#' e.g. \code{"ff.PK.1.comp.oral.md.KE"}
+#' @param ff_fun Function describing the structural model. e.g. \code{ff.PK.1.comp.oral.md.KE}. 
+#' @param fg_file A string giving the function name or filname and path of the 
+#' parameter model. 
+#' The filename and the function name must be the same if giving a filename. 
+#' e.g. \code{"parameter.model"}
+#' @param fg_fun Function describing the parameter model. e.g. \code{parameter.model}.
+#' @param fError_file A string giving the function name or filname and path of the 
+#' residual error model. 
+#' The filename and the function name must be the same if giving a filename. 
+#' e.g. \code{"feps.prop"}.
+#' @param fError_fun Function describing the residual error model. e.g. \code{feps.prop}.
 #'
 #' @param optsw  \itemize{
 #' \item \bold{******WHAT TO OPTIMIZE**********}}
@@ -265,10 +274,13 @@ create.poped.database <-
            
            # -- Filname and path of the model file --
            ff_file=poped.choose(popedInput[["ff_file"]],"ff"),
+           ff_fun = NULL,
            # -- Filname and path of the g parameter file --
            fg_file=poped.choose(popedInput$fg_file,'sfg'),
+           fg_fun=NULL,
            # -- Filname and path of the error model file --
            fError_file=poped.choose(popedInput$fError_file,'feps'),
+           fError_fun=NULL,
            
            ## --------------------------
            ## ---- What to optimize
@@ -286,61 +298,71 @@ create.poped.database <-
            ## -- Matrix defining the initial sampling schedule --
            xt=poped.choose(popedInput$design[["xt"]],stop("'xt' needs to be defined")),
            ## -- Number of groups/individuals --
-           m=poped.choose(popedInput[["m"]],size(xt,1)),                     
+           #m=poped.choose(popedInput[["m"]],size(xt,1)),                     
+           m=poped.choose(popedInput[["m"]],NULL),                     
            ## -- Matrix defining the initial discrete values --
-           x=poped.choose(popedInput$design[["x"]],zeros(m,0)),               
+           #x=poped.choose(popedInput$design[["x"]],zeros(m,0)),               
+           x=poped.choose(popedInput$design[["x"]],NULL),               
            ## -- Number of discrete design variables --
-           nx=poped.choose(popedInput$nx,size(x,2)),      
+           #nx=poped.choose(popedInput$nx,size(x,2)),      
+           nx=poped.choose(popedInput$nx,NULL),      
            ## -- Vector defining the initial covariate values --
-           a=poped.choose(popedInput$design[["a"]],zeros(m,0)),    
+           #a=poped.choose(popedInput$design[["a"]],zeros(m,0)),    
+           a=poped.choose(popedInput$design[["a"]],NULL),    
            ## number of continuous design variables that are not time (e.g. continuous covariates)
-           na=poped.choose(popedInput$na,size(a,2)),      
+           #na=poped.choose(popedInput$na,size(a,2)),      
+           na=poped.choose(popedInput$na,NULL),      
            ## -- Vector defining the size of the different groups (num individuals in each group) --
            groupsize=poped.choose(popedInput$design$groupsize,stop("'groupsize' needs to be defined")),      
            ## -- Vector defining the number of samples for each group --
-           ni=poped.choose(popedInput$design$ni,matrix(size(xt,2),m,1)),    
+           #ni=poped.choose(popedInput$design$ni,matrix(size(xt,2),m,1)),    
+           ni=poped.choose(popedInput$design$ni,NULL),    
            ## -- Vector defining which response a certain sampling time belongs to --
-           model_switch=poped.choose(popedInput$design$model_switch,ones(size(xt,1),size(xt,2))),
+           #model_switch=poped.choose(popedInput$design$model_switch,ones(size(xt,1),size(xt,2))),
+           model_switch=poped.choose(popedInput$design$model_switch,NULL),
            
            ## --------------------------
            ## ---- Design space
            ## --------------------------
            
            ## -- Max number of samples per group/individual --
-           maxni=poped.choose(popedInput$maxni,size(xt,2)),                     
+           maxni=poped.choose(popedInput$maxni,NULL),                     
            ## -- Min number of samples per group/individual --
-           minni=poped.choose(popedInput$minni,1),    
+           minni=poped.choose(popedInput$minni,NULL), 
+           maxtotni=poped.choose(popedInput$maxtotni,NULL),
+           mintotni=poped.choose(popedInput$mintotni,NULL),
            ## -- Vector defining the max size of the different groups (max num individuals in each group) --
-           maxgroupsize=poped.choose(popedInput$design$maxgroupsize,groupsize),       
+           maxgroupsize=poped.choose(popedInput$design$maxgroupsize,NULL),       
            ## -- Vector defining the min size of the different groups (min num individuals in each group) --
-           mingroupsize=poped.choose(popedInput$design$mingroupsize,ones(m,1)),   
+           #mingroupsize=poped.choose(popedInput$design$mingroupsize,ones(m,1)),   
+           mingroupsize=poped.choose(popedInput$design$mingroupsize,NULL),   
            ## -- The total maximal groupsize over all groups--
-           maxtotgroupsize=poped.choose(popedInput$design$maxtotgroupsize,sum(groupsize)),   
+           maxtotgroupsize=poped.choose(popedInput$design$maxtotgroupsize,NULL),   
            ## -- The total minimal groupsize over all groups--
-           mintotgroupsize=poped.choose(popedInput$design$mintotgroupsize,sum(mingroupsize)),   
+           mintotgroupsize=poped.choose(popedInput$design$mintotgroupsize,NULL),   
            ## -- Matrix defining the max value for each sample --
-           maxxt=poped.choose(popedInput$design$maxxt,xt),   
+           maxxt=poped.choose(popedInput$design$maxxt,NULL),   
            ## -- Matrix defining the min value for each sample --
-           minxt=poped.choose(popedInput$design$minxt,xt),   
+           minxt=poped.choose(popedInput$design$minxt,NULL),   
            ## -- Cell defining the discrete variables --
-           discrete_x=poped.choose(popedInput$design$discrete_x,cell(m,nx)),     
+           #discrete_x=poped.choose(popedInput$design$discrete_x,cell(m,nx)),     
+           discrete_x=poped.choose(popedInput$design$discrete_x,NULL),     
            ## -- Vector defining the max value for each covariate --
-           maxa=poped.choose(popedInput$design$maxa,a),   
+           maxa=poped.choose(popedInput$design$maxa,NULL),   
            ## -- Vector defining the min value for each covariate --
-           mina=poped.choose(popedInput$design$mina,a),   
+           mina=poped.choose(popedInput$design$mina,NULL),   
            ## -- Use grouped time points (1=TRUE, 0=FALSE) --
            bUseGrouped_xt=poped.choose(popedInput$bUseGrouped_xt,FALSE),               
            ## -- Matrix defining the grouping of sample points --
-           G_xt=poped.choose(popedInput$design$G,matrix(seq(1,length(xt),len=length(xt)),size(xt,1),size(xt,2),byrow=T)),               
+           G_xt=poped.choose(popedInput$design$G,NULL),               
            ## -- Use grouped covariates (1=TRUE, 0=FALSE) --
            bUseGrouped_a=poped.choose(popedInput$bUseGrouped_a,FALSE),               
            ## -- Matrix defining the grouping of covariates --
-           G_a=poped.choose(popedInput$design$Ga,matrix(seq(1,length(a),len=length(a)),size(a,1),size(a,2),byrow=T)),               
+           G_a=poped.choose(popedInput$design$Ga,NULL),               
            ## -- Use grouped discrete design variables (1=TRUE, 0=FALSE) --
            bUseGrouped_x=poped.choose(popedInput$bUseGrouped_x,FALSE),               
            ## -- Matrix defining the grouping of discrete design variables --
-           G_x=poped.choose(popedInput$design$Gx,matrix(seq(1,length(x),len=length(x)),size(x,1),size(x,2),byrow=T)),               
-           
+           G_x=poped.choose(popedInput$design$Gx,NULL),        
            
            ## --------------------------
            ## ---- FIM calculation 
@@ -493,12 +515,13 @@ create.poped.database <-
            user_data=poped.choose(popedInput$user_data,cell(0,0)),
            ## -- Value to interpret as zero in design --
            ourzero=poped.choose(popedInput$ourzero,1e-5),                    
+           #ourzero=poped.choose(popedInput$ourzero,0),                    
            ## -- The seed number used for optimization and sampling -- integer or -1 which creates a random seed
            dSeed=poped.choose(popedInput$dSeed,-1),
            ## -- Vector for line search on continuous design variables (1=TRUE,0=FALSE) --
-           line_opta=poped.choose(popedInput$line_opta,ones(1,na)),
+           line_opta=poped.choose(popedInput$line_opta,NULL),
            ## -- Vector for line search on discrete design variables (1=TRUE,0=FALSE) --
-           line_optx=poped.choose(popedInput$line_optx,ones(1,nx)), #matrix(0,0,1)           
+           line_optx=poped.choose(popedInput$line_optx,NULL), #matrix(0,0,1)           
            ## -- Use graph output during search --
            bShowGraphs=poped.choose(popedInput$bShowGraphs,FALSE),
            ## -- If a log file should be used (0=FALSE, 1=TRUE) --
@@ -659,25 +682,116 @@ create.poped.database <-
     
     poped.db$strPopEDVersion = strPopEDVersion
     poped.db$user_distribution_pointer=''
+        
+     if(any(size(x)==0)){ ## should be removed
+      x <- NULL
+      G_x  <- NULL
+      discrete_x <- NULL
+    } 
+    if(any(size(a)==0)){ ## should be removed
+      a <- NULL
+      G_a <- NULL
+      mina <- NULL
+      maxa <- NULL
+    }     
     
+    design <- create_design(xt=xt,
+                            groupsize=groupsize,
+                            m=m,
+                            x=x,
+                            a=a,
+                            ni=ni,
+                            model_switch=model_switch)
     
+    design_space <- create_design_space(design,
+                                        maxni=maxni,                     
+                                        minni=minni,  
+                                        maxtotni=maxtotni,
+                                        mintotni=mintotni,
+                                        maxgroupsize=maxgroupsize,       
+                                        mingroupsize=mingroupsize,   
+                                        maxtotgroupsize=maxtotgroupsize,   
+                                        mintotgroupsize=mintotgroupsize,   
+                                        maxxt=maxxt,   
+                                        minxt=minxt,    
+                                        maxa=maxa,   
+                                        mina=mina,   
+                                        x_space = discrete_x,    
+                                        use_grouped_xt=bUseGrouped_xt, 
+                                        grouped_xt=G_xt, 
+                                        use_grouped_a=bUseGrouped_a,               
+                                        grouped_a=G_a,               
+                                        use_grouped_x=bUseGrouped_x,               
+                                        grouped_x=G_x,
+                                        our_zero=ourzero)
     
-    poped.db$nx = nx
-    poped.db$na = na
+    design <- design_space$design
+    design_space <- design_space$design_space
     
+    ## all of this should be replaced with using the names used in create_design_space as function arguments
+    if(!is.null(design_space[["use_grouped_a"]])){
+      design_space$bUseGrouped_a <- design_space[["use_grouped_a"]]
+      design_space[["use_grouped_a"]] <- NULL
+    }
+    if(!is.null(design_space[["use_grouped_x"]])){
+      design_space$bUseGrouped_x <- design_space[["use_grouped_x"]]
+      design_space[["use_grouped_x"]] <- NULL
+    }
+    if(!is.null(design_space[["use_grouped_xt"]])){
+      design_space$bUseGrouped_xt <- design_space[["use_grouped_xt"]]
+      design_space[["use_grouped_xt"]] <- NULL
+    }
+    if(!is.null(design_space[["grouped_a"]])){
+      design_space$G_a <- design_space[["grouped_a"]]
+      design_space[["grouped_a"]] <- NULL
+    }
+    if(!is.null(design_space[["grouped_x"]])){
+      design_space$G_x <- design_space[["grouped_x"]]
+      design_space[["grouped_x"]] <- NULL
+    }
+    if(!is.null(design_space[["grouped_xt"]])){
+      design_space$G_xt <- design_space[["grouped_xt"]]
+      design_space[["grouped_xt"]] <- NULL
+    }
+    if(!is.null(design_space[["x_space"]])){
+      design_space$discrete_x <- design_space[["x_space"]]
+      design_space[["x_space"]] <- NULL
+    }
+    #design_space$maxni <- max(design_space$maxni)
+    #design_space$minni <- min(design_space$minni)
+    
+    if(is.null(design[["x"]])){ ## should be removed
+      design$x <- zeros(design$m,0)  
+      design_space$G_x  <- design$x
+      design_space$bUseGrouped_x <- FALSE
+      design_space$discrete_x <- cell(design$m,0)
+    } 
+    if(is.null(design[["a"]])){ ## should be removed
+      design$a  <- zeros(design$m,0) 
+      design_space$G_a  <- design$a
+      design_space$bUseGrouped_a <- FALSE
+      design_space$mina <- design$a
+      design_space$maxa <- design$a      
+    }     
+    
+    poped.db$design <- design  
+    poped.db$design_space <- design_space
+    
+    poped.db$m = poped.db$design$m  # should be removed only in design
+    poped.db$nx = poped.choose(nx,size(design$x,2)) # should be removed, not needed or in design
+    poped.db$na = poped.choose(na,size(design$a,2)) # should be removed, not needed or in design
+                
     poped.db$bLHS = bLHS
     
-    poped.db$discrete_x = discrete_x
+    poped.db$discrete_x = design_space$discrete_x # should be removed only in design_space
     
-    poped.db$m = m
-    poped.db$maxni=maxni
-    poped.db$minni=minni
-    poped.db$maxm=poped.db$m # max number of individuals or groups    
-    poped.db$maxmaxni=poped.db$maxni # max number of samples per individual or group
     
-    poped.db$bUseGrouped_xt = bUseGrouped_xt
-    poped.db$bUseGrouped_a  = bUseGrouped_a
-    poped.db$bUseGrouped_x  = bUseGrouped_x
+    poped.db$maxni=max(design_space$maxni) # should be only in design_space and called maxmaxni if needed
+    poped.db$minni=min(design_space$minni) # should be only in design_space and called minminni if needed
+    
+    poped.db$bUseGrouped_xt = design_space$bUseGrouped_xt # should be only in design_space
+    poped.db$bUseGrouped_a  = design_space$bUseGrouped_a # should be only in design_space
+    poped.db$bUseGrouped_x  = design_space$bUseGrouped_x # should be only in design_space
     
     poped.db$d_switch = d_switch
     poped.db$iApproximationMethod = iApproximationMethod
@@ -757,7 +871,7 @@ create.poped.database <-
     #Temp thing for memory solvers
     poped.db$numericalSettings$bUseMemorySolver = bUseMemorySolver
     poped.db$numericalSettings$solved_solutions = cell(0,0)
-    poped.db$numericalSettings$maxtime = max(max(maxxt))+hgd
+    poped.db$numericalSettings$maxtime = max(max(design_space$maxxt))+hgd
     
     poped.db$iFIMCalculationType = iFIMCalculationType
     poped.db$rsit=rsit
@@ -790,8 +904,9 @@ create.poped.database <-
     poped.db$rsit_output=rsit_output
     poped.db$sgit_output=sgit_output
     
-    
-    if(exists(fg_file)){
+    if(is.function(fg_fun)){
+      poped.db$fg_pointer = fg_fun 
+    } else if(exists(fg_file)){
       poped.db$fg_pointer = fg_file
     } else {
       source(fg_file)
@@ -853,7 +968,9 @@ create.poped.database <-
       }
     }
     
-    if(exists(ff_file)){
+    if(is.function(ff_fun)){
+      poped.db$ff_pointer = ff_fun 
+    } else if(exists(ff_file)){
       poped.db$ff_pointer = ff_file 
     } else {
       source(ff_file)
@@ -882,7 +999,9 @@ create.poped.database <-
       }
     }
     
-    if(exists(fError_file)){
+    if(is.function(fError_fun)){
+      poped.db$ferror_pointer = fError_fun 
+    } else if(exists(fError_file)){
       poped.db$ferror_pointer = fError_file
     } else {
       source(fError_file)
@@ -987,7 +1106,7 @@ create.poped.database <-
         poped.db$b_global = t(rmvnorm(max(poped.db$iFOCENumInd,iMaxCorrIndNeeded),sigma=fulld))
         for(i in 1:poped.db$iFOCENumInd){
           poped.db$bocc_global[[i]]=zeros(size(docc,1),poped.db$NumOcc)
-          poped.db$bocc_global[[i]]=t(rmvnorm(poped.db$NumOcc,sigma=fulldocc))
+          if(poped.db$NumOcc!=0) poped.db$bocc_global[[i]]=t(rmvnorm(poped.db$NumOcc,sigma=fulldocc))
         }
       } else {
         d_dist=pargen(d,poped.db$user_distribution_pointer,max(poped.db$iFOCENumInd,iMaxCorrIndNeeded),poped.db$bLHS,zeros(1,0),poped.db)
@@ -1023,39 +1142,39 @@ create.poped.database <-
     poped.db$output_function_file=output_function_file
     
     poped.db$optsw=optsw
+        
+    line_opta=poped.choose(line_opta,ones(1,poped.db$na))
+    if(test_mat_size(c(1, poped.db$na),line_opta,'line_opta')){ 
+      poped.db$line_opta <- line_opta
+    }
     
-    poped.db$line_opta=line_opta
-    poped.db$line_optx=line_optx
-    poped.db$design = popedInput$design
+    line_optx=poped.choose(line_optx,ones(1,poped.db$nx))
+    if(test_mat_size(c(1, poped.db$nx),line_optx,'line_optx')){ 
+      poped.db$line_optx <- line_optx
+    }
+
+    #poped.db$design = popedInput$design
     poped.db$design$bpop = bpop
     poped.db$design$d = d
     poped.db$design$covd = covd
     poped.db$design$sigma = sigma
     poped.db$design$docc = docc
     poped.db$design$covdocc = covdocc
-    poped.db$design$x = x
-    poped.db$design$xt = xt
-    poped.db$design$ni = ni
+        
+    poped.db$design$G = design_space$G_xt ## should only be in design_space
+    poped.db$design$Ga = design_space$G_a ## should only be in design_space
+    poped.db$design$Gx = design_space$G_x ## should only be in design_space
     
-    poped.db$design$G = G_xt
-    poped.db$design$Ga = G_a
-    poped.db$design$Gx = G_x
-    
-    poped.db$design$a = a
-    poped.db$design$groupsize = groupsize
-    poped.db$design$maxgroupsize = maxgroupsize
-    poped.db$design$mingroupsize = mingroupsize
-    poped.db$design$maxtotgroupsize = maxtotgroupsize
-    poped.db$design$mintotgroupsize = mintotgroupsize
-    if(length(maxxt)==1) maxxt=ones(size(xt,1),size(xt,2))*maxxt
-    poped.db$design$maxxt = maxxt
-    if(length(minxt)==1) minxt=ones(size(xt,1),size(xt,2))*minxt
-    poped.db$design$minxt = minxt
-    poped.db$design$discrete_x = discrete_x
-    poped.db$design$maxa = maxa
-    poped.db$design$mina = mina
-    poped.db$design$model_switch = model_switch
-    
+    poped.db$design$maxgroupsize = design_space$maxgroupsize ## should only be in design_space
+    poped.db$design$mingroupsize = design_space$mingroupsize ## should only be in design_space
+    poped.db$design$maxtotgroupsize = design_space$maxtotgroupsize ## should only be in design_space
+    poped.db$design$mintotgroupsize = design_space$mintotgroupsize ## should only be in design_space
+    poped.db$design$maxxt = design_space$maxxt ## should only be in design_space
+    poped.db$design$minxt = design_space$minxt ## should only be in design_space
+    poped.db$design$discrete_x = design_space$discrete_x ## should only be in design_space
+    poped.db$design$maxa = design_space$maxa ## should only be in design_space
+    poped.db$design$mina = design_space$mina ## should only be in design_space
+        
     
     poped.db$m1_switch = m1_switch
     poped.db$m2_switch = m2_switch
@@ -1167,7 +1286,11 @@ poped.choose <- function(arg1,arg2){
 
 
 find.largest.index <- function (func.str="sfg",lab="bpop",mat=F,mat.row=T) {
-  txt <- capture.output(eval(parse(text=func.str)))
+  if(is.function(func.str)){
+    txt <- capture.output(func.str)
+  } else {
+    txt <- capture.output(eval(parse(text=func.str)))
+  }
   txt <- grep(paste("^[^\\#]*",lab,"\\[",sep=""),txt,value=T)
   ind <- 0
   if(length(txt)!=0 && !mat)  ind <- gsub(paste("^[^\\#]*",lab,"\\[\\s*(\\d+)\\s*\\].*",sep=""),"\\1",txt)

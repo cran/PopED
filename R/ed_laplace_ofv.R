@@ -92,7 +92,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
     d_index <- NULL
   }  
   bpop_index=1:sum(bpopdescr[,1]!=0)
-  unfixed_bpop <- bpopdescr[bpopdescr[,1]!=0,]
+  unfixed_bpop <- bpopdescr[bpopdescr[,1]!=0,,drop=F]
   exp_index=c(unfixed_bpop[,1]==4,d_index==d_index)
   alpha_k_log=alpha_k
   if(any(exp_index)) alpha_k_log[exp_index]=log(alpha_k[exp_index])
@@ -209,15 +209,19 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
     
     
     ## minimize K(alpha_k)
+    
     output <- optim(alpha_k, 
                     function(x) calc_k(x,model_switch,groupsize,ni,xtopto,xopto,
                                        aopto,bpopdescr,ddescr,covd,sigma,docc,poped.db,Engine,
                                        return_gradient=F)[["k"]],
                     #gr=function(x) calc_k(x,model_switch,groupsize,ni,xtopto,xopto,
-                    #                      aopto,bpopdescr,ddescr,covd,sigma,docc,poped.db,Engine,
-                    #                      return_gradient=T)[["grad_k"]],
+                    #                     aopto,bpopdescr,ddescr,covd,sigma,docc,poped.db,Engine,
+                    #                     return_gradient=T)[["grad_k"]],
                     #method="L-BFGS-B",
                     #method="BFGS",
+                    #method="Brent",
+                    #lower=-100000000000,
+                    #upper=0,
                     #lower=0,
                     #lower=lb,
                     #upper=ub,
@@ -235,7 +239,13 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
     }  
   }
   #f=Re(-exp(-f_k)/sqrt(detHessPi))
-  f <- sqrt(det(hess*(2*pi)^(-1)))^(-1)*exp(-f_k)
+  det_hess_pi <- det(hess*(2*pi)^(-1))
+  if(det_hess_pi < 0) {
+    warning("The laplace OFV is ", NaN, " because det(hessian)<0.")
+    f <- NaN
+  } else {
+    f <- sqrt(det_hess_pi)^(-1)*exp(-f_k)
+  }
   
   if(return_gradient){
     bpop=bpopdescr[,2,drop=F]
@@ -408,7 +418,10 @@ calc_k <- function(alpha, model_switch,groupsize,ni,xtoptn,xoptn,aoptn,bpopdescr
   retargs=mftot(model_switch,groupsize,ni,xtoptn,xoptn,aoptn,bpop,d,sigma,docc,poped.db)
   fim <- retargs$ret
   if((!return_gradient)){
-    k=-log_prior_pdf(alpha, bpopdescr, ddescr)-log(det(fim))
+    #tryCatch(log(det(fim)), warning = function(w) browser())
+    det_fim <- det(fim)
+    if(det_fim<0) det_fim <- 0
+    k=-log_prior_pdf(alpha, bpopdescr, ddescr)-log(det_fim)
     grad_k=matrix(0,0,0)
   } else {
     returnArgs <- log_prior_pdf(alpha, bpopdescr, ddescr,return_gradient=T) 
@@ -423,7 +436,10 @@ calc_k <- function(alpha, model_switch,groupsize,ni,xtoptn,xoptn,aoptn,bpopdescr
     grad_k=-(gradlogdfim+grad_p)
     ## if not positive definite set grad_k=zeros(length(alpha),1)
     
-    k=-logp-log(det(fim))
+    #tryCatch(log(det(fim)), warning = function(w) browser())
+    det_fim <- det(fim)
+    if(det_fim<0) det_fim <- 0
+    k=-logp-log(det_fim)
   }
   return(list( k= k, grad_k= grad_k)) 
 }

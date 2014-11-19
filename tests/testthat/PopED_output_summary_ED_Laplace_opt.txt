@@ -1,0 +1,210 @@
+PopED Results 
+
+        2014-11-19 11:13:32
+
+==============================================================================
+Model description : PopED model 
+
+Model Sizes : 
+Number of individual model parameters                  g[j]    : Ng    = 9
+Number of population model fixed parameters            bpop[j] : Nbpop = 7
+Number of population model random effects parameters   b[j]    : Nb    = 4
+
+Typical Population Parameters (Uncertainty Distribution):
+bpop[1]:  72.8 (Point value)
+bpop[2]:  0.25 (Point value)
+bpop[3]:  3.75 (Point value)
+bpop[4]:   0.9 (Point value)
+bpop[5]:  1120 (Point value)
+bpop[6]: 0.807 (Point value)
+bpop[7]: 0.0993 (Normal, Var=9.86e-05, %CV=   10)
+
+Between Subject Variability matrix D (variance units) 
+0.0900 0.0000 0.0000 0.0000
+0.0000 0.0900 0.0000 0.0000
+0.0000 0.0000 0.0625 0.0000
+0.0000 0.0000 0.0000 0.0900
+
+Diagonal Elements of D [sqrt(param)] (Uncertainty Distribution):
+D[1,1]:  0.09 [  0.3] (Point value)
+D[2,2]:  0.09 [  0.3] (Point value)
+D[3,3]: 0.0625 [ 0.25] (Point value)
+D[4,4]:  0.09 [  0.3] (Point value)
+
+Residual Unexplained Variability matrix SIGMA (variance units) : 
+4e-02 0e+00 0e+00 0e+00
+0e+00 5e-06 0e+00 0e+00
+0e+00 0e+00 9e-02 0e+00
+0e+00 0e+00 0e+00 1e+02
+
+Diagonal Elements of SIGMA [sqrt(param)] (Uncertainty Distribution):
+SIGMA[1,1]:  0.04 [  0.2] (Point value)
+SIGMA[2,2]: 5e-06 [0.002236] (Point value)
+SIGMA[3,3]:  0.09 [  0.3] (Point value)
+SIGMA[4,4]:   100 [   10] (Point value)
+
+==============================================================================
+Experiment description (design and design space)
+
+Numer of individuals: 60
+Number of groups (individuals with same design): 3
+Numer of individuals per group:
+     Group 1: 20
+     Group 2: 20
+     Group 3: 20
+Numer of samples per group:
+     Group 1: 10
+     Group 2: 10
+     Group 3: 10
+Number of discrete experimental variables: 0
+Number of model covariates: 2
+
+Initial Sampling Schedule
+Model 1 : Group 1 :      1      2      8    240    240
+Model 2 : Group 1 :      1      2      8    240    240
+Model 1 : Group 2 :      1      2      8    240    240
+Model 2 : Group 2 :      1      2      8    240    240
+Model 1 : Group 3 :      1      2      8    240    240
+Model 2 : Group 3 :      1      2      8    240    240
+
+Minimum allowed sampling values
+Model 1 : Group 1 :      0      0      0    240    240
+Model 2 : Group 1 :      0      0      0    240    240
+Model 1 : Group 2 :      0      0      0    240    240
+Model 2 : Group 2 :      0      0      0    240    240
+Model 1 : Group 3 :      0      0      0    240    240
+Model 2 : Group 3 :      0      0      0    240    240
+
+Maximum allowed sampling values
+Model 1 : Group 1 :     10     10     10    248    248
+Model 2 : Group 1 :     10     10     10    248    248
+Model 1 : Group 2 :     10     10     10    248    248
+Model 2 : Group 2 :     10     10     10    248    248
+Model 1 : Group 3 :     10     10     10    248    248
+Model 2 : Group 3 :     10     10     10    248    248
+
+Covariates  (min, max):
+Group 1: 20 (0, 200) : 24 (2, 40)
+Group 2: 40 (0, 200) : 24 (2, 40)
+Group 3: 0 (0, 200) : 24 (2, 40)
+
+===============================================================================
+Initial design evaluation
+
+OFV = 41.9182
+
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 1.45292
+
+Initial design expected parameter variance 
+and relative standard error (%RSE)
+   Parameter     Values   Variance     RSE
+     bpop[1]   7.28e+01   3.49e+01    8.12
+     bpop[2]   2.50e-01   6.21e-04    9.97
+     bpop[3]   3.75e+00   2.61e-02    4.30
+     bpop[5]   1.12e+03   6.15e+03    7.00
+     bpop[6]   8.07e-01   6.14e-03    9.71
+     bpop[7]   9.93e-02   1.44e-03   38.19
+      D[1,1]   9.00e-02   1.23e-03   38.96
+      D[2,2]   9.00e-02   2.77e-03   58.53
+      D[3,3]   6.25e-02   2.61e-04   25.83
+      D[4,4]   9.00e-02   3.93e-04   22.04
+
+==============================================================================
+Criterion Specification
+
+OFV calculation for FIM: 4 
+  1=Determinant of FIM,
+  4=log determinant of FIM,
+  6=determinant of interesting part of FIM (Ds)
+
+Approximation method: 0
+  0=FO, 
+  1=FOCE, 
+  2=FOCEI, 
+  3=FOI
+
+Fisher Information Matrix type: 1
+  0=Full FIM,
+  1=Reduced FIM,
+  2=weighted models,
+  3=Loc models,
+  4=reduced FIM with derivative of SD of sigma as pfim,
+  5=FULL FIM parameterized with A,B,C matrices & derivative of variance,
+  6=Calculate one model switch at a time, good for large matrices,
+  7=Reduced FIM parameterized with A,B,C matrices & derivative of variance
+
+Design family: 0
+  D-family design (1) or 
+  ED-familty design (0) 
+  (with or without parameter uncertainty)
+
+==============================================================================
+Optimization of design parameters
+
+* Optimize Sampling Schedule
+* Optimize Covariates
+
+
+*******************************
+Initial Value
+ OFV(mf) = 41.9182
+*******************************
+
+RS - It. : 3   OFV : 44.2459
+
+*******************************
+RS Results
+ OFV(mf) = 44.2459
+
+Optimized Sampling Schedule
+Model 1 : Group 1 : 0.8998  2.115  6.849    240    240
+Model 2 : Group 1 : 0.8998  2.115  6.849    240    240
+Model 1 : Group 2 : 0.8998  2.115  6.849    240    240
+Model 2 : Group 2 : 0.8998  2.115  6.849    240    240
+Model 1 : Group 3 : 0.8998  2.115  6.849    240    240
+Model 2 : Group 3 : 0.8998  2.115  6.849    240    240
+
+Optimized Covariates:
+Group 1: 8.49167 : 26.4791
+Group 2: 44.9736 : 22.6784
+Group 3: 10.5206 : 22.0912
+
+*********************************
+
+===============================================================================
+FINAL RESULTS
+
+Optimized Sampling Schedule
+Model 1 : Group 1 : 0.8998  2.115  6.849    240    240
+Model 2 : Group 1 : 0.8998  2.115  6.849    240    240
+Model 1 : Group 2 : 0.8998  2.115  6.849    240    240
+Model 2 : Group 2 : 0.8998  2.115  6.849    240    240
+Model 1 : Group 3 : 0.8998  2.115  6.849    240    240
+Model 2 : Group 3 : 0.8998  2.115  6.849    240    240
+
+Optimized Covariates:
+Group 1: 8.49167 : 26.4791
+Group 2: 44.9736 : 22.6784
+Group 3: 10.5206 : 22.0912
+
+det(FIM) = 44.2459
+
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 1.46079
+
+Efficiency (final_design/initial_design): 1.00542
+
+Expected parameter variance 
+and relative standard error (%RSE):
+   Parameter     Values   Variance     RSE   RSE_initial_design
+     bpop[1]   7.28e+01   2.85e+01    7.33                 8.12
+     bpop[2]   2.50e-01   5.08e-04    9.01                 9.97
+     bpop[3]   3.75e+00   1.91e-02    3.68                 4.30
+     bpop[5]   1.12e+03   1.13e+04    9.50                 7.00
+     bpop[6]   8.07e-01   1.68e-03    5.07                 9.71
+     bpop[7]   9.93e-02   9.94e-04   31.75                38.19
+      D[1,1]   9.00e-02   1.02e-03   35.49                38.96
+      D[2,2]   9.00e-02   2.31e-03   53.45                58.53
+      D[3,3]   6.25e-02   2.17e-04   23.58                25.83
+      D[4,4]   9.00e-02   3.94e-04   22.05                22.04
+
+Total running time: 5.65 seconds

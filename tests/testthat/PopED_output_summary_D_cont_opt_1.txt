@@ -1,0 +1,320 @@
+PopED Results 
+
+        2014-11-19 11:14:07
+
+==============================================================================
+Model description : PopED model 
+
+Model Sizes : 
+Number of individual model parameters                  g[j]    : Ng    = 6
+Number of population model fixed parameters            bpop[j] : Nbpop = 5
+Number of population model random effects parameters   b[j]    : Nb    = 2
+
+Typical Population Parameters:
+bpop[1]:   1.8 
+bpop[2]:    20 
+bpop[3]:     2 
+bpop[4]:    25 
+bpop[5]:     5 
+
+Between Subject Variability matrix D (variance units) 
+0.05 0.00
+0.00 0.05
+
+Diagonal Elements of D [sqrt(param)]:
+D[1,1]:  0.05 [0.2236] 
+D[2,2]:  0.05 [0.2236] 
+
+Residual Unexplained Variability matrix SIGMA (variance units) : 
+0.0150 0.0000
+0.0000 0.0015
+
+Diagonal Elements of SIGMA [sqrt(param)]:
+SIGMA[1,1]: 0.015 [0.1225] 
+SIGMA[2,2]: 0.0015 [0.03873] 
+
+==============================================================================
+Experiment description (design and design space)
+
+Numer of individuals: 110
+Number of groups (individuals with same design): 4
+Numer of individuals per group:
+     Group 1: 50
+     Group 2: 20
+     Group 3: 20
+     Group 4: 20
+Numer of samples per group:
+     Group 1: 6
+     Group 2: 6
+     Group 3: 6
+     Group 4: 6
+Number of discrete experimental variables: 0
+Number of model covariates: 1
+
+Initial Sampling Schedule
+Group 1 :      1      2      4      6      8     24
+Group 2 :      1      2      4      6      8     24
+Group 3 :      1      2      4      6      8     24
+Group 4 :      1      2      4      6      8     24
+
+Minimum allowed sampling values
+Group 1 :  1e-05  1e-05  1e-05  1e-05  1e-05  1e-05
+Group 2 :  1e-05  1e-05  1e-05  1e-05  1e-05  1e-05
+Group 3 :  1e-05  1e-05  1e-05  1e-05  1e-05  1e-05
+Group 4 :  1e-05  1e-05  1e-05  1e-05  1e-05  1e-05
+
+Maximum allowed sampling values
+Group 1 :     24     24     24     24     24     24
+Group 2 :     24     24     24     24     24     24
+Group 3 :     24     24     24     24     24     24
+Group 4 :     24     24     24     24     24     24
+
+Covariates  (min, max):
+Group 1: 70 (1, 70)
+Group 2: 60 (1, 70)
+Group 3: 50 (1, 70)
+Group 4: 10 (1, 70)
+
+===============================================================================
+Initial design evaluation
+
+OFV = 4.40113e+20
+
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 196.666
+
+Initial design expected parameter variance 
+and relative standard error (%RSE)
+    Parameter    Values   Variance       RSE
+      bpop[1]    1.8000   4.61e+00    119.32
+      bpop[2]   20.0000   2.06e-01      2.27
+      bpop[3]    2.0000   6.25e+00    125.03
+      bpop[4]   25.0000   4.65e+04    862.24
+      bpop[5]    5.0000   4.67e+03   1366.14
+       D[1,1]    0.0500   6.66e-05     16.32
+       D[2,2]    0.0500   5.69e-05     15.08
+   SIGMA[1,1]    0.0150   1.16e-06      7.19
+   SIGMA[2,2]    0.0015   1.68e-07     27.36
+
+==============================================================================
+Criterion Specification
+
+OFV calculation for FIM: 1 
+  1=Determinant of FIM,
+  4=log determinant of FIM,
+  6=determinant of interesting part of FIM (Ds)
+
+Approximation method: 0
+  0=FO, 
+  1=FOCE, 
+  2=FOCEI, 
+  3=FOI
+
+Fisher Information Matrix type: 1
+  0=Full FIM,
+  1=Reduced FIM,
+  2=weighted models,
+  3=Loc models,
+  4=reduced FIM with derivative of SD of sigma as pfim,
+  5=FULL FIM parameterized with A,B,C matrices & derivative of variance,
+  6=Calculate one model switch at a time, good for large matrices,
+  7=Reduced FIM parameterized with A,B,C matrices & derivative of variance
+
+Design family: 1
+  D-family design (1) or 
+  ED-familty design (0) 
+  (with or without parameter uncertainty)
+
+==============================================================================
+Optimization of design parameters
+
+* Optimize Sampling Schedule
+* Optimize Covariates
+
+
+*******************************
+Initial Value
+ OFV(mf) = 4.40113e+20
+*******************************
+
+RS - It. : 3   OFV : 3.45531e+21
+
+*******************************
+RS Results
+ OFV(mf) = 3.45531e+21
+
+Optimized Sampling Schedule
+Group 1 :  1e-05  4.068  4.769  7.276  10.08     24
+Group 2 :  1e-05  1e-05  3.584  4.715  7.189     24
+Group 3 :  1e-05  1.128  4.734   7.12  10.96     24
+Group 4 :  1e-05  5.165  6.189  6.795  7.076  20.17
+
+Optimized Covariates:
+Group 1: 70
+Group 2: 58.7482
+Group 3: 47.6796
+Group 4: 6.71271
+
+*********************************
+
+SG - It. : 1  OFV : 3.686e+21   Diff. :     1
+SG - It. : 2  OFV : 4.026e+21   Diff. : 0.09231
+SG - It. : 3  OFV : 4.462e+21   Diff. : 0.1083
+
+SG - Iteration 3 --------- FINAL -------------------------
+Normalized gradient: Grad_xt(OFV)/OFV
+-0.00774768 -0.00906787 -0.00854762 -0.00739714 -0.00784279 -0.00218623 
+0.000125787 0.000125815 -0.000902021 -0.000546318 0.00113247 -0.00466057 
+-0.0117848 -0.0136561 -0.00549696 -0.00159097 0.00633858 0.0252649 
+0.0741163 -0.0542747 0.0229163 0.04597 0.0314447 2.57335e-09 
+xt opt:
+3.96854 1e-05 4.6695 7.17683 9.98091 23.9005 
+0.0415792 0.0415792 3.48457 7.15786 4.74623 23.9005 
+1.02801 1e-05 4.63437 7.02062 11.057 24 
+6.28806 1e-05 5.26418 6.89439 7.17529 20.2182 
+Normalized gradient: Grad_a(OFV)/OFV
+1.376445e-01
+-1.075760e-01
+-4.150399e-01
+-1.745777e-01
+aopt:
+7.000000e+01
+5.846212e+01
+4.739349e+01
+6.426619e+00
+OFV(mf)    : 4.46186e+21
+diff       : 0.108345
+*************************************************************
+*****************************
+            Line Search
+
+group 4 -- xt[4] changed from  6.89439 to  8.00001
+     OFV(MF) changed from 4.46186e+21 to 4.55893e+21 
+group 4 -- xt[4] changed from  8.00001 to  16
+     OFV(MF) changed from 4.55893e+21 to 4.57697e+21 
+group 4 -- xt[4] changed from  16 to  24
+     OFV(MF) changed from 4.57697e+21 to 4.57697e+21 
+group 4 -- xt[1] changed from  6.28806 to  1e-05
+     OFV(MF) changed from 4.57697e+21 to 4.60205e+21 
+group 4 -- xt[1] changed from  1e-05 to  8.00001
+     OFV(MF) changed from 4.60205e+21 to 4.86297e+21 
+group 4 -- xt[1] changed from  8.00001 to  16
+     OFV(MF) changed from 4.86297e+21 to 4.88669e+21 
+group 4 -- xt[1] changed from  16 to  24
+     OFV(MF) changed from 4.88669e+21 to 4.88669e+21 
+group 4 -- xt[5] changed from  7.17529 to  8.00001
+     OFV(MF) changed from 4.88669e+21 to 4.96316e+21 
+group 4 -- xt[5] changed from  8.00001 to  16
+     OFV(MF) changed from 4.96316e+21 to 4.98998e+21 
+group 4 -- xt[5] changed from  16 to  24
+     OFV(MF) changed from 4.98998e+21 to 4.98998e+21 
+group 4 -- xt[6] changed from  20.2182 to  24
+     OFV(MF) changed from 4.98998e+21 to 4.98998e+21 
+group 2 -- xt[1] changed from  0.0415792 to  1e-05
+     OFV(MF) changed from 4.98998e+21 to 4.99015e+21 
+group 2 -- xt[4] changed from  7.15786 to  24
+     OFV(MF) changed from 4.99015e+21 to 5.03382e+21 
+group 2 -- xt[3] changed from  3.48457 to  1e-05
+     OFV(MF) changed from 5.03382e+21 to 5.06012e+21 
+group 2 -- xt[2] changed from  0.0415792 to  1e-05
+     OFV(MF) changed from 5.06012e+21 to 5.06019e+21 
+group 2 -- xt[6] changed from  23.9005 to  24
+     OFV(MF) changed from 5.06019e+21 to 5.06231e+21 
+group 3 -- xt[1] changed from  1.02801 to  1e-05
+     OFV(MF) changed from 5.06231e+21 to 5.12464e+21 
+group 3 -- xt[4] changed from  7.02062 to  1e-05
+     OFV(MF) changed from 5.12464e+21 to 5.20706e+21 
+group 3 -- xt[4] changed from  1e-05 to  24
+     OFV(MF) changed from 5.20706e+21 to 5.24086e+21 
+group 3 -- xt[3] changed from  4.63437 to  1e-05
+     OFV(MF) changed from 5.24086e+21 to 5.28859e+21 
+group 3 -- xt[5] changed from  11.057 to  16
+     OFV(MF) changed from 5.28859e+21 to 5.39471e+21 
+group 1 -- xt[5] changed from  9.98091 to  1e-05
+     OFV(MF) changed from 5.39471e+21 to 5.73316e+21 
+group 1 -- xt[4] changed from  7.17683 to  1e-05
+     OFV(MF) changed from 5.73316e+21 to 5.82339e+21 
+
+Best value for OFV(MF) = 5.82339e+21
+
+Best value for xt:
+Group 1 :  1e-05  1e-05  1e-05  3.969   4.67   23.9
+Group 2 :  1e-05  1e-05  1e-05  4.746     24     24
+Group 3 :  1e-05  1e-05  1e-05     16     24     24
+Group 4 :  1e-05  5.264     24     24     24     24
+
+group 3 -- a[1] changed from  47.3935 to  24
+     OFV(MF) changed from 5.82339e+21 to 8.87274e+24 
+group 1 -- a[1] changed from  70 to  47
+     OFV(MF) changed from 8.87274e+24 to 3.77989e+25 
+group 2 -- a[1] changed from  58.4621 to  70
+     OFV(MF) changed from 3.77989e+25 to 7.83506e+25 
+Best value for OFV(MF) = 7.83506e+25
+
+Best value for a: 
+Group 1: 47
+Group 2: 70
+Group 3: 24
+Group 4: 6.42662
+
+
+Line search run time: 5.936 seconds
+***************************
+
+===============================================================================
+FINAL RESULTS
+
+Optimized Sampling Schedule
+Group 1 :  1e-05  1e-05  1e-05  3.969   4.67   23.9
+Group 2 :  1e-05  1e-05  1e-05  4.746     24     24
+Group 3 :  1e-05  1e-05  1e-05     16     24     24
+Group 4 :  1e-05  5.264     24     24     24     24
+
+Optimized Covariates:
+Group 1: 47
+Group 2: 70
+Group 3: 24
+Group 4: 6.42662
+
+ FIM: 
+ 5.271405e+02 -5.263077e+00  3.622028e+02 -1.288804e+01  1.047664e+01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+-5.263077e+00  4.966972e+00 -2.921210e+00  1.190924e-01 -6.139217e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 3.622028e+02 -2.921210e+00  3.299827e+02 -7.742563e+00  1.133158e+01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+-1.288804e+01  1.190924e-01 -7.742563e+00  9.465234e-01 -4.869208e-04  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 1.047664e+01 -6.139217e-02  1.133158e+01 -4.869208e-04  6.182296e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  1.329923e+04  1.957639e+02  9.159307e+03  2.788546e+04
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  1.957639e+02  1.799620e+04  5.277420e+03  3.090078e+03
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  9.159307e+03  5.277420e+03  6.287812e+05  3.253462e+05
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  2.788546e+04  3.090078e+03  3.253462e+05  3.038438e+07
+
+
+Inverse(FIM):
+ 9.766194e-03  3.360928e-03 -1.068501e-02  4.516788e-02  3.071588e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 3.360928e-03  2.038141e-01 -8.538772e-04  1.312344e-02 -2.105445e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+-1.068501e-02 -8.538772e-04  2.865094e-02  8.880596e-02 -3.440897e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 4.516788e-02  1.312344e-02  8.880596e-02  2.395065e+00 -2.389965e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 3.071588e-02 -2.105445e-02 -3.440897e-01 -2.389965e+00  7.399879e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  7.606126e-05 -5.025599e-07 -1.073604e-06 -5.825881e-08
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00 -5.025599e-07  5.570773e-05 -4.600959e-07 -2.776643e-10
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00 -1.073604e-06 -4.600959e-07  1.618311e-06 -1.629626e-08
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00 -5.825881e-08 -2.776643e-10 -1.629626e-08  3.313964e-08
+
+det(FIM) = 7.83506e+25
+
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 753.556
+
+Efficiency (final_design/initial_design): 3.83166
+
+Expected parameter variance 
+and relative standard error (%RSE):
+    Parameter    Values   Variance     RSE   RSE_initial_design
+      bpop[1]    1.8000   9.77e-03    5.49               119.32
+      bpop[2]   20.0000   2.04e-01    2.26                 2.27
+      bpop[3]    2.0000   2.87e-02    8.46               125.03
+      bpop[4]   25.0000   2.40e+00    6.19               862.24
+      bpop[5]    5.0000   7.40e+00   54.41              1366.14
+       D[1,1]    0.0500   7.61e-05   17.44                16.32
+       D[2,2]    0.0500   5.57e-05   14.93                15.08
+   SIGMA[1,1]    0.0150   1.62e-06    8.48                 7.19
+   SIGMA[2,2]    0.0015   3.31e-08   12.14                27.36
+
+Total running time: 16.021 seconds

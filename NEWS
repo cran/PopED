@@ -1,5 +1,37 @@
 PopED News/Changelog
 
+PopED 0.1.2
+===========
+
+* Updated model_prediction() to allow for creation of NONMEM datasets.  
+  Useful for testing of optimized designs via PsN's (http://psn.sf.net) SSE tool, for example.
+
+* Two new functions create_design() and create_design_space() that allow for design and design space creation without the 
+  need for a model or parameter values.
+
+* Updated the create.poped.database() function to use create_design() and create_design_space()
+
+* Added examples for evaluation and optimization of a one-target quasi-steady-state 
+  target mediated drug disposition model (TMDD) to the system.file("examples", 
+  package="PopED") directory of the PopED installation.
+
+* Added a 2-compartment, oral absorption, multiple dose example to the system.file("examples", 
+  package="PopED") directory of the PopED installation.
+
+* Updated plot_efficiency_of_windows() to allow for the plotting of the RSE of each parameter on the y-axis.
+
+* Updated error handing for the Laplace approximation of the ED OFV.
+
+* Fixed bug when computing FIM with only one BSV term present in model (calculation gave 
+  an error).
+
+* Fixed a bug in plot_model_predictions where an error was returned if not all time 
+  values in the xt matrix were to be used for the design calculation 
+  (ni is different from size(xt,2), see ?create_poped_database).
+
+* Various small bug fixes.
+
+
 PopED 0.1.1
 ===========
 
@@ -12,8 +44,8 @@ PopED 0.1.1
 * Added a general function to compute the FIM and OFV(FIM) for all avaialbale methods in PopED.
   See '?calc_ofv_and_fim'.
 
-* Added a general optimization algorithm 'RS_opt_gen()' that works for both D-family and E-family
-  optimization.
+* Added a general optimization algorithm 'RS_opt_gen()' that works for both D-family and 
+  E-family optimization.
 
 * Added optimization of E-family designs to 'poped_optimize()'.
 
@@ -23,6 +55,7 @@ PopED 0.1.1
   error when creating a PopED database
 
 * Fixed a bug where get_rse failed when a parameter had a value of 3.
+
 
 PopED 0.1.0
 ===========

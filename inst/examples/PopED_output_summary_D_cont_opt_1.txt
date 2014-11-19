@@ -1,0 +1,234 @@
+PopED Results 
+
+        2014-11-19 11:12:36
+
+==============================================================================
+Model description : PopED model 
+
+Model Sizes : 
+Number of individual model parameters                  g[j]    : Ng    = 5
+Number of population model fixed parameters            bpop[j] : Nbpop = 4
+Number of population model random effects parameters   b[j]    : Nb    = 3
+
+Typical Population Parameters:
+bpop[1]:  0.15 
+bpop[2]:     8 
+bpop[3]:     1 
+bpop[4]:     1 
+
+Between Subject Variability matrix D (variance units) 
+0.07 0.00 0.00
+0.00 0.02 0.00
+0.00 0.00 0.60
+
+Diagonal Elements of D [sqrt(param)]:
+D[1,1]:  0.07 [0.2646] 
+D[2,2]:  0.02 [0.1414] 
+D[3,3]:   0.6 [0.7746] 
+
+Residual Unexplained Variability matrix SIGMA (variance units) : 
+0.01 0.00
+0.00 0.25
+
+Diagonal Elements of SIGMA [sqrt(param)]:
+SIGMA[1,1]:  0.01 [  0.1] 
+SIGMA[2,2]:  0.25 [  0.5] 
+
+==============================================================================
+Experiment description (design and design space)
+
+Numer of individuals: 32
+Number of groups (individuals with same design): 1
+Numer of individuals per group:
+     Group 1: 32
+Numer of samples per group:
+     Group 1: 8
+Number of discrete experimental variables: 0
+Number of model covariates: 1
+
+Initial Sampling Schedule
+   0.5      1      2      6     24     36     72    120
+
+Minimum allowed sampling values
+ 1e-05  1e-05  1e-05  1e-05  1e-05  1e-05  1e-05  1e-05
+
+Maximum allowed sampling values
+   120    120    120    120    120    120    120    120
+
+Covariates  (min, max):
+Group 1: 70 (0, 100)
+
+===============================================================================
+Initial design evaluation
+
+OFV = 1.14383e+24
+
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 1016.94
+
+Initial design expected parameter variance 
+and relative standard error (%RSE)
+    Parameter   Values   Variance     RSE
+      bpop[1]     0.15   5.84e-05    5.10
+      bpop[2]     8.00   5.88e-02    3.03
+      bpop[3]     1.00   2.03e-02   14.26
+       D[1,1]     0.07   4.34e-04   29.76
+       D[2,2]     0.02   5.38e-05   36.68
+       D[3,3]     0.60   2.58e-02   26.75
+   SIGMA[1,1]     0.01   1.02e-05   32.01
+   SIGMA[2,2]     0.25   4.11e-03   25.64
+
+==============================================================================
+Criterion Specification
+
+OFV calculation for FIM: 1 
+  1=Determinant of FIM,
+  4=log determinant of FIM,
+  6=determinant of interesting part of FIM (Ds)
+
+Approximation method: 0
+  0=FO, 
+  1=FOCE, 
+  2=FOCEI, 
+  3=FOI
+
+Fisher Information Matrix type: 1
+  0=Full FIM,
+  1=Reduced FIM,
+  2=weighted models,
+  3=Loc models,
+  4=reduced FIM with derivative of SD of sigma as pfim,
+  5=FULL FIM parameterized with A,B,C matrices & derivative of variance,
+  6=Calculate one model switch at a time, good for large matrices,
+  7=Reduced FIM parameterized with A,B,C matrices & derivative of variance
+
+Design family: 1
+  D-family design (1) or 
+  ED-familty design (0) 
+  (with or without parameter uncertainty)
+
+==============================================================================
+Optimization of design parameters
+
+* Optimize Sampling Schedule
+* Optimize Covariates
+
+
+*******************************
+Initial Value
+ OFV(mf) = 1.14383e+24
+*******************************
+
+RS - It. : 3   OFV : 2.45582e+24
+
+*******************************
+RS Results
+ OFV(mf) = 2.45582e+24
+
+Optimized Sampling Schedule
+ 1e-05  1.194  3.417   5.17   18.8  37.37  62.63  105.3
+
+Optimized Covariates:
+Group 1: 75.1566
+
+*********************************
+
+SG - It. : 1  OFV : 2.623e+24   Diff. :     1
+SG - It. : 2  OFV : 2.778e+24   Diff. : 0.05927
+SG - It. : 3  OFV : 2.925e+24   Diff. : 0.05312
+
+SG - Iteration 3 --------- FINAL -------------------------
+Normalized gradient: Grad_xt(OFV)/OFV
+-429.107 0.00573506 0.0742325 -0.198074 -0.000355262 -0.0177461 0.00653784 0.0016196 
+xt opt:
+1e-05 5.66748 3.91449 0.696049 36.8735 18.3035 63.1287 105.197 
+a Gradient Inversion Occured
+Normalized gradient: Grad_a(OFV)/OFV
+3.112959e-02
+aopt:
+7.520177e+01
+OFV(mf)    : 2.9255e+24
+diff       : 0.0531155
+*************************************************************
+*****************************
+            Line Search
+
+group 1 -- xt[5] changed from  36.8735 to  1e-05
+     OFV(MF) changed from 2.9255e+24 to 3.19738e+24 
+group 1 -- xt[5] changed from  1e-05 to  80
+     OFV(MF) changed from 3.19738e+24 to 3.38492e+24 
+group 1 -- xt[5] changed from  80 to  120
+     OFV(MF) changed from 3.38492e+24 to 3.47648e+24 
+group 1 -- xt[7] changed from  63.1287 to  80
+     OFV(MF) changed from 3.47648e+24 to 3.62536e+24 
+group 1 -- xt[1] changed from  1e-05 to  1e-05
+     OFV(MF) changed from 3.62536e+24 to 3.62536e+24 
+group 1 -- xt[1] changed from  1e-05 to  120
+     OFV(MF) changed from 3.62536e+24 to 3.75221e+24 
+group 1 -- xt[8] changed from  105.197 to  120
+     OFV(MF) changed from 3.75221e+24 to 3.76619e+24 
+
+Best value for OFV(MF) = 3.76619e+24
+
+Best value for xt:
+ 0.696  3.914  5.667   18.3     80    120    120    120
+
+group 1 -- a[1] changed from  75.2018 to  100
+     OFV(MF) changed from 3.76619e+24 to 6.04299e+24 
+Best value for OFV(MF) = 6.04299e+24
+
+Best value for a: 
+Group 1: 100
+
+
+Line search run time: 3.144 seconds
+***************************
+
+===============================================================================
+FINAL RESULTS
+
+Optimized Sampling Schedule
+ 0.696  3.914  5.667   18.3     80    120    120    120
+
+Optimized Covariates:
+Group 1: 100
+
+ FIM: 
+ 1.859865e+04 -1.834151e+01 -4.874689e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+-1.834151e+01  1.989728e+01 -2.054986e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+-4.874689e+00 -2.054986e+00  4.964994e+01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  2.736200e+03  7.569249e+00  8.354035e-03  4.046412e+02  5.399196e+01
+ 0.000000e+00  0.000000e+00  0.000000e+00  7.569249e+00  2.533772e+04  4.222968e+00  9.957560e+03  1.092778e+02
+ 0.000000e+00  0.000000e+00  0.000000e+00  8.354035e-03  4.222968e+00  3.851744e+01  1.033920e+02  2.382156e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  4.046412e+02  9.957560e+03  1.033920e+02  2.216274e+05  3.812257e+03
+ 0.000000e+00  0.000000e+00  0.000000e+00  5.399196e+01  1.092778e+02  2.382156e+00  3.812257e+03  6.361057e+02
+
+
+Inverse(FIM):
+ 5.381896e-05  5.037190e-05  7.368875e-06  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 5.037190e-05  5.052103e-02  2.095986e-03  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 7.368875e-06  2.095986e-03  2.022849e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  3.660883e-04  8.094292e-08  2.191284e-06 -1.540584e-07 -3.017199e-05
+ 0.000000e+00  0.000000e+00  0.000000e+00  8.094292e-08  4.018715e-05  3.731748e-07 -1.880905e-06  4.360393e-06
+ 0.000000e+00  0.000000e+00  0.000000e+00  2.191284e-06  3.731748e-07  2.599526e-02 -1.167234e-05 -2.764618e-05
+ 0.000000e+00  0.000000e+00  0.000000e+00 -1.540584e-07 -1.880905e-06 -1.167234e-05  5.124004e-06 -3.032885e-05
+ 0.000000e+00  0.000000e+00  0.000000e+00 -3.017199e-05  4.360393e-06 -2.764618e-05 -3.032885e-05  1.755746e-03
+
+det(FIM) = 6.04299e+24
+
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 1252.15
+
+Efficiency (final_design/initial_design): 1.23129
+
+Expected parameter variance 
+and relative standard error (%RSE):
+    Parameter   Values   Variance     RSE   RSE_initial_design
+      bpop[1]     0.15   5.38e-05    4.89                 5.10
+      bpop[2]     8.00   5.05e-02    2.81                 3.03
+      bpop[3]     1.00   2.02e-02   14.22                14.26
+       D[1,1]     0.07   3.66e-04   27.33                29.76
+       D[2,2]     0.02   4.02e-05   31.70                36.68
+       D[3,3]     0.60   2.60e-02   26.87                26.75
+   SIGMA[1,1]     0.01   5.12e-06   22.64                32.01
+   SIGMA[2,2]     0.25   1.76e-03   16.76                25.64
+
+Total running time: 12.613 seconds
