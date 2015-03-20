@@ -1,6 +1,6 @@
 PopED Results 
 
-        2014-11-19 11:14:23
+        2015-03-20 12:44:49
 
 ==============================================================================
 Model description : PopED model 
@@ -44,11 +44,7 @@ Numer of individuals per group:
      Group 3: 20
      Group 4: 20
 Numer of samples per group:
-     Group 1: 6
-     Group 2: 6
-     Group 3: 6
-     Group 4: 6
-Number of discrete experimental variables: 0
+ Number of discrete experimental variables: 0
 Number of model covariates: 1
 
 Initial Sampling Schedule
@@ -199,4 +195,4 @@ and relative standard error (%RSE):
    SIGMA[1,1]    0.0150   1.57e-06     8.36                 7.19
    SIGMA[2,2]    0.0015   2.73e-08    11.02                27.36
 
-Total running time: 6.52 seconds
+Total running time: 7.756 seconds
