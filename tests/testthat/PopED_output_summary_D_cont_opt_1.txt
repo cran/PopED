@@ -1,6 +1,6 @@
 PopED Results 
 
-        2015-03-20 12:44:30
+        2015-12-28 09:18:04
 
 ==============================================================================
 Model description : PopED model 
@@ -74,27 +74,27 @@ Group 4: 10 (1, 70)
 ===============================================================================
 Initial design evaluation
 
-OFV = 4.40113e+20
+Initial OFV = 47.5336
 
-Efficiency criterion [usually defined as OFV^(1/npar)]  = 196.666
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 1.5358
 
-Initial design expected parameter variance 
-and relative standard error (%RSE)
-    Parameter    Values   Variance       RSE
-      bpop[1]    1.8000   4.61e+00    119.32
-      bpop[2]   20.0000   2.06e-01      2.27
-      bpop[3]    2.0000   6.25e+00    125.03
-      bpop[4]   25.0000   4.65e+04    862.24
-      bpop[5]    5.0000   4.67e+03   1366.14
-       D[1,1]    0.0500   6.66e-05     16.32
-       D[2,2]    0.0500   5.69e-05     15.08
-   SIGMA[1,1]    0.0150   1.16e-06      7.19
-   SIGMA[2,2]    0.0015   1.68e-07     27.36
+Initial design expected parameter 
+relative standard error (%RSE)
+    Parameter    Values     RSE_0
+      bpop[1]    1.8000    119.32
+      bpop[2]   20.0000      2.27
+      bpop[3]    2.0000    125.03
+      bpop[4]   25.0000    862.24
+      bpop[5]    5.0000   1366.14
+       D[1,1]    0.0500     16.32
+       D[2,2]    0.0500     15.08
+   SIGMA[1,1]    0.0150      7.19
+   SIGMA[2,2]    0.0015     27.36
 
 ==============================================================================
 Criterion Specification
 
-OFV calculation for FIM: 1 
+OFV calculation for FIM: 4 
   1=Determinant of FIM,
   4=log determinant of FIM,
   6=determinant of interesting part of FIM (Ds)
@@ -126,191 +126,201 @@ Optimization of design parameters
 * Optimize Sampling Schedule
 * Optimize Covariates
 
-
 *******************************
 Initial Value
- OFV(mf) = 4.40113e+20
+ OFV(mf) = 47.5336
 *******************************
 
-RS - It. : 3   OFV : 5.34591e+23
+RS - It. : 3   OFV : 47.5336
 
 *******************************
 RS Results
- OFV(mf) = 5.34591e+23
+ OFV(mf) = 47.5336
 
 Optimized Sampling Schedule
-Group 1 : 0.1551  3.178  3.514  6.686  7.479     24
-Group 2 :  4.383  5.036  6.326  6.618   10.2  23.32
-Group 3 :  2.627  3.816  5.284  5.537  8.569     24
-Group 4 :  1.543  3.982  7.197    8.6  9.208  19.84
+Group 1 :      1      2      4      6      8     24
+Group 2 :      1      2      4      6      8     24
+Group 3 :      1      2      4      6      8     24
+Group 4 :      1      2      4      6      8     24
 
 Optimized Covariates:
-Group 1: 68.6881
-Group 2: 49.6547
-Group 3: 37.5071
-Group 4: 5.99079
+Group 1: 70
+Group 2: 60
+Group 3: 50
+Group 4: 10
 
 *********************************
 
-SG - It. : 1  OFV : 5.657e+23   Diff. :     1
-SG - It. : 2  OFV : 6.123e+23   Diff. : 0.08227
-SG - It. : 3  OFV : 6.742e+23   Diff. : 0.1011
+SG - It. : 1  OFV : 47.59   Diff. :     1
+SG - It. : 2  OFV : 47.68   Diff. : 0.001796
+SG - It. : 3  OFV : 47.79   Diff. : 0.002247
 
 SG - Iteration 3 --------- FINAL -------------------------
 Normalized gradient: Grad_xt(OFV)/OFV
--0.00700433 -0.006792 -0.00623429 -0.00658604 -0.00629645 -0.00332984 
--0.0308372 0.00937355 -0.0356624 -0.0208963 -0.01901 -0.00850495 
--0.0481447 -0.0674892 -0.0246374 0.0295664 -0.0207368 0.00282961 
-0.00132813 -0.194145 0.0363615 0.0178786 0.000415308 -6.56945e-10 
+-0.000111098 -0.000136499 -0.000163052 -0.000132685 -0.000105228 -2.96881e-05 
+-0.000110947 -0.000154065 -0.000164234 -3.22414e-05 -5.60903e-05 -3.95374e-05 
+-0.000669516 -0.000465525 -6.99176e-05 0.000313999 0.000701726 0.00144099 
+-0.000915788 -0.000672935 -0.000187646 0.000662844 0.00215216 -8.17818e-10 
 xt opt:
-0.0556215 3.07807 6.58688 3.41463 7.37995 23.9005 
-4.93672 10.2951 4.28365 6.22633 6.51854 23.218 
-3.71671 2.52737 5.18464 8.66828 5.43738 24 
-8.69989 1.44313 4.08178 7.29663 9.30771 19.8592 
+0.90049 1.90049 3.90049 5.90049 7.90049 23.9005 
+0.90049 1.90049 3.90049 5.94849 7.90049 23.9245 
+0.90049 1.90049 3.90049 6.09951 8.09951 24 
+0.90049 1.90049 3.90049 6.09951 8.09951 23.9584 
 Normalized gradient: Grad_a(OFV)/OFV
-5.804896e-02
--8.743386e-02
--3.830463e-01
--4.752833e-03
+3.788830e-03
+-3.071190e-03
+-1.051118e-02
+-2.253349e-03
 aopt:
-6.897423e+01
-4.936857e+01
-3.722103e+01
-6.037861e+00
-OFV(mf)    : 6.74209e+23
-diff       : 0.101146
+7.000000e+01
+5.971391e+01
+4.971391e+01
+9.713908e+00
+OFV(mf)    : 47.7855
+diff       : 0.00224738
 *************************************************************
 *****************************
             Line Search
 
-group 4 -- xt[2] changed from  1.44313 to  1e-05
-     OFV(MF) changed from 6.74209e+23 to 8.27671e+23 
-group 4 -- xt[5] changed from  9.30771 to  16
-     OFV(MF) changed from 8.27671e+23 to 8.27861e+23 
-group 4 -- xt[5] changed from  16 to  24
-     OFV(MF) changed from 8.27861e+23 to 8.27861e+23 
-group 4 -- xt[4] changed from  7.29663 to  8.00001
-     OFV(MF) changed from 8.27861e+23 to 8.33881e+23 
-group 4 -- xt[4] changed from  8.00001 to  16
-     OFV(MF) changed from 8.33881e+23 to 8.36222e+23 
-group 4 -- xt[4] changed from  16 to  24
-     OFV(MF) changed from 8.36222e+23 to 8.36222e+23 
-group 4 -- xt[6] changed from  19.8592 to  24
-     OFV(MF) changed from 8.36222e+23 to 8.36222e+23 
-group 4 -- xt[1] changed from  8.69989 to  16
-     OFV(MF) changed from 8.36222e+23 to 8.36863e+23 
+group 1 -- xt[5] changed from  7.90049 to  1e-05
+     OFV(MF) changed from 47.7855 to 47.8184 
+group 1 -- xt[4] changed from  5.90049 to  1e-05
+     OFV(MF) changed from 47.8184 to 47.8253 
+group 1 -- xt[3] changed from  3.90049 to  24
+     OFV(MF) changed from 47.8253 to 47.8277 
+group 1 -- xt[2] changed from  1.90049 to  1e-05
+     OFV(MF) changed from 47.8277 to 47.8343 
+group 1 -- xt[6] changed from  23.9005 to  24
+     OFV(MF) changed from 47.8343 to 47.8359 
+group 4 -- xt[6] changed from  23.9584 to  24
+     OFV(MF) changed from 47.8359 to 47.8359 
+group 4 -- xt[1] changed from  0.90049 to  1e-05
+     OFV(MF) changed from 47.8359 to 47.8713 
+group 4 -- xt[1] changed from  1e-05 to  16
+     OFV(MF) changed from 47.8713 to 48.114 
 group 4 -- xt[1] changed from  16 to  24
-     OFV(MF) changed from 8.36863e+23 to 8.36863e+23 
-group 2 -- xt[2] changed from  10.2951 to  1e-05
-     OFV(MF) changed from 8.36863e+23 to 9.8875e+23 
-group 2 -- xt[6] changed from  23.218 to  1e-05
-     OFV(MF) changed from 9.8875e+23 to 1.04382e+24 
-group 2 -- xt[5] changed from  6.51854 to  8.00001
-     OFV(MF) changed from 1.04382e+24 to 1.05106e+24 
-group 2 -- xt[5] changed from  8.00001 to  16
-     OFV(MF) changed from 1.05106e+24 to 1.05517e+24 
-group 2 -- xt[4] changed from  6.22633 to  1e-05
-     OFV(MF) changed from 1.05517e+24 to 1.07529e+24 
-group 2 -- xt[4] changed from  1e-05 to  24
-     OFV(MF) changed from 1.07529e+24 to 1.08391e+24 
-group 2 -- xt[1] changed from  4.93672 to  1e-05
-     OFV(MF) changed from 1.08391e+24 to 1.10099e+24 
-group 2 -- xt[3] changed from  4.28365 to  1e-05
-     OFV(MF) changed from 1.10099e+24 to 1.10244e+24 
-group 3 -- xt[6] changed from  24 to  1e-05
-     OFV(MF) changed from 1.10244e+24 to 1.19824e+24 
-group 3 -- xt[1] changed from  3.71671 to  1e-05
-     OFV(MF) changed from 1.19824e+24 to 1.25876e+24 
-group 3 -- xt[1] changed from  1e-05 to  24
-     OFV(MF) changed from 1.25876e+24 to 1.29807e+24 
-group 3 -- xt[5] changed from  5.43738 to  1e-05
-     OFV(MF) changed from 1.29807e+24 to 1.3794e+24 
-group 3 -- xt[3] changed from  5.18464 to  24
-     OFV(MF) changed from 1.3794e+24 to 1.42681e+24 
-group 1 -- xt[5] changed from  7.37995 to  1e-05
-     OFV(MF) changed from 1.42681e+24 to 1.47288e+24 
-group 1 -- xt[3] changed from  6.58688 to  1e-05
-     OFV(MF) changed from 1.47288e+24 to 1.48545e+24 
+     OFV(MF) changed from 48.114 to 48.1141 
+group 4 -- xt[3] changed from  3.90049 to  1e-05
+     OFV(MF) changed from 48.1141 to 48.285 
+group 4 -- xt[3] changed from  1e-05 to  16
+     OFV(MF) changed from 48.285 to 48.3304 
+group 4 -- xt[3] changed from  16 to  24
+     OFV(MF) changed from 48.3304 to 48.3304 
+group 4 -- xt[4] changed from  6.09951 to  1e-05
+     OFV(MF) changed from 48.3304 to 48.5367 
+group 4 -- xt[5] changed from  8.09951 to  8.00001
+     OFV(MF) changed from 48.5367 to 48.5381 
+group 4 -- xt[5] changed from  8.00001 to  16
+     OFV(MF) changed from 48.5381 to 48.5862 
+group 4 -- xt[5] changed from  16 to  24
+     OFV(MF) changed from 48.5862 to 48.5868 
+group 4 -- xt[2] changed from  1.90049 to  8.00001
+     OFV(MF) changed from 48.5868 to 48.6299 
+group 2 -- xt[6] changed from  23.9245 to  16
+     OFV(MF) changed from 48.6299 to 48.6463 
+group 2 -- xt[4] changed from  5.94849 to  1e-05
+     OFV(MF) changed from 48.6463 to 48.673 
+group 2 -- xt[5] changed from  7.90049 to  1e-05
+     OFV(MF) changed from 48.673 to 48.6759 
+group 2 -- xt[3] changed from  3.90049 to  8.00001
+     OFV(MF) changed from 48.6759 to 48.6791 
+group 2 -- xt[2] changed from  1.90049 to  1e-05
+     OFV(MF) changed from 48.6791 to 48.6797 
+group 3 -- xt[5] changed from  8.09951 to  16
+     OFV(MF) changed from 48.6797 to 48.7312 
+group 3 -- xt[5] changed from  16 to  24
+     OFV(MF) changed from 48.7312 to 48.7369 
+group 3 -- xt[1] changed from  0.90049 to  1e-05
+     OFV(MF) changed from 48.7369 to 48.7389 
+group 3 -- xt[2] changed from  1.90049 to  1e-05
+     OFV(MF) changed from 48.7389 to 48.7398 
+group 3 -- xt[2] changed from  1e-05 to  24
+     OFV(MF) changed from 48.7398 to 48.7445 
+group 3 -- xt[4] changed from  6.09951 to  1e-05
+     OFV(MF) changed from 48.7445 to 48.7576 
+group 3 -- xt[6] changed from  24 to  16
+     OFV(MF) changed from 48.7576 to 48.7733 
 
-Best value for OFV(MF) = 1.48545e+24
+Best value for OFV(MF) = 48.7733
 
 Best value for xt:
-Group 1 :  1e-05  1e-05 0.05562  3.078  3.415   23.9
-Group 2 :  1e-05  1e-05  1e-05  1e-05     16     24
-Group 3 :  1e-05  1e-05  2.527  8.668     24     24
-Group 4 :  1e-05  4.082     24     24     24     24
+Group 1 :  1e-05  1e-05  1e-05 0.9005     24     24
+Group 2 :  1e-05  1e-05  1e-05 0.9005      8     16
+Group 3 :  1e-05  1e-05    3.9     16     24     24
+Group 4 :  1e-05      8     24     24     24     24
 
-group 1 -- a[1] changed from  68.9742 to  24
-     OFV(MF) changed from 1.48545e+24 to 2.06431e+26 
-group 2 -- a[1] changed from  49.3686 to  70
-     OFV(MF) changed from 2.06431e+26 to 5.02488e+26 
-Best value for OFV(MF) = 5.02488e+26
+group 2 -- a[1] changed from  59.7139 to  1
+     OFV(MF) changed from 48.7733 to 54.577 
+group 2 -- a[1] changed from  1 to  24
+     OFV(MF) changed from 54.577 to 59.2775 
+group 3 -- a[1] changed from  49.7139 to  47
+     OFV(MF) changed from 59.2775 to 59.7974 
+Best value for OFV(MF) = 59.7974
 
 Best value for a: 
-Group 1: 24
-Group 2: 70
-Group 3: 37.221
-Group 4: 6.03786
+Group 1: 70
+Group 2: 24
+Group 3: 47
+Group 4: 9.71391
 
 
-Line search run time: 6.94 seconds
+Line search run time: 5.611 seconds
 ***************************
 
 ===============================================================================
 FINAL RESULTS
-
 Optimized Sampling Schedule
-Group 1 :  1e-05  1e-05 0.05562  3.078  3.415   23.9
-Group 2 :  1e-05  1e-05  1e-05  1e-05     16     24
-Group 3 :  1e-05  1e-05  2.527  8.668     24     24
-Group 4 :  1e-05  4.082     24     24     24     24
+Group 1 :  1e-05  1e-05  1e-05 0.9005     24     24
+Group 2 :  1e-05  1e-05  1e-05 0.9005      8     16
+Group 3 :  1e-05  1e-05    3.9     16     24     24
+Group 4 :  1e-05      8     24     24     24     24
 
 Optimized Covariates:
-Group 1: 24
-Group 2: 70
-Group 3: 37.221
-Group 4: 6.03786
+Group 1: 70
+Group 2: 24
+Group 3: 47
+Group 4: 9.71391
 
  FIM: 
- 5.587835e+02 -4.459415e+00  2.998337e+02 -2.950618e+01  3.959686e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
--4.459415e+00  4.915125e+00 -2.248438e+00  1.167588e-01 -8.732000e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
- 2.998337e+02 -2.248438e+00  2.260683e+02 -1.512605e+01  6.049369e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
--2.950618e+01  1.167588e-01 -1.512605e+01  2.662317e+00  1.605762e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
- 3.959686e+00 -8.732000e-02  6.049369e+00  1.605762e-01  8.043448e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
- 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  1.491247e+04  1.701472e+02  9.944289e+03  1.289317e+03
- 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  1.701472e+02  1.761950e+04  6.207334e+03  2.883115e+02
- 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  9.944289e+03  6.207334e+03  6.060485e+05  7.004923e+04
- 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  1.289317e+03  2.883115e+02  7.004923e+04  3.726316e+07
+ 5.582815e+02 -6.484947e+00  3.892266e+02 -1.322006e+01  3.690280e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+-6.484947e+00  4.997406e+00 -4.248837e+00  1.066586e-01 -5.414264e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 3.892266e+02 -4.248837e+00  3.561765e+02 -6.843104e+00  6.402812e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+-1.322006e+01  1.066586e-01 -6.843104e+00  1.095160e+00  1.445534e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 3.690280e+00 -5.414264e-02  6.402812e+00  1.445534e-01  3.380359e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  1.490565e+04  2.680497e+02  9.182568e+03  5.328307e+03
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  2.680497e+02  1.822306e+04  4.937147e+03  5.789354e+02
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  9.182568e+03  4.937147e+03  6.373997e+05  3.986464e+05
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  5.328307e+03  5.789354e+02  3.986464e+05  2.774146e+07
 
 
 Inverse(FIM):
- 9.528826e-03  3.309496e-03 -9.830965e-03  4.853942e-02  1.769725e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
- 3.309496e-03  2.055844e-01 -1.455344e-03  1.859434e-02  1.325945e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
--9.830965e-03 -1.455344e-03  2.279721e-02  2.840522e-02 -1.288869e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
- 4.853942e-02  1.859434e-02  2.840522e-02  1.114738e+00 -6.731085e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
- 1.769725e-02  1.325945e-02 -1.288869e-01 -6.731085e-01  2.261284e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
- 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  6.780104e-05 -2.637609e-07 -1.109776e-06 -2.576824e-10
- 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00 -2.637609e-07  5.696187e-05 -5.791689e-07  6.571543e-10
- 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00 -1.109776e-06 -5.791689e-07  1.674533e-06 -3.104995e-09
- 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00 -2.576824e-10  6.571543e-10 -3.104995e-09  2.684199e-08
+ 1.273345e-02  3.905708e-03 -1.582280e-02  3.515182e-02  1.462880e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 3.905708e-03  2.034429e-01 -2.056747e-03  1.130501e-02  2.407013e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+-1.582280e-02 -2.056747e-03  2.654668e-02  1.980574e-02 -3.388905e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 3.515182e-02  1.130501e-02  1.980574e-02  1.653344e+00 -1.464095e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 1.462880e-01  2.407013e-02 -3.388905e-01 -1.464095e+00  8.410207e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  6.769919e-05 -7.329839e-07 -9.702138e-07  9.543295e-10
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00 -7.329839e-07  5.499954e-05 -4.185860e-07  5.008107e-09
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00 -9.702138e-07 -4.185860e-07  1.600355e-06 -2.280211e-08
+ 0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  9.543295e-10  5.008107e-09 -2.280211e-08  3.637451e-08
 
-det(FIM) = 5.02488e+26
+OFV = 59.7974
 
-Efficiency criterion [usually defined as OFV^(1/npar)]  = 926.385
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 1.57547
 
-Efficiency (final_design/initial_design): 4.71045
+Efficiency [typically: (OFV_final/OFV_initial)^(1/npar)]: 1.02583
 
-Expected parameter variance 
-and relative standard error (%RSE):
-    Parameter    Values   Variance     RSE   RSE_initial_design
-      bpop[1]    1.8000   9.53e-03    5.42               119.32
-      bpop[2]   20.0000   2.06e-01    2.27                 2.27
-      bpop[3]    2.0000   2.28e-02    7.55               125.03
-      bpop[4]   25.0000   1.11e+00    4.22               862.24
-      bpop[5]    5.0000   2.26e+00   30.08              1366.14
-       D[1,1]    0.0500   6.78e-05   16.47                16.32
-       D[2,2]    0.0500   5.70e-05   15.09                15.08
-   SIGMA[1,1]    0.0150   1.67e-06    8.63                 7.19
-   SIGMA[2,2]    0.0015   2.68e-08   10.92                27.36
+Expected parameter 
+relative standard error (%RSE):
+    Parameter    Values     RSE_0     RSE
+      bpop[1]    1.8000    119.32    6.27
+      bpop[2]   20.0000      2.27    2.26
+      bpop[3]    2.0000    125.03    8.15
+      bpop[4]   25.0000    862.24    5.14
+      bpop[5]    5.0000   1366.14   58.00
+       D[1,1]    0.0500     16.32   16.46
+       D[2,2]    0.0500     15.08   14.83
+   SIGMA[1,1]    0.0150      7.19    8.43
+   SIGMA[2,2]    0.0015     27.36   12.71
 
-Total running time: 19.24 seconds
+Total running time: 15.395 seconds

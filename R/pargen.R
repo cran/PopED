@@ -21,9 +21,9 @@
 #'   
 #' @return A matrix of random samples of size (sample_size x
 #'   number_of_parameters)
-#' @example tests/testthat/examples_fcn_doc/warfarin_optimize.R
+#' @example tests/testthat/examples_fcn_doc/warfarin_basic.R
 #' @example tests/testthat/examples_fcn_doc/examples_pargen.R
-
+#' @export
 ## Function translated using 'matlab.to.r()'
 ## Then manually adjusted to make work
 ## Author: Andrew Hooker
@@ -89,9 +89,9 @@ pargen <- function(par,user_dist_pointer,sample_size,bLHS,sample_number,poped.db
         
         if((bUserSpecifiedDistribution)){
           if((isempty(sample_number))){
-            ret[k,,drop=F] = feval(user_dist_pointer,ret[k,,drop=F],t,k,poped.db)
+            ret[k,] = feval(user_dist_pointer,ret[k,,drop=F],t,k,poped.db)
           } else {
-            ret[k,,drop=F] = feval(user_dist_pointer,ret[k,,drop=F],t,sample_number,poped.db)
+            ret[k,] = feval(user_dist_pointer,ret[k,,drop=F],t,sample_number,poped.db)
           }
         }
       }
@@ -119,9 +119,9 @@ pargen <- function(par,user_dist_pointer,sample_size,bLHS,sample_number,poped.db
     if((bUserSpecifiedDistribution)){
       for(k in 1:sample_size){
         if((isempty(sample_number))){
-          ret[k,,drop=F] = feval(user_dist_pointer,ret[k,,drop=F],par[,1,drop=F],k,poped.db)
+          ret[k,] = feval(user_dist_pointer,ret[k,,drop=F],par[,1,drop=F],k,poped.db)
         } else {
-          ret[k,,drop=F] = feval(user_dist_pointer,ret[k,,drop=F],par[,1,drop=F],sample_number,poped.db)
+          ret[k,] = feval(user_dist_pointer,ret[k,,drop=F],par[,1,drop=F],sample_number,poped.db)
         }
       }
     }
@@ -129,24 +129,6 @@ pargen <- function(par,user_dist_pointer,sample_size,bLHS,sample_number,poped.db
   return( ret) 
 }
 
-#'  Generate a random sample from a truncated normal distribution.
-#'  
-#'  @param mean the mean of the normal distribution
-#'  @param variance The variance of the normal distribution
-#'    
-#'  @return A random sample from the specified truncated normal distribution
-#'  
-#' @example tests/testthat/examples_fcn_doc/examples_getTruncatedNormal.R
-
-getTruncatedNormal <- function(mean,variance){
-  while(TRUE){
-    n = mean+randn(1,1)*sqrt(variance)
-    if((sign(n)==sign(mean))){
-      break
-    }
-  }
-  return( n) 
-}
 
 #sign.2 <- function(x){
 #  s = x/abs(x)*(x!=0)

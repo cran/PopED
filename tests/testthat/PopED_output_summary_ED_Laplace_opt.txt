@@ -1,6 +1,6 @@
 PopED Results 
 
-        2015-03-20 12:43:48
+        2015-12-28 09:17:32
 
 ==============================================================================
 Model description : PopED model 
@@ -88,23 +88,23 @@ Group 3: 0 (0, 200) : 24 (2, 40)
 ===============================================================================
 Initial design evaluation
 
-OFV = 41.9291
+Initial OFV = 41.9221
 
-Efficiency criterion [usually defined as OFV^(1/npar)]  = 1.45295
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 1.45293
 
-Initial design expected parameter variance 
-and relative standard error (%RSE)
-   Parameter     Values   Variance     RSE
-     bpop[1]   7.28e+01   3.49e+01    8.12
-     bpop[2]   2.50e-01   6.21e-04    9.97
-     bpop[3]   3.75e+00   2.61e-02    4.30
-     bpop[5]   1.12e+03   6.12e+03    6.98
-     bpop[6]   8.07e-01   6.05e-03    9.64
-     bpop[7]   9.93e-02   1.41e-03   37.75
-      D[1,1]   9.00e-02   1.23e-03   38.96
-      D[2,2]   9.00e-02   2.77e-03   58.53
-      D[3,3]   6.25e-02   2.61e-04   25.83
-      D[4,4]   9.00e-02   3.93e-04   22.04
+Initial design expected parameter 
+relative standard error (%RSE)
+   Parameter     Values   RSE_0
+     bpop[1]   7.28e+01    8.12
+     bpop[2]   2.50e-01    9.97
+     bpop[3]   3.75e+00    4.30
+     bpop[5]   1.12e+03    7.00
+     bpop[6]   8.07e-01    9.70
+     bpop[7]   9.93e-02   38.12
+      D[1,1]   9.00e-02   38.96
+      D[2,2]   9.00e-02   58.53
+      D[3,3]   6.25e-02   25.83
+      D[4,4]   9.00e-02   22.04
 
 ==============================================================================
 Criterion Specification
@@ -141,67 +141,65 @@ Optimization of design parameters
 * Optimize Sampling Schedule
 * Optimize Covariates
 
-
 *******************************
 Initial Value
- OFV(mf) = 41.9291
+ OFV(mf) = 41.9221
 *******************************
 
-RS - It. : 3   OFV : 45.3558
+RS - It. : 3   OFV : 42.7223
 
 *******************************
 RS Results
- OFV(mf) = 45.3558
+ OFV(mf) = 42.7223
 
 Optimized Sampling Schedule
-Model 1 : Group 1 :      0  1.699  9.281  240.8    241
-Model 2 : Group 1 :      0  1.699  9.281  240.8    241
-Model 1 : Group 2 :      0  1.699  9.281  240.8    241
-Model 2 : Group 2 :      0  1.699  9.281  240.8    241
-Model 1 : Group 3 :      0  1.699  9.281  240.8    241
-Model 2 : Group 3 :      0  1.699  9.281  240.8    241
+Model 1 : Group 1 :  1.084  3.058   7.47  240.3  240.5
+Model 2 : Group 1 :  1.084  3.058   7.47  240.3  240.5
+Model 1 : Group 2 :  1.084  3.058   7.47  240.3  240.5
+Model 2 : Group 2 :  1.084  3.058   7.47  240.3  240.5
+Model 1 : Group 3 :  1.084  3.058   7.47  240.3  240.5
+Model 2 : Group 3 :  1.084  3.058   7.47  240.3  240.5
 
 Optimized Covariates:
-Group 1: 17.4269 : 19.9284
-Group 2: 43.1771 : 24.6382
-Group 3: 17.915 : 25.0005
+Group 1: 19.7786 : 26.709
+Group 2: 77.0762 : 24.1186
+Group 3: 0 : 21.386
 
 *********************************
 
 ===============================================================================
 FINAL RESULTS
-
 Optimized Sampling Schedule
-Model 1 : Group 1 :      0  1.699  9.281  240.8    241
-Model 2 : Group 1 :      0  1.699  9.281  240.8    241
-Model 1 : Group 2 :      0  1.699  9.281  240.8    241
-Model 2 : Group 2 :      0  1.699  9.281  240.8    241
-Model 1 : Group 3 :      0  1.699  9.281  240.8    241
-Model 2 : Group 3 :      0  1.699  9.281  240.8    241
+Model 1 : Group 1 :  1.084  3.058   7.47  240.3  240.5
+Model 2 : Group 1 :  1.084  3.058   7.47  240.3  240.5
+Model 1 : Group 2 :  1.084  3.058   7.47  240.3  240.5
+Model 2 : Group 2 :  1.084  3.058   7.47  240.3  240.5
+Model 1 : Group 3 :  1.084  3.058   7.47  240.3  240.5
+Model 2 : Group 3 :  1.084  3.058   7.47  240.3  240.5
 
 Optimized Covariates:
-Group 1: 17.4269 : 19.9284
-Group 2: 43.1771 : 24.6382
-Group 3: 17.915 : 25.0005
+Group 1: 19.7786 : 26.709
+Group 2: 77.0762 : 24.1186
+Group 3: 0 : 21.386
 
-det(FIM) = 45.3558
+OFV = 42.7223
 
-Efficiency criterion [usually defined as OFV^(1/npar)]  = 1.46441
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 1.45568
 
-Efficiency (final_design/initial_design): 1.00789
+Efficiency [typically: (OFV_final/OFV_initial)^(1/npar)]: 1.00189
 
-Expected parameter variance 
-and relative standard error (%RSE):
-   Parameter     Values   Variance     RSE   RSE_initial_design
-     bpop[1]   7.28e+01   2.31e+01    6.60                 8.12
-     bpop[2]   2.50e-01   4.64e-04    8.62                 9.97
-     bpop[3]   3.75e+00   1.86e-02    3.64                 4.30
-     bpop[5]   1.12e+03   3.70e+03    5.43                 6.98
-     bpop[6]   8.07e-01   3.82e-03    7.66                 9.64
-     bpop[7]   9.93e-02   6.95e-04   26.55                37.75
-      D[1,1]   9.00e-02   8.88e-04   33.10                38.96
-      D[2,2]   9.00e-02   2.56e-03   56.23                58.53
-      D[3,3]   6.25e-02   2.07e-04   23.03                25.83
-      D[4,4]   9.00e-02   3.94e-04   22.06                22.04
+Expected parameter 
+relative standard error (%RSE):
+   Parameter     Values   RSE_0     RSE
+     bpop[1]   7.28e+01    8.12    8.36
+     bpop[2]   2.50e-01    9.97   10.72
+     bpop[3]   3.75e+00    4.30    4.32
+     bpop[5]   1.12e+03    7.00    6.97
+     bpop[6]   8.07e-01    9.70    5.35
+     bpop[7]   9.93e-02   38.12   29.30
+      D[1,1]   9.00e-02   38.96   39.39
+      D[2,2]   9.00e-02   58.53   64.70
+      D[3,3]   6.25e-02   25.83   25.88
+      D[4,4]   9.00e-02   22.04   22.03
 
-Total running time: 6.913 seconds
+Total running time: 5.138 seconds

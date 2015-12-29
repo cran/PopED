@@ -25,7 +25,7 @@
 #'  \code{\link{ff.PKPD.1.comp.oral.md.CL.imax}}, 
 #'  \code{\link{ff.PKPD.1.comp.sd.CL.emax}}.
 #' 
-#' Defne a residual unexplaind variability model (residual error model): 
+#' Defne a residual unexplained variability model (residual error model): 
 #' \code{\link{feps.add.prop}},
 #' \code{\link{feps.add}}, 
 #' \code{\link{feps.prop}}.
@@ -45,6 +45,7 @@
 #' \code{\link{get_rse}}.
 #' 
 #' Optimize the design (evaluate afterwards using the above functions): 
+#' \code{\link{poped_optim}}, 
 #' \code{\link{poped_optimize}}, 
 #'  \code{\link{RS_opt}}, 
 #'  \code{\link{a_line_search}}. 
@@ -65,13 +66,26 @@
 #' \item \url{https://github.com/andrewhooker/PopED.git}
 #' }
 #' 
-#' @import ggplot2
-#' @importFrom MASS write.matrix
-#' @importFrom mvtnorm rmvnorm
 #' @docType package
-#' @name PopED-package
-#' @aliases PopED poped
+#' @name PopED
+#' @aliases poped PopED-package
 #' 
 #' @example tests/testthat/examples_fcn_doc/examples_poped-package.R
 #' 
+#' @importFrom stats dlnorm
+#' @importFrom stats dnorm
+#' @importFrom stats end
+#' @importFrom stats optim
+#' @importFrom stats qnorm
+#' @importFrom stats quantile
+#' @importFrom stats rnorm
+#' @importFrom stats runif
+#' @importFrom utils capture.output
+#' @importFrom utils find
+#' @importFrom utils packageVersion
+#' @importFrom utils stack
+# @importFrom MASS write.matrix
+# @importFrom mvtnorm rmvnorm
+# @import ggplot2
+
 NULL

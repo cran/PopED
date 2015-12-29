@@ -28,7 +28,7 @@
 #' @param x_space Cell array \code{\link{cell}} defining the discrete variables for each x value.
 #' @param maxa Vector defining the maximum value for each covariate. IF a single value is supplied then
 #'  all a values are given the same maximum value
-#'  @param mina Vector defining the minimum value for each covariate. IF a single value is supplied then
+#' @param mina Vector defining the minimum value for each covariate. IF a single value is supplied then
 #'  all a values are given the same minimum value
 #' @param use_grouped_xt Group sampling times between groups so that each group has the same values (\code{TRUE} or \code{FALSE}).
 #' @param grouped_xt Matrix defining the grouping of sample points. Matching integers mean that the points are matched.  
@@ -46,6 +46,9 @@
 #' 
 #' @example tests/testthat/examples_fcn_doc/examples_create_design_space.R
 #' 
+#' @export
+#' 
+# @importFrom dplyr rbind_all
 
 create_design_space <- function(
   design,
@@ -375,7 +378,7 @@ create_design_space <- function(
     
     
     ## for x ----------
-    if(is.null(x_space) && exists("x")){
+    if(is.null(x_space) && exists("x",inherits = F)){
       x_space <- cell(size(x))
       for(i in 1:size(x,1)){
         for(j in 1:size(x,2)){
@@ -475,7 +478,7 @@ create_design_space <- function(
     }  
     
     # grouped_a ------------------------
-    if(exists("a")){
+    if(exists("a",inherits = F)){
       if(is.null(grouped_a)){
         grouped_a <- a*NA
         val <- 1
@@ -529,7 +532,7 @@ create_design_space <- function(
     }
     
     # grouped_x ------------------------
-    if(exists("x")){
+    if(exists("x",inherits = F)){
       if(is.null(grouped_x)){
         grouped_x <- x*NA
         val <- 1

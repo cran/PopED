@@ -69,9 +69,9 @@
 #' @param minxt Matrix or single value defining the minimum value for each xt sample.  If a single value is 
 #' supplied then all xt values are given the same minimum value
 #' @param discrete_x Cell array defining the discrete variables for each x value.
-#' @param maxa Vector defining the max value for each covariate. IF a single value is supplied then
+#' @param maxa Vector defining the max value for each covariate. If a single value is supplied then
 #'  all a values are given the same max value
-#'  @param mina Vector defining the min value for each covariate. IF a single value is supplied then
+#' @param mina Vector defining the min value for each covariate. If a single value is supplied then
 #'  all a values are given the same max value
 #' @param bUseGrouped_xt Use grouped time points (1=TRUE, 0=FALSE).
 #' @param G_xt Matrix defining the grouping of sample points. Matching integers mean that the points are matched.
@@ -141,14 +141,16 @@
 #' \item column 2  defines the mean.
 #' \item column 3 defines the variance of the distribution (or length of uniform distribution).
 #' }
-#' Can also just supply the parameter values as a vector \code{c()}
-#' @param d Matrix defining the diagnonals of the IIV (same logic as for the fixed efects). 
-#' can also just supply the parameter values as a \code{c()}. 
-#' @param covd Matrix defining the covariances of the IIV variances. Set to zero if not defined.
+#' Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
+#' parameter value is to be used.
+#' @param d Matrix defining the diagnonals of the IIV (same logic as for the fixed efects 
+#' matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}. 
+#' @param covd Column major vector defining the covariances of the IIV variances. 
+#' That is, from your full IIV matrix  \code{covd <-  IIV[lower.tri(IIV)]}. 
 #' @param sigma Matrix defining the variances can covariances of the residual variability terms of the model.
 #' can also just supply the diagnonal parameter values (variances) as a \code{c()}. 
-#' @param docc Matrix defining the IOV, the IOV variances and the IOV distribution 
-#' @param covdocc Matrix defining the covariance of the IOV. 
+#' @param docc Matrix defining the IOV, the IOV variances and the IOV distribution as for d and bpop. 
+#' @param covdocc Column major vector defining the covariance of the IOV, as in covd. 
 
 #' @param notfixed_bpop  \itemize{
 #' \item \bold{******START OF Model parameters fixed or not  SPECIFICATION OPTIONS**********}}
@@ -265,6 +267,9 @@
 #' 
 #' @example tests/testthat/examples_fcn_doc/examples_create.poped.database.R
 #' 
+#' @export
+# @importFrom mvtnorm rmvnorm
+
 
 create.poped.database <- 
   function(popedInput=list(),
@@ -394,7 +399,7 @@ create.poped.database <-
            ## -- D-family design (1) or ED-familty design (0) (with or without parameter uncertainty) --
            d_switch=poped.choose(popedInput$d_switch,1),
            ## -- OFV calculation type for FIM (1=Determinant of FIM,4=log determinant of FIM,6=determinant of interesting part of FIM (Ds)) --
-           ofv_calc_type=poped.choose(popedInput$ofv_calc_type,1),
+           ofv_calc_type=poped.choose(popedInput$ofv_calc_type,4),
            ## -- Ds_index, set index to 1 if a parameter is uninteresting, otherwise 0.
            ## size=(1,num unfixed parameters). First unfixed bpop, then unfixed d, then unfixed docc and last unfixed sigma --
            ## default is the fixed effects being important
@@ -1071,10 +1076,10 @@ create.poped.database <-
       poped.db$parameters$bocc_global = cell(poped.db$settings$iFOCENumInd,1)
       
       if((poped.db$settings$d_switch)){
-        poped.db$parameters$b_global = t(rmvnorm(max(poped.db$settings$iFOCENumInd,iMaxCorrIndNeeded),sigma=fulld))
+        poped.db$parameters$b_global = t(mvtnorm::rmvnorm(max(poped.db$settings$iFOCENumInd,iMaxCorrIndNeeded),sigma=fulld))
         for(i in 1:poped.db$settings$iFOCENumInd){
           poped.db$parameters$bocc_global[[i]]=zeros(size(docc,1),poped.db$parameters$NumOcc)
-          if(poped.db$parameters$NumOcc!=0) poped.db$parameters$bocc_global[[i]]=t(rmvnorm(poped.db$parameters$NumOcc,sigma=fulldocc))
+          if(poped.db$parameters$NumOcc!=0) poped.db$parameters$bocc_global[[i]]=t(mvtnorm::rmvnorm(poped.db$parameters$NumOcc,sigma=fulldocc))
         }
       } else {
         d_dist=pargen(d,poped.db$model$user_distribution_pointer,max(poped.db$settings$iFOCENumInd,iMaxCorrIndNeeded),poped.db$settings$bLHS,zeros(1,0),poped.db)
@@ -1082,13 +1087,13 @@ create.poped.database <-
         
         if((!isempty(d_dist))){
           for(i in 1:max(poped.db$settings$iFOCENumInd,iMaxCorrIndNeeded)){
-            poped.db$parameters$b_global[,i] = t(rmvnorm(1,sigma=getfulld(d_dist[i,],poped.db$parameters$covd)))
+            poped.db$parameters$b_global[,i] = t(mvtnorm::rmvnorm(1,sigma=getfulld(d_dist[i,],poped.db$parameters$covd)))
           }
         }
         
         if((!isempty(docc_dist))){
           for(i in 1:poped.db$settings$iFOCENumInd){
-            poped.db$parameters$bocc_global[[i]]=t(rmvnorm(poped.db$parameters$NumOcc,sigma=getfulld(docc_dist[i,],poped.db$parameters$covdocc)))
+            poped.db$parameters$bocc_global[[i]]=t(mvtnorm::rmvnorm(poped.db$parameters$NumOcc,sigma=getfulld(docc_dist[i,],poped.db$parameters$covdocc)))
           }
         }
       }
@@ -1245,7 +1250,8 @@ create.poped.database <-
 #' 
 #' 
 #' @example tests/testthat/examples_fcn_doc/examples_poped.choose.R
-
+#' @export
+#' @keywords internal
 poped.choose <- function(arg1,arg2){
   #ifelse(!is.null(arg1), arg1, arg2)
   if(!is.null(arg1)){
@@ -1257,29 +1263,3 @@ poped.choose <- function(arg1,arg2){
 
 
 
-find.largest.index <- function (func.str="sfg",lab="bpop",mat=F,mat.row=T) {
-  if(is.function(func.str)){
-    txt <- capture.output(func.str)
-  } else {
-    txt <- capture.output(eval(parse(text=func.str)))
-  }
-  txt <- grep(paste("^[^\\#]*",lab,"\\[",sep=""),txt,value=T)
-  ind <- 0
-  if(length(txt)!=0 && !mat)  ind <- gsub(paste("^[^\\#]*",lab,"\\[\\s*(\\d+)\\s*\\].*",sep=""),"\\1",txt)
-  if(length(txt)!=0 && mat && mat.row)  ind <- gsub(paste("^[^\\#]*",lab,"\\[\\s*(\\d+)\\s*,.*?\\].*",sep=""),"\\1",txt)
-  if(length(txt)!=0 && mat && !mat.row)  ind <- gsub(paste("^[^\\#]*",lab,"\\[.*?,\\s*(\\d+)\\s*\\].*",sep=""),"\\1",txt)
-  
-  max(as.numeric(ind))
-}
-# 
-#  find.largest.index("sfg","bpop")
-#  find.largest.index("sfg","b")
-#find.largest.index("sfg","bocc",mat=T,mat.row=T)
-#  find.largest.index("sfg","x")
-#  find.largest.index("sfg","a")
-# 
-# txt <- capture.output(eval(parse(text="sfg")))
-# txt <- grep(paste("^[^\\#]*bpop","\\[",sep=""),txt,value=T)
-# txt
-# ind <- gsub(paste("^[^\\#]*","bpop","\\[","(\\d+)\\].*",sep=""),"\\1",txt)
-# max(as.numeric(ind))

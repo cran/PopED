@@ -26,7 +26,7 @@
 #' 
 #' @example tests/testthat/examples_fcn_doc/warfarin_optimize.R
 #' @example tests/testthat/examples_fcn_doc/examples_ofv_fim.R
-
+#' @export
 ## Function translated using 'matlab.to.r()'
 ## Then manually adjusted to make work
 ## Author: Andrew Hooker
@@ -69,7 +69,9 @@ ofv_fim <- function(fmf,poped.db,
   
   if((ofv_calc_type==4) ){#log determinant of FIM
     #ofv_value = sum(log(svd(fmf)))
-    ofv_value = log(det(fmf))
+    det_fim <- det(fmf)
+    if(det_fim<0) det_fim <- 0
+    ofv_value = log(det_fim)
   }
   
   if((ofv_calc_type==5) ){# C-optimal design
