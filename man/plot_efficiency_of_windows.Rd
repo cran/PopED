@@ -6,25 +6,50 @@
 \usage{
 plot_efficiency_of_windows(poped.db, xt_windows = NULL,
   xt_plus = xt_windows, xt_minus = xt_windows, iNumSimulations = 100,
-  y_eff = T, y_rse = T, ...)
+  y_eff = TRUE, y_rse = TRUE,
+  ofv_calc_type = poped.db$settings$ofv_calc_type, mean_line = TRUE,
+  mean_color = "red", deviate_by_id = FALSE, ...)
 }
 \arguments{
 \item{poped.db}{A poped database}
 
-\item{xt_windows}{The distance on one direction from the optimal sample times.  Can be a number or a matrix of the same size as 
-the xt matrix found in \code{poped.db$design$xt}.}
+\item{xt_windows}{The distance on one direction from the optimal sample 
+times.  Can be a number or a matrix of the same size as the xt matrix found
+in \code{poped.db$design$xt}.}
 
-\item{xt_plus}{The upper distance from the optimal sample times (xt + xt_plus). Can be a number or a matrix of the same size as 
-the xt matrix found in \code{poped.db$design$xt}.}
+\item{xt_plus}{The upper distance from the optimal sample times (xt + 
+xt_plus). Can be a number or a matrix of the same size as the xt matrix 
+found in \code{poped.db$design$xt}.}
 
-\item{xt_minus}{The lower distance from the optimal sample times (xt - xt_minus). Can be a number or a matrix of the same size as 
-the xt matrix found in \code{poped.db$design$xt}.}
+\item{xt_minus}{The lower distance from the optimal sample times (xt - 
+xt_minus). Can be a number or a matrix of the same size as the xt matrix 
+found in \code{poped.db$design$xt}.}
 
-\item{iNumSimulations}{The number of design simulations to make within the specified windows.}
+\item{iNumSimulations}{The number of design simulations to make within the 
+specified windows.}
 
 \item{y_eff}{Should one of the plots created have efficiency on the y-axis?}
 
-\item{y_rse}{Should created plots include the relative standard error of each parameter as a value on the y-axis?}
+\item{y_rse}{Should created plots include the relative standard error of each
+parameter as a value on the y-axis?}
+
+\item{ofv_calc_type}{OFV calculation type for FIM 
+\itemize{ 
+\item 1 = "D-optimality". Determinant of the FIM: det(FIM)
+\item 2 = "A-optimality".  Inverse of the sum of the expected parameter variances: 
+1/trace_matrix(inv(FIM)) 
+\item 4 = "lnD-optimality".  Natural logarithm of the determinant of the FIM: log(det(FIM)) 
+\item 6 = "Ds-optimality". Ratio of the Determinant of the FIM and the Determinant of the uninteresting
+rows and columns of the FIM: det(FIM)/det(FIM_u)
+\item 7 = Inverse of the sum of the expected parameter RSE: 1/sum(get_rse(FIM,poped.db,use_percent=FALSE))
+}}
+
+\item{mean_line}{Should a mean value line be created?}
+
+\item{mean_color}{The color of the mean value line.}
+
+\item{deviate_by_id}{Should the computations look at deviations per
+individual instead of per group?}
 
 \item{...}{Extra arguments passed to \code{evaluate.fim}}
 }
@@ -32,9 +57,13 @@ the xt matrix found in \code{poped.db$design$xt}.}
 A \link[ggplot2]{ggplot} object.
 }
 \description{
-Function plots the efficiency of windows around the optimal design points.  The maximal and minimal allowed values for all
-design variables as defined in 
-poped.db are respected (e.g. poped.db$design_space$minxt and poped.db$design_space$maxxt).
+Function plots the efficiency of windows around the optimal design points. 
+The function samples from a uniform distribution around the optimal design 
+points for each group (or each individual with \code{deviate_by_id=TRUE}, 
+with slower calculation times) and compares the results with the optimal 
+design. The maximal and minimal allowed values for all design variables as 
+defined in poped.db are respected (e.g. poped.db$design_space$minxt and 
+poped.db$design_space$maxxt).
 }
 \examples{
 library(PopED)
@@ -109,7 +138,8 @@ plot_efficiency_of_windows(poped.db,
 }
 \seealso{
 Other evaluate_design: \code{\link{evaluate.fim}},
-  \code{\link{get_rse}}, \code{\link{model_prediction}},
+  \code{\link{evaluate_design}}, \code{\link{get_rse}},
+  \code{\link{model_prediction}},
   \code{\link{plot_model_prediction}}
 
 Other Graphics: \code{\link{plot_model_prediction}}

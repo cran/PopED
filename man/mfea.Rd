@@ -111,10 +111,10 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
                                   sigma=c(0.01,0.25),
                                   groupsize=32,
                                   xt=c( 0.5,1,2,6,24,36,72,120),
-                                  minxt=0,
+                                  minxt=0.01,
                                   maxxt=120,
                                   a=70,
-                                  mina=0,
+                                  mina=0.01,
                                   maxa=100)
 
 ############# END ###################
@@ -122,20 +122,27 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
 ## (warfarin model for optimization)
 #####################################
 
+##############
+# typically one will use poped_optimize 
+# This then calls mfea 
+##############
+
+# optimization of covariate, with coarse grid
+out_1 <- poped_optimize(poped.db,opt_a=1,
+                              bUseExchangeAlgorithm=1,
+                              EAStepSize=25)
+
 
 \dontrun{
   
-  ##############
-  # typically one will use poped_optimize 
-  # This then calls mfea 
-  ##############
+  
   
   # MFEA optimization with only integer times allowed
-  mfea.output <- poped_optimize(poped.db,opt_xt=1,
+  out_2 <- poped_optimize(poped.db,opt_xt=1,
                                 bUseExchangeAlgorithm=1,
                                 EAStepSize=1)
-  get_rse(mfea.output$fmf,mfea.output$poped.db)
-  plot_model_prediction(mfea.output$poped.db)
+  get_rse(out_2$fmf,out_2$poped.db)
+  plot_model_prediction(out_2$poped.db)
   
   
   ##############

@@ -1,31 +1,45 @@
-#' Plot the efficiency of windows 
+#' Plot the efficiency of windows
 #' 
-#' Function plots the efficiency of windows around the optimal design points.  The maximal and minimal allowed values for all
-#' design variables as defined in 
-#' poped.db are respected (e.g. poped.db$design_space$minxt and poped.db$design_space$maxxt).
+#' Function plots the efficiency of windows around the optimal design points. 
+#' The function samples from a uniform distribution around the optimal design 
+#' points for each group (or each individual with \code{deviate_by_id=TRUE}, 
+#' with slower calculation times) and compares the results with the optimal 
+#' design. The maximal and minimal allowed values for all design variables as 
+#' defined in poped.db are respected (e.g. poped.db$design_space$minxt and 
+#' poped.db$design_space$maxxt).
 #' 
 #' @param poped.db A poped database
-#' @param iNumSimulations The number of design simulations to make within the specified windows.
+#' @param iNumSimulations The number of design simulations to make within the 
+#'   specified windows.
 #' @inheritParams Doptim
 #' @inheritParams create.poped.database
 #' @param ... Extra arguments passed to \code{evaluate.fim}
-#' @param xt_windows The distance on one direction from the optimal sample times.  Can be a number or a matrix of the same size as 
-#' the xt matrix found in \code{poped.db$design$xt}. 
-#' @param xt_plus The upper distance from the optimal sample times (xt + xt_plus). Can be a number or a matrix of the same size as 
-#' the xt matrix found in \code{poped.db$design$xt}.
-#' @param xt_minus The lower distance from the optimal sample times (xt - xt_minus). Can be a number or a matrix of the same size as 
-#' the xt matrix found in \code{poped.db$design$xt}.
+#' @param xt_windows The distance on one direction from the optimal sample 
+#'   times.  Can be a number or a matrix of the same size as the xt matrix found
+#'   in \code{poped.db$design$xt}.
+#' @param xt_plus The upper distance from the optimal sample times (xt + 
+#'   xt_plus). Can be a number or a matrix of the same size as the xt matrix 
+#'   found in \code{poped.db$design$xt}.
+#' @param xt_minus The lower distance from the optimal sample times (xt - 
+#'   xt_minus). Can be a number or a matrix of the same size as the xt matrix 
+#'   found in \code{poped.db$design$xt}.
 #' @param y_eff Should one of the plots created have efficiency on the y-axis?
-#' @param y_rse Should created plots include the relative standard error of each parameter as a value on the y-axis?   
-#' 
+#' @param y_rse Should created plots include the relative standard error of each
+#'   parameter as a value on the y-axis?
+#' @param mean_line Should a mean value line be created?
+#' @param mean_color The color of the mean value line.
+#' @param deviate_by_id Should the computations look at deviations per
+#'   individual instead of per group?
+#'   
 #' @return A \link[ggplot2]{ggplot} object.
-#' 
+#'   
 #' @family evaluate_design
 #' @family Simulation
 #' @family Graphics
-#' 
+#'   
 #' @example tests/testthat/examples_fcn_doc/warfarin_basic.R
-#' @example tests/testthat/examples_fcn_doc/examples_plot_efficiency_of_windows.R
+#' @example 
+#' tests/testthat/examples_fcn_doc/examples_plot_efficiency_of_windows.R
 #' @export
 #' @import ggplot2
 
@@ -35,10 +49,14 @@ plot_efficiency_of_windows <- function(poped.db,
                                        xt_plus=xt_windows,
                                        xt_minus=xt_windows,
                                        iNumSimulations=100,
-                                       y_eff = T,
-                                       y_rse = T,
+                                       y_eff = TRUE,
+                                       y_rse = TRUE,
+                                       ofv_calc_type = poped.db$settings$ofv_calc_type,
+                                       mean_line=TRUE,
+                                       mean_color="red",
                                        #a_windows=NULL,x_windows=NULL,
                                        #d_switch=poped.db$settings$d_switch,
+                                       deviate_by_id=FALSE,
                                        ...){
   
   
@@ -59,7 +77,12 @@ plot_efficiency_of_windows <- function(poped.db,
   #NumRows = size(xt_windows,1)*size(xt_windows,2)/2+size(a_windows,1)*size(a_windows,2)/2+size(x_windows,1)*size(x_windows,2)/2+p+1
   
   
-  if(y_eff) eff = zeros(1,iNumSimulations)
+  if(y_eff){
+    eff = zeros(1,iNumSimulations)
+    # if(ofv_calc_type==4) {
+    #   d_eff = zeros(1,iNumSimulations)
+    # }
+  }
   if(y_rse) rse <- zeros(iNumSimulations,p)
   
   fulld = getfulld(design$d[,2],design$covd)
@@ -76,19 +99,75 @@ plot_efficiency_of_windows <- function(poped.db,
   
   for(i in 1:iNumSimulations){
     if(!is.null(xt_windows) || !is.null(xt_minus) || !is.null(xt_plus)){
-      xt_new <- rand(size(xt_val,1),size(xt_val,2))*abs(xt_val_max - xt_val_min)+xt_val_min
-      if((poped.db$design_space$bUseGrouped_xt)){
-        for(j in 1:size(xt_val,1) ){
-          for(k in min(poped.db$design_space$G_xt[j,]):max(poped.db$design_space$G_xt[j,])){
-            tmp.lst <- xt_new[j,poped.db$design_space$G_xt[j,]==k]
-            if(length(tmp.lst)!=1){
-              tmp <- sample(tmp.lst,1)
-              xt_new[j,poped.db$design_space$G_xt[j,]==k]=tmp
+      if(deviate_by_id){
+        for(grp in 1:size(xt_val)[1]){
+          
+          groupsize <- design$groupsize[grp]
+          MS  = design$model_switch
+          
+          xt_tmp <- matrix(xt_val[grp,],nrow = groupsize,ncol = length(xt_val[grp,]),byrow = T)
+          a_tmp <- matrix(a_val[grp,],nrow = groupsize,ncol = length(a_val[grp,]),byrow = T)
+          x_tmp <- matrix(x_val[grp,],nrow = groupsize,ncol = length(x_val[grp,]),byrow = T)
+          MS_tmp <- matrix(MS[grp,],nrow = groupsize,ncol = length(MS[grp,]),byrow = T)
+          
+          xt_val_max_tmp <- matrix(xt_val_max[grp,],nrow = groupsize,ncol = length(xt_val_max[grp,]),byrow = T)
+          xt_val_min_tmp <- matrix(xt_val_min[grp,],nrow = groupsize,ncol = length(xt_val_min[grp,]),byrow = T)
+          
+          xt_tmp <- rand(size(xt_tmp,1),size(xt_tmp,2))*abs(xt_val_max_tmp - xt_val_min_tmp)+xt_val_min_tmp
+          
+          grouped_xt <- design_space$G_xt[grp,]
+          if(anyDuplicated(grouped_xt)){
+            for(k in unique(grouped_xt)){
+              tmp.lst <- xt_tmp[,grouped_xt==k]
+              if(size(tmp.lst)[2]!=1){
+                tmp <- sample(1:size(tmp.lst)[2],1)
+                xt_tmp[,grouped_xt==k]=tmp.lst[,tmp]
+              }
             }
           }
+
+          
+          if(grp==1){
+            xt_new <- xt_tmp
+            x_new <- x_tmp
+            a_new <- a_tmp
+            MS_new <- MS_tmp
+          }  else {
+            xt_new <- rbind(xt_new,xt_tmp)
+            x_new <- rbind(x_new,x_tmp)
+            a_new <- rbind(a_new,a_tmp)
+            MS_new <- rbind(MS_new,MS_tmp)
+          }
+          
         }
-      }      
-      xt_val=xt_new
+        
+        design_new <- create_design(xt=xt_new,
+                                    groupsize=1,
+                                    x=x_new,
+                                    a=a_new,
+                                    model_switch=MS_new)
+        poped.db_new <- poped.db
+        poped.db_new$design <- design_new
+        fmf <- evaluate.fim(poped.db_new,...)
+      } else {
+        xt_new <- rand(size(xt_val,1),size(xt_val,2))*abs(xt_val_max - xt_val_min)+xt_val_min
+        grouped_xt <- design_space$G_xt
+        if(anyDuplicated(grouped_xt)){
+        #if((poped.db$design_space$bUseGrouped_xt)){
+          for(j in 1:size(xt_val,1) ){
+            for(k in unique(grouped_xt[j,])){
+            #for(k in min(poped.db$design_space$G_xt[j,]):max(poped.db$design_space$G_xt[j,])){
+              tmp.lst <- xt_new[j,design_space$G_xt[j,]==k]
+              if(length(tmp.lst)!=1){
+                tmp <- sample(tmp.lst,1)
+                xt_new[j,design_space$G_xt[j,]==k]=tmp
+              }
+            }
+          }
+        } 
+        xt_val=xt_new
+        fmf <- evaluate.fim(poped.db,xt=xt_val,...)
+      }
     }
     #     for(j in 1:size(xt_val,1) ){#Get simulated xt
     #       for(k in 1:size(xt_val,2)){
@@ -118,11 +197,23 @@ plot_efficiency_of_windows <- function(poped.db,
     #     
     #     if((!bParallel)){
     #if((poped.db$settings$d_switch)){
-    fmf <- evaluate.fim(poped.db,xt=xt_val,...)
     #       returnArgs <-  mftot(model_switch,poped.db$design$groupsize,ni,xt_val,x_val,a_val,bpop[,2],fulld,design$sigma,fulldocc,poped.db) 
     #       fmf <- returnArgs[[1]]
     #       poped.db <- returnArgs[[2]]
-    if(y_eff) eff[1,i] = ofv_criterion(ofv_fim(fmf,poped.db),p,poped.db)/ofv_criterion(ofv_fim(ref_fmf,poped.db),p,poped.db)
+    if(y_eff){
+      tmp1 <- ofv_criterion(ofv_fim(fmf,poped.db,ofv_calc_type=ofv_calc_type),
+                            p,poped.db,ofv_calc_type=ofv_calc_type)
+      tmp2 <- ofv_criterion(ofv_fim(ref_fmf,poped.db,ofv_calc_type=ofv_calc_type),
+                            p,poped.db,ofv_calc_type=ofv_calc_type) 
+      eff[1,i] = tmp1/tmp2  
+      # if(ofv_calc_type==4) {
+      #   tmp1 <- ofv_criterion(ofv_fim(fmf,poped.db,ofv_calc_type=1),
+      #                         p,poped.db,ofv_calc_type=1)
+      #   tmp2 <- ofv_criterion(ofv_fim(ref_fmf,poped.db,ofv_calc_type=1),
+      #                         p,poped.db,ofv_calc_type=1) 
+      #   d_eff[1,i] = tmp1/tmp2  
+      # }
+    }
     if(y_rse){
       rse_tmp <- get_rse(fmf,poped.db)
       rse[i,] = rse_tmp
@@ -231,9 +322,19 @@ plot_efficiency_of_windows <- function(poped.db,
   }
   values <- NULL
   ind <- NULL
-  if(y_eff) efficiency <- eff[1,]*100
+  if(y_eff){
+    efficiency <- eff[1,]*100
+    # if(ofv_calc_type==4) {
+    #   d_efficiency <-  d_eff[1,]*100
+    # }
+  }
   df <- data.frame(sample=c(1:iNumSimulations))
-  if(y_eff) df$Efficiency <- efficiency
+  if(y_eff){
+    df$Efficiency <- efficiency
+    # if(ofv_calc_type==4) {
+    #   df["D-Efficiency"] <- d_efficiency
+    # }
+  }
   if(y_rse){
     rse_df <- data.frame(rse)
     names(rse_df) <- colnames(rse)
@@ -244,11 +345,25 @@ plot_efficiency_of_windows <- function(poped.db,
   names(df_stack) <- c("sample","values","ind")
   if(y_eff){
     levs <- levels(df_stack$ind)
-    df_stack$ind <- factor(df_stack$ind,levels=c("Efficiency",levs[-c(grep("Efficiency",levs))]))
+    # if(ofv_calc_type==4) {
+    #   df_stack$ind <- factor(df_stack$ind,levels=c("D-Efficiency","Efficiency",levs[-c(grep("Efficiency",levs))]))        
+    # } else {
+    df_stack$ind <- factor(df_stack$ind,levels=c("Efficiency",levs[-c(grep("Efficiency",levs))]))      
+    # }
     #levels(df_stack$ind) <- c("Efficiency",levs[-c(grep("Efficiency",levs))])
   }
+  
+  
+  
   p <- ggplot(data=df_stack,aes(x=sample,y=values, group=ind))
   p <- p+geom_line()+geom_point() + facet_wrap(~ind,scales="free")
+  
+  # Compute sample mean and standard deviation in each group
+  if(mean_line){
+    ds <- dplyr::summarise_(dplyr::group_by(df_stack, ind), mean=~mean(values), sd=~sd(values)) 
+    p <- p + geom_hline(data = ds, aes(yintercept = mean),colour = mean_color)
+  }
+  
   #p
   
   #p <- ggplot(data=df,aes(x=sample,y=efficiency)) #+ labs(colour = NULL)
@@ -257,5 +372,6 @@ plot_efficiency_of_windows <- function(poped.db,
   #p+geom_histogram()
   #p <- p+geom_line()+geom_point()+ylab("Normalized Efficiency (%)")
   p <- p+ylab("Value in %")+xlab("Simulation number of design sampled from defined windows")
+  #p <- p + stat_summary(fun.y = "mean", geom="hline")
   return(p)
 }

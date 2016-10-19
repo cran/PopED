@@ -124,7 +124,8 @@ model_prediction <- function(poped.db=NULL,
       }
     }
     
-    used_times <- 0*xt
+  
+    used_times <- zeros(size(xt))
     for(i in 1:size(xt,1)) used_times[i,1:ni[i]] <- 1
     
     if(all(groups_to_use=="all")){
@@ -167,13 +168,13 @@ model_prediction <- function(poped.db=NULL,
         if(length(models_to_use)>1 && length(model_num_points)==1) model_num_points <- rep(model_num_points,length(models_to_use))
         for(j in models_to_use){
           if(is.null(model_minxt)){
-            minv <- min(as.vector(minxt[model_switch==j])) 
+            minv <- min(as.vector(minxt[model_switch==j]),na.rm = TRUE) 
           } else {                    
             if(length(models_to_use)>1 && length(model_minxt)==1) model_minxt <- rep(model_minxt,length(models_to_use))
             minv = model_minxt[j]
           }
           if(is.null(model_maxxt)){
-            maxv <- max(as.vector(maxxt[model_switch==j])) 
+            maxv <- max(as.vector(maxxt[model_switch==j]),na.rm = TRUE) 
           } else {
             if(length(models_to_use)>1 && length(model_maxxt)==1) model_maxxt <- rep(model_maxxt,length(models_to_use))
             maxv = model_maxxt[j]
@@ -243,7 +244,11 @@ model_prediction <- function(poped.db=NULL,
         if(predictions){
           fulld = getfulld(parameters$d[,2],parameters$covd)
           fulldocc = getfulld(parameters$docc[,2,drop=F],parameters$covdocc)
-          b_sim_matrix = mvtnorm::rmvnorm(num_ids,sigma=fulld)
+          if(any(size(fulld)==0)){
+            b_sim_matrix = zeros(num_ids,0)
+          } else {
+            b_sim_matrix = mvtnorm::rmvnorm(num_ids,sigma=fulld)            
+          }
           bocc_sim_matrix = zeros(num_ids*NumOcc,length(parameters$docc[,2,drop=F]))
           if(nrow(fulldocc)!=0) bocc_sim_matrix = mvtnorm::rmvnorm(num_ids*NumOcc,sigma=fulldocc)
         }
@@ -287,7 +292,11 @@ model_prediction <- function(poped.db=NULL,
               if(length(unique(tmp.df[nam]))==1) dose.df[nam] <- tmp.df[1,nam]  
             }
             dose.df$dose_record_tmp <- 1
-            tmp.df <- dplyr::rbind_list(dose.df,tmp.df)
+            if(packageVersion("dplyr") >= "0.5.0"){
+              tmp.df <- dplyr::bind_rows(dose.df,tmp.df)
+            } else {
+              tmp.df <- dplyr::rbind_list(dose.df,tmp.df)
+            }
             tmp.df <- tmp.df[order(tmp.df$Time,tmp.df$dose_record_tmp),]
             tmp.df$dose_record_tmp <- NULL
           }

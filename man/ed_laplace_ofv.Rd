@@ -43,7 +43,7 @@ can also just supply the diagnonal parameter values (variances) as a \code{c()}.
 
 \item{poped.db}{A PopED database.}
 
-\item{method}{If 0 then use an optimization routine translated from poped code written in MATLAB to
+\item{method}{If 0 then use an optimization routine translated from PopED code written in MATLAB to
 optimize the parameters in the Laplace approximation.  If 1 then use \code{\link{optim}} to compute both
 k and the hessian of k (see Dodds et al, JPP, 2005 for more information). If 2 then use \code{\link{fdHess}}
 to compute the hessian.}
@@ -131,25 +131,25 @@ output$E_ofv
 \dontrun{
   
   
-  ## expected value (roughly)
+  ## ED value using MC integration (roughly)
   tic()
-  e_ofv_mc_n <- evaluate.e.ofv.fim(poped.db.n,ED_samp_size=500)
+  e_ofv_mc_n <- evaluate.e.ofv.fim(poped.db.n,ED_samp_size=500,ofv_calc_type = 1)
   toc()
   e_ofv_mc_n$E_ofv
   
   
   ## Using ed_laplce_ofv directly
-  ed_laplace_ofv(model_switch=poped.db.n$global_model_switch,
-                 groupsize=poped.db.n$groupsize,
-                 ni=poped.db.n$gni,
-                 xtopto=poped.db.n$gxt,
-                 xopto=poped.db.n$gx,
-                 aopto=poped.db.n$ga,
-                 bpopdescr=poped.db.n$gbpop,
-                 ddescr=poped.db.n$gd,
-                 covd=poped.db.n$covd,
-                 sigma=poped.db.n$sigma,
-                 docc=poped.db.n$docc, 
+  ed_laplace_ofv(model_switch=poped.db.n$design$model_switch,
+                 groupsize=poped.db.n$design$groupsize,
+                 ni=poped.db.n$design$ni,
+                 xtopto=poped.db.n$design$xt,
+                 xopto=poped.db.n$design$x,
+                 aopto=poped.db.n$design$a,
+                 bpopdescr=poped.db.n$parameters$bpop,
+                 ddescr=poped.db.n$parameters$d,
+                 covd=poped.db.n$parameters$covd,
+                 sigma=poped.db.n$parameters$sigma,
+                 docc=poped.db.n$parameters$docc, 
                  poped.db.n)
   
   
@@ -191,22 +191,22 @@ output$E_ofv
   
   ## expected value (roughly)
   tic()
-  e_ofv_mc_ln <- evaluate.e.ofv.fim(poped.db.ln,ED_samp_size=500)[["E_ofv"]]
+  e_ofv_mc_ln <- evaluate.e.ofv.fim(poped.db.ln,ED_samp_size=500,ofv_calc_type = 1)[["E_ofv"]]
   toc()
   e_ofv_mc_ln
   
   ## Using ed_laplce_ofv directly
-  ed_laplace_ofv(model_switch=poped.db.ln$global_model_switch,
-                 groupsize=poped.db.ln$groupsize,
-                 ni=poped.db.ln$gni,
-                 xtopto=poped.db.ln$gxt,
-                 xopto=poped.db.ln$gx,
-                 aopto=poped.db.ln$ga,
-                 bpopdescr=poped.db.ln$gbpop,
-                 ddescr=poped.db.ln$gd,
-                 covd=poped.db.ln$covd,
-                 sigma=poped.db.ln$sigma,
-                 docc=poped.db.ln$docc, 
+  ed_laplace_ofv(model_switch=poped.db.ln$design$model_switch,
+                 groupsize=poped.db.ln$design$groupsize,
+                 ni=poped.db.ln$design$ni,
+                 xtopto=poped.db.ln$design$xt,
+                 xopto=poped.db.ln$design$x,
+                 aopto=poped.db.ln$design$a,
+                 bpopdescr=poped.db.ln$parameters$bpop,
+                 ddescr=poped.db.ln$parameters$d,
+                 covd=poped.db.ln$parameters$covd,
+                 sigma=poped.db.ln$parameters$sigma,
+                 docc=poped.db.ln$parameters$docc, 
                  poped.db.ln)
   
   
@@ -222,6 +222,7 @@ Other E-family: \code{\link{calc_ofv_and_fim}},
 Other FIM: \code{\link{LinMatrixH}},
   \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
   \code{\link{calc_ofv_and_fim}}, \code{\link{ed_mftot}},
+  \code{\link{efficiency}},
   \code{\link{evaluate.e.ofv.fim}},
   \code{\link{evaluate.fim}}, \code{\link{gradf_eps}},
   \code{\link{mf3}}, \code{\link{mf5}}, \code{\link{mf6}},

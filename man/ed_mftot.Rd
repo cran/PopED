@@ -5,7 +5,7 @@
 \title{Evaluate the expectation of the Fisher Information Matrix (FIM) and the expectation of the OFV(FIM).}
 \usage{
 ed_mftot(model_switch, groupsize, ni, xtoptn, xoptn, aoptn, bpopdescr, ddescr,
-  covd, sigma, docc, poped.db)
+  covd, sigma, docc, poped.db, calc_fim = TRUE)
 }
 \arguments{
 \item{model_switch}{A matrix that is the same size as xt, specifying which model each sample belongs to.}
@@ -39,6 +39,8 @@ can also just supply the diagnonal parameter values (variances) as a \code{c()}.
 \item{docc}{Matrix defining the IOV, the IOV variances and the IOV distribution as for d and bpop.}
 
 \item{poped.db}{A PopED database.}
+
+\item{calc_fim}{Should the FIM be calculated or should we just use the user defined ed_penalty_pointer.}
 }
 \value{
 A list containing the E(FIM) and E(OFV(FIM)) and the a poped.db.
@@ -134,7 +136,7 @@ Other E-family: \code{\link{calc_ofv_and_fim}},
 Other FIM: \code{\link{LinMatrixH}},
   \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
   \code{\link{calc_ofv_and_fim}},
-  \code{\link{ed_laplace_ofv}},
+  \code{\link{ed_laplace_ofv}}, \code{\link{efficiency}},
   \code{\link{evaluate.e.ofv.fim}},
   \code{\link{evaluate.fim}}, \code{\link{gradf_eps}},
   \code{\link{mf3}}, \code{\link{mf5}}, \code{\link{mf6}},

@@ -26,6 +26,12 @@
 #' @param minxt Matrix or single value defining the minimum value for each xt sample.  If a single value is 
 #' supplied then all xt values are given the same minimum value
 #' @param x_space Cell array \code{\link{cell}} defining the discrete variables for each x value.
+#' @param xt_space Cell array \code{\link{cell}} defining the discrete variables allowed for each xt value.
+#'   Can also be a list of values \code{list(1:10)} (same values allowed for all xt), or a list of lists 
+#'  \code{list(1:10, 2:23, 4:6)} (one for each value in xt).
+#' @param a_space Cell array \code{\link{cell}} defining the discrete variables allowed for each a value.
+#'   Can also be a list of values \code{list(1:10)} (same values allowed for all a), or a list of lists 
+#'  \code{list(1:10, 2:23, 4:6)} (one for each value in a).
 #' @param maxa Vector defining the maximum value for each covariate. IF a single value is supplied then
 #'  all a values are given the same maximum value
 #' @param mina Vector defining the minimum value for each covariate. IF a single value is supplied then
@@ -69,11 +75,13 @@ create_design_space <- function(
   ## -- Matrix defining the max value for each sample --
   maxxt=NULL,   
   ## -- Matrix defining the min value for each sample --
-  minxt=NULL,    
+  minxt=NULL,
+  xt_space=NULL,
   ## -- Vector defining the max value for each covariate --
   maxa=NULL,   
   ## -- Vector defining the min value for each covariate --
-  mina=NULL,   
+  mina=NULL, 
+  a_space=NULL,
   ## -- Cell defining the discrete variables --
   x_space = NULL,    
   use_grouped_xt=FALSE, # group sampling times between groups so that each group has same values  
@@ -108,10 +116,26 @@ create_design_space <- function(
   if(is.null(minni)) minni=design$ni
   if(is.null(maxgroupsize)) maxgroupsize=design$groupsize
   if(is.null(mingroupsize)) mingroupsize=design$groupsize
-  if(is.null(maxxt)) maxxt=design$xt
-  if(is.null(minxt)) minxt=design$xt
-  if(is.null(maxa)) maxa=design$a
-  if(is.null(mina)) mina=design$a
+  maxxt_imputed <- F
+  if(is.null(maxxt)){
+    maxxt=design$xt
+    maxxt_imputed <- T
+  } 
+  minxt_imputed <- F
+  if(is.null(minxt)){
+    minxt=design$xt
+    minxt_imputed <- T
+  } 
+  maxa_imputed <- F
+  if(is.null(maxa)){
+    maxa=design$a
+    maxa_imputed <- T
+  } 
+  mina_imputed <- F
+  if(is.null(mina)){
+    mina=design$a
+    mina_imputed <- T
+  } 
   
   design_space <- list()
   design_new <- design
@@ -340,7 +364,11 @@ create_design_space <- function(
     ## for a ---------
     if(!is.null(maxa)){
       if(is.list(maxa)){
-        maxa <- as.matrix(dplyr::rbind_all(lapply(maxa,function(x){data.frame(rbind(unlist(x)))})))
+        if(packageVersion("dplyr") >= "0.5.0"){
+          maxa <- as.matrix(dplyr::bind_rows(lapply(maxa,function(x){data.frame(rbind(unlist(x)))})))
+        } else {
+          maxa <- as.matrix(dplyr::rbind_all(lapply(maxa,function(x){data.frame(rbind(unlist(x)))})))
+        }
       }
       if(size(maxa,1)==1 && m!=1) maxa <- matrix(rep(maxa,m),ncol=length(maxa),nrow=m,byrow=T)
       if(!is.matrix(maxa)) maxa  <- rbind(maxa)
@@ -352,7 +380,11 @@ create_design_space <- function(
     
     if(!is.null(mina)){
       if(is.list(mina)){
-        mina <- as.matrix(dplyr::rbind_all(lapply(mina,function(x){data.frame(rbind(unlist(x)))})))
+        if(packageVersion("dplyr") >= "0.5.0"){
+          mina <- as.matrix(dplyr::bind_rows(lapply(mina,function(x){data.frame(rbind(unlist(x)))})))
+        } else {
+          mina <- as.matrix(dplyr::rbind_all(lapply(mina,function(x){data.frame(rbind(unlist(x)))})))
+        }
       }
       if(size(mina,1)==1 && m!=1) mina <- matrix(rep(mina,m),ncol=length(mina),nrow=m,byrow=T)
       if(!is.matrix(mina)) mina  <- rbind(mina)
@@ -400,6 +432,80 @@ create_design_space <- function(
       for(i in 1:size(x,1)){
         for(j in 1:size(x,2)){
           if(!(x[i,j] %in% x_space[[i,j]])) stop("x value for group ",i," (column ",j,") is not in the design space") 
+        }
+      }
+    }
+    
+    ## for xt_space
+    if(!is.null(xt_space)){
+      #       if(is.list(x_space)) x_space <- as.matrix(dplyr::rbind_all(lapply(x_space,function(x){data.frame(rbind(unlist(x)))})))
+      if(size(xt_space,1)==1 && m!=1) xt_space <- matrix(rep(xt_space,m),ncol=length(xt_space),nrow=m,byrow=T)
+      if(size(xt_space,2)==1 && size(xt,2)!=1) xt_space <- matrix(rep(xt_space,size(xt,2)),ncol=size(xt,2),nrow=m,byrow=F)
+      #       if(!is.matrix(x_space)) x_space  <- rbind(x_space)
+      if((test_mat_size(size(xt),xt_space,'xt_space')==1)){
+        rownames(xt_space) <- paste("grp_",1:m,sep="")
+        colnames(xt_space) <- colnames(xt)
+      }
+      
+      for(i in 1:size(xt,1)){
+        for(j in 1:size(xt,2)){
+          if(!(xt[i,j] %in% xt_space[[i,j]]) && !is.na(xt[i,j])) stop("xt value for group ",i," (column ",j,") is not in the design space") 
+        }
+      }
+    }
+    
+    ## for a_space
+    if(!is.null(a_space)){
+      if(is.null(dim(a_space)) && is.list(a_space)){
+        if(!is.list(unlist(a_space, recursive = F))){ # only one set of values
+          a_space <- matrix(rep(a_space,m),ncol=length(a_space),nrow=m,byrow=T)
+        } else {
+          tmp_lst <- lapply(a_space,function(x){matrix(x,ncol=length(x),nrow=1,byrow=T,dimnames = list(NULL,names(x)))})
+          mat <- NULL
+          for(jj in 1:length(tmp_lst)){
+            tmp <- tmp_lst[[jj]]
+            if(!is.null(colnames(tmp)) && !is.null(colnames(a))) tmp <- tmp[, colnames(a)]
+            mat <- rbind(mat,tmp)
+          }
+          a_space <- mat
+        }
+      }
+      #       if(is.list(x_space)) x_space <- dplyr::bind_rows(lapply(a_space,function(x){data.frame(rbind(unlist(x)))}))
+      # browser()
+      # a_space
+      # str(a_space)
+      # tmp <- list(a_space,a_space)
+      # str(tmp)
+      # 
+      # a_tmp =c(DOSE=100,TAU=24)
+      # dplyr::bind_rows(list(a_tmp))
+      # as.matrix(dplyr::bind_rows(lapply(a_tmp,function(x){data.frame(rbind(unlist(x,recursive = FALSE)))})))
+      # 
+      # if(is.list(a_space)){
+      #   #plyr::rbind.fill.matrix(t(a[[1]]),t(a[[2]]))
+      #   #a <- t(sapply(a,'[',seq(max(sapply(a,length)))))
+      #   #all_cov_names <- unique(unlist(sapply(a,names)))
+      #   
+      #   #a <- as.matrix(plyr::rbind.fill(lapply(a,function(x){data.frame(rbind(unlist(x)))})))
+      #   if(packageVersion("dplyr") >= "0.5.0"){
+      #     a <- 
+      #       as.matrix(dplyr::bind_rows(lapply(a_space,function(x){data.frame(rbind(unlist(x,recursive = FALSE)))})))
+      #   } else {
+      #     a <- as.matrix(dplyr::rbind_all(lapply(a,function(x){data.frame(rbind(unlist(x)))})))
+      #   }
+      # }
+      if(size(a_space,1)==1 && m!=1) a_space <- matrix(rep(a_space,m),ncol=length(a_space),nrow=m,byrow=T)
+      if(size(a_space,2)==1 && size(a,2)!=1) a_space <- matrix(rep(a_space,size(a,2)),ncol=size(a,2),nrow=m,byrow=F)
+      #       if(!is.matrix(x_space)) x_space  <- rbind(x_space)
+      if((test_mat_size(size(a),a_space,'a_space')==1)){
+        if(is.null(dim(a_space)) && all(size(a_space)==1)) a_space <- matrix(a_space)
+        rownames(a_space) <- paste("grp_",1:m,sep="")
+        colnames(a_space) <- colnames(a)
+      }
+      
+      for(i in 1:size(a,1)){
+        for(j in 1:size(a,2)){
+          if(!(a[i,j] %in% a_space[[i,j]]) && !is.na(a[i,j])) stop("a value for group ",i," (column ",j,") is not in the design space") 
         }
       }
     }
@@ -467,7 +573,15 @@ create_design_space <- function(
       }   
       if(length(unique(minxt[grouped_xt==i & !is.na(xt)]))!=1){
         stop(sprintf('xt values grouped with value %g from grouped_xt do not have the same minimum allowed values (minxt).\n',i)) 
-      }   
+      } 
+      grouped_cells_xt <- xt_space[grouped_xt==i & !is.na(xt)]
+      for(j in 1:length(grouped_cells_xt)){
+        for(k in j:length(grouped_cells_xt)){
+          if(any(size(grouped_cells_xt[[j]])!=size(grouped_cells_xt[[k]])) || any(grouped_cells_xt[[j]]!=grouped_cells_xt[[k]])){ 
+            stop(sprintf('xt values grouped with value %g from grouped_xt do not have the same allowed discrete values (xt_space).\n',i))
+          }
+        }
+      }
     }  
     
     for(i in 1:max(unique(grouped_xt[!is.na(xt)]))){
@@ -516,7 +630,15 @@ create_design_space <- function(
         }  
         if(length(unique(mina[grouped_a==i & !is.na(a)]))!=1){
           stop(sprintf('a values grouped with value %g from grouped_a do not have the same minimum allowed values (mina).\n',i)) 
-        }  
+        } 
+        grouped_cells_a <- a_space[grouped_a==i & !is.na(a)]
+        for(j in 1:length(grouped_cells_a)){
+          for(k in j:length(grouped_cells_a)){
+            if(any(size(grouped_cells_a[[j]])!=size(grouped_cells_a[[k]])) || any(grouped_cells_a[[j]]!=grouped_cells_a[[k]])){ 
+              stop(sprintf('a values grouped with value %g from grouped_a do not have the same allowed discrete values (a_space).\n',i))
+            }
+          }
+        }
       }  
       
       for(i in 1:max(unique(grouped_a[!is.na(a)]))){
@@ -608,10 +730,47 @@ create_design_space <- function(
     
     design_space$maxxt <- maxxt
     design_space$minxt <- minxt
+    design_space$xt_space <- xt_space
     
     design_space$grouped_xt <- grouped_xt
     design_space$use_grouped_xt <- use_grouped_xt
     
+    design_space$a_space <- a_space
+    
+    # update max and min of a and xt if imputed and discrete
+    if(maxa_imputed && !is.null(a_space)){
+      for(i in 1:nrow(a_space)){
+        for(j in 1:ncol(a_space) ){
+          maxa[i,j] <- max(a_space[i,j][[1]])
+        }
+      }
+    }
+    if(mina_imputed && !is.null(a_space)){
+      for(i in 1:nrow(a_space)){
+        for(j in 1:ncol(a_space) ){
+          mina[i,j] <- min(a_space[i,j][[1]])
+        }
+      }
+    }
+    design_space$maxa <- maxa
+    design_space$mina <- mina
+    
+    if(maxxt_imputed && !is.null(xt_space)){
+      for(i in 1:nrow(xt_space)){
+        for(j in 1:ncol(xt_space) ){
+          maxxt[i,j] <- max(xt_space[i,j][[1]])
+        }
+      }
+    }
+    if(minxt_imputed && !is.null(xt_space)){
+      for(i in 1:nrow(xt_space)){
+        for(j in 1:ncol(xt_space) ){
+          minxt[i,j] <- min(xt_space[i,j][[1]])
+        }
+      }
+    }
+    design_space$maxxt <- maxxt
+    design_space$minxt <- minxt
     
     return(list(design=design_new,design_space=design_space)) 
   }) # end with(design,{})

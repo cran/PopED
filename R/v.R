@@ -67,7 +67,12 @@ v <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,poped.db)
         lh <- returnArgs[[1]]
         poped.db <- returnArgs[[2]]
         interact=lh%*%kron_tmp(d,sigma)%*%t(lh)
-        ret = ret + diag_matlab(diag_matlab(interact))
+        if (sum(dim(interact))==2){
+          ret = ret + interact
+        } else {
+          ret = ret + diag_matlab(diag_matlab(interact))
+        }
+        
       }
       
       if((bUseAutoCorrelation) ){#Add autocorrelation
@@ -81,10 +86,16 @@ v <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,poped.db)
           ret = ret+ autocorr
         }
       } else { #Add linearized residual model
-        if((isempty(ret))){
-          ret = diag_matlab(diag_matlab(h%*%sigma%*%t(h)))
+        full_sig <- h%*%sigma%*%t(h)
+        if (sum(dim(full_sig))==2){
+          sig_tmp <- full_sig
         } else {
-          ret = ret + diag_matlab(diag_matlab(h%*%sigma%*%t(h)))
+          sig_tmp <- diag_matlab(diag_matlab(full_sig))
+        }
+        if((isempty(ret))){
+          ret = sig_tmp
+        } else {
+          ret = ret + sig_tmp
         }
       }
     }

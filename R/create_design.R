@@ -60,6 +60,8 @@ create_design <- function(
   }
   
   ## for model_switch --------
+  if(is.list(model_switch)) model_switch <- t(sapply(model_switch,'[',seq(max(sapply(model_switch,length)))))
+  #if(is.list(model_switch)) model_switch <- as.matrix(dplyr::rbind_all(lapply(model_switch,function(x){data.frame(rbind(unlist(x)))})))
   if(is.null(model_switch)) model_switch <- xt*0+1 
   if(size(model_switch,1)==1 && m!=1) model_switch <- matrix(rep(model_switch,m),ncol=length(model_switch),nrow=m,byrow=T)
   if(!is.matrix(model_switch)) model_switch  <- rbind(model_switch)
@@ -77,7 +79,11 @@ create_design <- function(
       #all_cov_names <- unique(unlist(sapply(a,names)))
       
       #a <- as.matrix(plyr::rbind.fill(lapply(a,function(x){data.frame(rbind(unlist(x)))})))
-      a <- as.matrix(dplyr::rbind_all(lapply(a,function(x){data.frame(rbind(unlist(x)))})))
+      if(packageVersion("dplyr") >= "0.5.0"){
+        a <- as.matrix(dplyr::bind_rows(lapply(a,function(x){data.frame(rbind(unlist(x)))})))
+      } else {
+        a <- as.matrix(dplyr::rbind_all(lapply(a,function(x){data.frame(rbind(unlist(x)))})))
+      }
     }
     colnam <- names(a)
     if(is.null(colnam)) colnam <- colnames(a)
@@ -91,7 +97,13 @@ create_design <- function(
   
   ## for x ----------
   if(!is.null(x)){
-    if(is.list(x)) x <- as.matrix(dplyr::rbind_all(lapply(x,function(x){data.frame(rbind(unlist(x)))})))
+    if(is.list(x)){
+      if(packageVersion("dplyr") >= "0.5.0"){
+        x <- as.matrix(dplyr::bind_rows(lapply(x,function(x){data.frame(rbind(unlist(x)))})))
+      } else {
+        x <- as.matrix(dplyr::rbind_all(lapply(x,function(x){data.frame(rbind(unlist(x)))})))
+      }
+    } 
     colnam <- names(x)
     if(is.null(colnam)) colnam <- colnames(x)
     if(size(x,1)==1 && m!=1) x <- matrix(rep(x,m),ncol=length(x),nrow=m,byrow=T,dimnames=list(paste("grp_",1:m,sep=""),colnam))

@@ -1,23 +1,49 @@
+##############
+# D-family Optimization
+##############
+
+# below are a number of ways to optimize the problem
+
+
+# ARS+BFGS+LS optimization of dose
+# optimization with just a few iterations
+# only to check that things are working
+out_1 <- poped_optim(poped.db,opt_a =TRUE,
+                      control = list(ARS=list(iter=2),
+                                     BFGS=list(maxit=2),
+                                     LS=list(line_length=2)),
+                      iter_max = 1)
+
+# cost function
+# PRED at 120 hours
+crit_fcn <- function(poped.db,...){
+  pred_df <- model_prediction(poped.db)
+  return(pred_df[pred_df$Time==120,"PRED"])
+}
+
+# maximize cost function
+out_2 <- poped_optim(poped.db,opt_a =TRUE,
+                     ofv_fun=crit_fcn,
+                     control = list(ARS=list(iter=2),
+                                    BFGS=list(maxit=2),
+                                    LS=list(line_length=2)),
+                     iter_max = 2)
+
+# minimize the cost function
+out_2 <- poped_optim(poped.db,opt_a =TRUE,
+                     ofv_fun=crit_fcn,
+                     control = list(ARS=list(iter=2),
+                                    BFGS=list(maxit=2),
+                                    LS=list(line_length=2)),
+                     iter_max = 2,
+                     maximize = FALSE,
+                     evaluate_fim = FALSE
+                    )
+
 
 \dontrun{
   
-  ##############
-  # D-family Optimization
-  ##############
-  
-  # below are a number of ways to optimize the problem
-  
-  
-  # ARS+BFGS+LS optimization of sample times
-  # optimization with just a few iterations
-  # only to check that things are working
-  output <- poped_optim(poped.db,opt_xt=T,
-                        control = list(ARS=list(iter=5),
-                                       BFGS=list(maxit=5),
-                                       LS=list(line_length=5)))
-  
-  
-  # RS+SG+LS optimization of sample times 
+  # RS+BFGS+LS optimization of sample times 
   # (longer run time than above but more likely to reach a maximum)
   output <- poped_optim(poped.db,opt_xt=T,parallel = TRUE)
   
@@ -59,7 +85,25 @@
   
   # genetic algorithm from the GA::ga() function, 
   # DOSE and sample time optimization
-  ga.output <- poped_optim(poped.db,opt_xt=T,opt_a=T,method = "GA",parallel=T)
+  ga.output <- poped_optim(poped.db,opt_xt=T,opt_a=F,method = "GA",parallel=T)
+  
+  # cost function with GA
+  # maximize
+  out_2 <- poped_optim(poped.db,opt_a =TRUE,
+                       ofv_fun=crit_fcn,
+                       parallel = T,
+                       method=c("GA"))
+  
+  # cost function with GA
+  # minimize
+  out_2 <- poped_optim(poped.db,opt_a =TRUE,
+                       ofv_fun=crit_fcn,
+                       parallel = T,
+                       method=c("GA"),
+                       iter_max = 1,
+                       maximize = F,
+                       evaluate_fim = F)
+  
   
   ##############
   # E-family Optimization
@@ -89,14 +133,19 @@
                                     mina=0,
                                     maxa=100)
   
-  # ED optimization using Random search (just a few samples here)
-  output <- poped_optimize(poped.db,opt_xt=1,opt_a=1,rsit=10,d_switch=0)
+  
+  # E_ln(D) optimization using Random search (just a few samples here)
+  output <- poped_optim(poped.db,opt_xt=TRUE,opt_a=TRUE,d_switch=0,
+                        method = c("ARS","LS"),
+                        control = list(ARS=list(iter=2),
+                                       LS=list(line_length=2)),
+                        iter_max = 1)
   get_rse(output$fmf,output$poped.db)
   
   # ED with laplace approximation, 
-  # optimization using Random search (just a few samples here)
+  # optimization using Random search (just a few iterations here)
   ars.output <- poped_optim(poped.db,opt_xt=T,opt_a=T,method = "ARS",
-                            d_switch=0,use_laplace=TRUE,laplace.fim=TRUE,
+                            d_switch=0,use_laplace=TRUE,#laplace.fim=TRUE,
                             parallel=T,
                             control = list(ARS=list(iter=5)))
   

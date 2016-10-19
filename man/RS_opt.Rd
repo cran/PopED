@@ -140,10 +140,10 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
                                   sigma=c(0.01,0.25),
                                   groupsize=32,
                                   xt=c( 0.5,1,2,6,24,36,72,120),
-                                  minxt=0,
+                                  minxt=0.01,
                                   maxxt=120,
                                   a=70,
-                                  mina=0,
+                                  mina=0.01,
                                   maxa=100)
 
 ############# END ###################
@@ -153,7 +153,7 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
 
 
 # Just a few iterations, optimize on DOSE and sample times using the full FIM
-rs.output <- RS_opt(poped.db,opt_xt=1,opt_a=1,rsit=20,fim.calc.type=0)
+out_1 <- RS_opt(poped.db,opt_xt=1,opt_a=1,rsit=3,fim.calc.type=0)
 
 \dontrun{
   

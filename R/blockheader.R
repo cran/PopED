@@ -109,6 +109,7 @@ blockheader <- function(poped.db,name="Default",iter=NULL,
     if(fn!="") fprintf(paste0("===============================================================================\n",
                           "Initial design evaluation\n"))
   }
+  
   if(dmf!=0) fprintf(fn,'\nInitial OFV = %g\n',dmf)
   if(dmf!=0 && fn!="") fprintf('\nInitial OFV = %g\n',dmf)
   
@@ -124,7 +125,7 @@ blockheader <- function(poped.db,name="Default",iter=NULL,
     }
   }
   
-  if(is.matrix(fmf) && compute_inv){
+  if(is.matrix(fmf) && compute_inv && is.finite(dmf)){
     param_vars=diag_matlab(inv(fmf))
     returnArgs <-  get_cv(param_vars,bpop,d,docc,sigma,poped.db) 
     params <- returnArgs[[1]]

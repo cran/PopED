@@ -176,10 +176,10 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
                                   sigma=c(0.01,0.25),
                                   groupsize=32,
                                   xt=c( 0.5,1,2,6,24,36,72,120),
-                                  minxt=0,
+                                  minxt=0.01,
                                   maxxt=120,
                                   a=70,
-                                  mina=0,
+                                  mina=0.01,
                                   maxa=100)
 
 ############# END ###################
@@ -188,20 +188,20 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
 #####################################
 
 
+##############
+# D-family Optimization
+##############
+
+# below are a number of ways to optimize the problem
+
+# RS+SG+LS optimization of DOSE and sample times
+# optimization with just a few iterations
+# only to check that things are working
+out_1 <- poped_optimize(poped.db,opt_a=TRUE,opt_xt=TRUE,
+                         rsit=2,sgit=2,ls_step_size=2, 
+                         iter_max=1)
+
 \dontrun{
-  
-  ##############
-  # D-family Optimization
-  ##############
-  
-  # below are a number of ways to optimize the problem
-  
-  
-  # RS+SG+LS optimization of sample times
-  # optimization with just a few iterations
-  # only to check that things are working
-  output <- poped_optimize(poped.db,opt_xt=T,
-                           rsit=5,sgit=5,ls_step_size=5)
   
   # RS+SG+LS optimization of sample times 
   # (longer run time than above but more likely to reach a maximum)

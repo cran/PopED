@@ -18,7 +18,8 @@ poped_optim(poped.db, opt_xt = poped.db$settings$optsw[2],
   use_laplace = poped.db$settings$iEDCalculationType, out_file = "",
   parallel = F, parallel_type = NULL, num_cores = NULL,
   loop_methods = ifelse(length(method) > 1, TRUE, FALSE), iter_max = 10,
-  eff_crit = 1.001, ...)
+  stop_crit_eff = 1.001, stop_crit_diff = NULL, stop_crit_rel = NULL,
+  ofv_fun = poped.db$settings$ofv_fun, maximize = T, ...)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
@@ -42,7 +43,7 @@ genetic algorithm from \code{\link[GA]{ga}}.}
 
 \item{control}{Contains control arguments for each method specified.}
 
-\item{trace}{Should the algorithm outpur results intermittently.}
+\item{trace}{Should the algorithm output results intermittently.}
 
 \item{fim.calc.type}{The method used for calculating the FIM. Potential values:
 \itemize{
@@ -99,16 +100,33 @@ See \code{\link{start_parallel}}.}
 \item{loop_methods}{Should the optimization methods be looped for
 \code{iter_max} iterations, or until the efficiency of the design after the
 current series (compared to the start of the series) is less than, or equal to,
-\code{eff_crit}?}
+\code{stop_crit_eff}?}
 
 \item{iter_max}{If line search is used then the algorithm tests if line
 search (always run at the end of the optimization iteration) changes the 
 design in any way.  If not, the algorithm stops.  If yes, then a new
 iteration is run unless \code{iter_max} iterations have already been run.}
 
-\item{eff_crit}{If \code{loop_methods==TRUE}, the looping will stop if the
+\item{stop_crit_eff}{If \code{loop_methods==TRUE}, the looping will stop if the
 efficiency of the design after the current series (compared to the start of
-the series) is less than, or equal to, \code{eff_crit}.}
+the series) is less than, or equal to, \code{stop_crit_eff} (if \code{maximize==FALSE} then 1/stop_crit_eff is the cut
+off and the efficiency must be greater than or equal to this value to stop the looping).}
+
+\item{stop_crit_diff}{If \code{loop_methods==TRUE}, the looping will stop if the
+difference in criterion value of the design after the current series (compared to the start of
+the series) is less than, or equal to, \code{stop_crit_diff} (if \code{maximize==FALSE} then -stop_crit_diff is the cut
+off and the difference in criterion value must be greater than or equal to this value to stop the looping).}
+
+\item{stop_crit_rel}{If \code{loop_methods==TRUE}, the looping will stop if the
+relative difference in criterion value of the design after the current series (compared to the start of
+the series) is less than, or equal to, \code{stop_crit_rel} (if \code{maximize==FALSE} then -stop_crit_rel is the cut
+off and the relative difference in criterion value must be greater than or equal to this value to stop the looping).}
+
+\item{ofv_fun}{User defined function used to compute the objective function. The function must have a poped database object as its first
+argument and have "..." in its argument list.  Can be referenced as a function or as a file name where the funciton defined in the file has the same name as the file.
+e.g. "cost.txt" has a function named "cost" in it.}
+
+\item{maximize}{Should the objective function be maximized or minimized?}
 
 \item{...}{arguments passed to other functions.}
 }
@@ -118,7 +136,7 @@ continuous optimization variables. If more than one optimization method is
 specified then the methods are run in series.  If \code{loop_methods=TRUE} 
 then the series of optimization methods will be run for \code{iter_max} 
 iterations, or until the efficiency of the design after the current series 
-(compared to the start of the series) is less than \code{eff_crit}.
+(compared to the start of the series) is less than \code{stop_crit_eff}.
 }
 \details{
 This function takes information from the PopED database supplied as an 
@@ -167,10 +185,10 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
                                   sigma=c(0.01,0.25),
                                   groupsize=32,
                                   xt=c( 0.5,1,2,6,24,36,72,120),
-                                  minxt=0,
+                                  minxt=0.01,
                                   maxxt=120,
                                   a=70,
-                                  mina=0,
+                                  mina=0.01,
                                   maxa=100)
 
 ############# END ###################
@@ -178,26 +196,52 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
 ## (warfarin model for optimization)
 #####################################
 
+##############
+# D-family Optimization
+##############
+
+# below are a number of ways to optimize the problem
+
+
+# ARS+BFGS+LS optimization of dose
+# optimization with just a few iterations
+# only to check that things are working
+out_1 <- poped_optim(poped.db,opt_a =TRUE,
+                      control = list(ARS=list(iter=2),
+                                     BFGS=list(maxit=2),
+                                     LS=list(line_length=2)),
+                      iter_max = 1)
+
+# cost function
+# PRED at 120 hours
+crit_fcn <- function(poped.db,...){
+  pred_df <- model_prediction(poped.db)
+  return(pred_df[pred_df$Time==120,"PRED"])
+}
+
+# maximize cost function
+out_2 <- poped_optim(poped.db,opt_a =TRUE,
+                     ofv_fun=crit_fcn,
+                     control = list(ARS=list(iter=2),
+                                    BFGS=list(maxit=2),
+                                    LS=list(line_length=2)),
+                     iter_max = 2)
+
+# minimize the cost function
+out_2 <- poped_optim(poped.db,opt_a =TRUE,
+                     ofv_fun=crit_fcn,
+                     control = list(ARS=list(iter=2),
+                                    BFGS=list(maxit=2),
+                                    LS=list(line_length=2)),
+                     iter_max = 2,
+                     maximize = FALSE,
+                     evaluate_fim = FALSE
+                    )
+
 
 \dontrun{
   
-  ##############
-  # D-family Optimization
-  ##############
-  
-  # below are a number of ways to optimize the problem
-  
-  
-  # ARS+BFGS+LS optimization of sample times
-  # optimization with just a few iterations
-  # only to check that things are working
-  output <- poped_optim(poped.db,opt_xt=T,
-                        control = list(ARS=list(iter=5),
-                                       BFGS=list(maxit=5),
-                                       LS=list(line_length=5)))
-  
-  
-  # RS+SG+LS optimization of sample times 
+  # RS+BFGS+LS optimization of sample times 
   # (longer run time than above but more likely to reach a maximum)
   output <- poped_optim(poped.db,opt_xt=T,parallel = TRUE)
   
@@ -239,7 +283,25 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
   
   # genetic algorithm from the GA::ga() function, 
   # DOSE and sample time optimization
-  ga.output <- poped_optim(poped.db,opt_xt=T,opt_a=T,method = "GA",parallel=T)
+  ga.output <- poped_optim(poped.db,opt_xt=T,opt_a=F,method = "GA",parallel=T)
+  
+  # cost function with GA
+  # maximize
+  out_2 <- poped_optim(poped.db,opt_a =TRUE,
+                       ofv_fun=crit_fcn,
+                       parallel = T,
+                       method=c("GA"))
+  
+  # cost function with GA
+  # minimize
+  out_2 <- poped_optim(poped.db,opt_a =TRUE,
+                       ofv_fun=crit_fcn,
+                       parallel = T,
+                       method=c("GA"),
+                       iter_max = 1,
+                       maximize = F,
+                       evaluate_fim = F)
+  
   
   ##############
   # E-family Optimization
@@ -269,14 +331,19 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
                                     mina=0,
                                     maxa=100)
   
-  # ED optimization using Random search (just a few samples here)
-  output <- poped_optimize(poped.db,opt_xt=1,opt_a=1,rsit=10,d_switch=0)
+  
+  # E_ln(D) optimization using Random search (just a few samples here)
+  output <- poped_optim(poped.db,opt_xt=TRUE,opt_a=TRUE,d_switch=0,
+                        method = c("ARS","LS"),
+                        control = list(ARS=list(iter=2),
+                                       LS=list(line_length=2)),
+                        iter_max = 1)
   get_rse(output$fmf,output$poped.db)
   
   # ED with laplace approximation, 
-  # optimization using Random search (just a few samples here)
+  # optimization using Random search (just a few iterations here)
   ars.output <- poped_optim(poped.db,opt_xt=T,opt_a=T,method = "ARS",
-                            d_switch=0,use_laplace=TRUE,laplace.fim=TRUE,
+                            d_switch=0,use_laplace=TRUE,#laplace.fim=TRUE,
                             parallel=T,
                             control = list(ARS=list(iter=5)))
   
