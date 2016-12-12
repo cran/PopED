@@ -1,7 +1,7 @@
 Package: PopED
 Type: Package
 Title: Population (and Individual) Optimal Experimental Design
-Version: 0.3.1
+Version: 0.3.2
 Depends: R (>= 2.14)
 Imports: ggplot2, MASS, mvtnorm, dplyr, codetools, stats, utils
 Suggests: testthat, Hmisc, nlme, GA, deSolve, shiny, rhandsontable,
@@ -27,7 +27,7 @@ LazyData: true
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2016-10-19 09:36:45 UTC; ahooker
+Packaged: 2016-12-12 13:50:58 UTC; ahooker
 Author: Andrew C. Hooker [aut, cre, trl, cph],
   Sebastian Ueckert [aut] (MATLAB version),
   Marco Foracchia [aut] (O-Matrix version),
@@ -35,4 +35,4 @@ Author: Andrew C. Hooker [aut, cre, trl, cph],
   Eric Stroemberg [ctb] (MATLAB version)
 Maintainer: Andrew C. Hooker <andrew.hooker@farmbio.uu.se>
 Repository: CRAN
-Date/Publication: 2016-10-19 13:07:11
+Date/Publication: 2016-12-12 18:16:19

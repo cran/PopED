@@ -1,0 +1,161 @@
+PopED Results 
+
+        2016-12-08 09:26:10
+
+==============================================================================
+Model description : PopED model 
+
+Model Sizes : 
+Number of individual model parameters                  g[j]    : Ng    = 5
+Number of population model fixed parameters            bpop[j] : Nbpop = 4
+Number of population model random effects parameters   b[j]    : Nb    = 3
+
+Typical Population Parameters (Uncertainty Distribution):
+bpop[1]:  0.15 (Log-Normal, Var=0.000225, %CV=   10)
+bpop[2]:     8 (Log-Normal, Var= 0.64, %CV=   10)
+bpop[3]:     1 (Log-Normal, Var= 0.01, %CV=   10)
+bpop[4]:     1 (Point value)
+
+Between Subject Variability matrix D (variance units) 
+0.07 0.00 0.00
+0.00 0.02 0.00
+0.00 0.00 0.60
+
+Diagonal Elements of D [sqrt(param)] (Uncertainty Distribution):
+D[1,1]:  0.07 [0.2646] (Point value)
+D[2,2]:  0.02 [0.1414] (Point value)
+D[3,3]:   0.6 [0.7746] (Point value)
+
+Residual Unexplained Variability matrix SIGMA (variance units) : 
+0.01 0.00
+0.00 0.25
+
+Diagonal Elements of SIGMA [sqrt(param)] (Uncertainty Distribution):
+SIGMA[1,1]:  0.01 [  0.1] (Point value)
+SIGMA[2,2]:  0.25 [  0.5] (Point value)
+
+==============================================================================
+Experiment description (design and design space)
+
+Numer of individuals: 32
+Number of groups (individuals with same design): 1
+Numer of individuals per group:
+     Group 1: 32
+Numer of samples per group:
+ Number of discrete experimental variables: 0
+Number of model covariates: 1
+
+Initial Sampling Schedule
+   0.5      1      2      6     24     36     72    120
+
+Minimum allowed sampling values
+ 1e-05  1e-05  1e-05  1e-05  1e-05  1e-05  1e-05  1e-05
+
+Maximum allowed sampling values
+   120    120    120    120    120    120    120    120
+
+Covariates  (min, max):
+Group 1: 70 (0, 100)
+
+===============================================================================
+Initial design evaluation
+
+Initial OFV = 1.30281e+24
+
+Efficiency criterion [usually defined as OFV^(1/npar)]  = Inf
+
+Initial design expected parameter 
+relative standard error (%RSE)
+    Parameter   Values   RSE_0
+      bpop[1]     0.15    5.03
+      bpop[2]     8.00    2.98
+      bpop[3]     1.00   14.04
+       D[1,1]     0.07   29.79
+       D[2,2]     0.02   36.72
+       D[3,3]     0.60   26.76
+   SIGMA[1,1]     0.01   31.46
+   SIGMA[2,2]     0.25   25.21
+
+==============================================================================
+Criterion Specification
+
+OFV calculation for FIM: 4 
+  1=Determinant of FIM,
+  4=log determinant of FIM,
+  6=determinant of interesting part of FIM (Ds)
+
+Approximation method: 0
+  0=FO, 
+  1=FOCE, 
+  2=FOCEI, 
+  3=FOI
+
+Fisher Information Matrix type: 1
+  0=Full FIM,
+  1=Reduced FIM,
+  2=weighted models,
+  3=Loc models,
+  4=reduced FIM with derivative of SD of sigma as pfim,
+  5=FULL FIM parameterized with A,B,C matrices & derivative of variance,
+  6=Calculate one model switch at a time, good for large matrices,
+  7=Reduced FIM parameterized with A,B,C matrices & derivative of variance
+
+Design family: 0
+  D-family design (1) or 
+  ED-familty design (0) 
+  (with or without parameter uncertainty)
+
+==============================================================================
+Optimization of design parameters
+
+* Optimize Sampling Schedule
+* Optimize Covariates
+
+*******************************
+Initial Value
+ OFV(mf) = 1.30281e+24
+*******************************
+
+RS - It. : 5   OFV : 1.73568e+24
+RS - It. : 10   OFV : 1.73568e+24
+
+*******************************
+RS Results
+ OFV(mf) = 1.73568e+24
+
+Optimized Sampling Schedule
+ 1e-05  1.474  5.607  10.39  22.91  45.89   73.6    120
+
+Optimized Covariates:
+Group 1: 64.0992
+
+*********************************
+
+===============================================================================
+FINAL RESULTS
+Optimized Sampling Schedule
+ 1e-05  1.474  5.607  10.39  22.91  45.89   73.6    120
+
+Optimized Covariates:
+Group 1: 64.0992
+
+OFV = 1.73568e+24
+
+Efficiency criterion [usually defined as det(FIM)^(1/npar)]  = Inf
+
+Efficiency: 
+  ((exp(ofv_final) / exp(ofv_init))^(1/n_parameters)) = NaN
+
+Expected parameter 
+relative standard error (%RSE):
+    Parameter   Values   RSE_0     RSE
+      bpop[1]     0.15    5.03    5.02
+      bpop[2]     8.00    2.98    2.98
+      bpop[3]     1.00   14.04   13.99
+       D[1,1]     0.07   29.79   29.79
+       D[2,2]     0.02   36.72   36.75
+       D[3,3]     0.60   26.76   26.76
+   SIGMA[1,1]     0.01   31.46   31.58
+   SIGMA[2,2]     0.25   25.21   25.27
+
+Total running time: 21.456 seconds

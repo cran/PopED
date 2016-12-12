@@ -1,6 +1,6 @@
 PopED Results 
 
-        2016-10-19 08:13:44
+        2016-12-12 12:50:38
 
 ==============================================================================
 Model description : PopED model 
@@ -155,4 +155,4 @@ relative standard error (%RSE):
    SIGMA[1,1]     0.01   32.01   23.16
    SIGMA[2,2]     0.25   25.64   30.21
 
-Total running time: 0.077 seconds
+Total running time: 0.072 seconds
