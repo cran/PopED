@@ -16,7 +16,7 @@ A list containing:
 \item{covd}{A vector of the covariances of the between subject variability parameters.  Row major format of the lower triangular portion of the D (OMEGA) matrix}
 \item{docc}{A vector of the between occasion variability (BOV) terms in the model}
 \item{covdocc}{A vector of the covariances between the BOV terms.  Row major of the lower triangular portion of the BOV matrix. }
-\item{sigma}{A vector of the resudual unexplained variances (RUV)}
+\item{sigma}{A vector of the residual unexplained variances (RUV)}
 \item{covsigma}{A vector of the covariances between the RUV terms}
 \item{all}{A vector with all of the above, in the order of this list.}
 }
@@ -51,9 +51,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -75,4 +75,3 @@ get_all_params(poped.db)
 
 }
 \keyword{internal}
-

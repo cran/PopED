@@ -10,8 +10,8 @@ model_prediction(poped.db = NULL, design = list(xt =
   poped.db$design[["a"]], ni = poped.db$design$ni, model_switch =
   poped.db$design$model_switch), model = list(fg_pointer =
   poped.db$model$fg_pointer, ff_pointer = poped.db$model$ff_pointer,
-  ferror_pointer = poped.db$model$ferror_pointer), parameters = list(docc =
-  poped.db$parameters$docc, d = poped.db$parameters$d, bpop =
+  ferror_pointer = poped.db$model$ferror_pointer), parameters = list(docc
+  = poped.db$parameters$docc, d = poped.db$parameters$d, bpop =
   poped.db$parameters$bpop, covd = poped.db$parameters$covd, covdocc =
   poped.db$parameters$covdocc, sigma = poped.db$parameters$sigma),
   IPRED = FALSE, DV = FALSE, dosing = NULL, predictions = NULL,
@@ -225,11 +225,13 @@ model_prediction(design=design_4,DV=TRUE,dosing=dosing_4,model_num_points = c(10
 }
 \seealso{
 Other evaluate_design: \code{\link{evaluate.fim}},
-  \code{\link{evaluate_design}}, \code{\link{get_rse}},
+  \code{\link{evaluate_design}},
+  \code{\link{evaluate_power}}, \code{\link{get_rse}},
   \code{\link{plot_efficiency_of_windows}},
   \code{\link{plot_model_prediction}}
 
 Other Simulation: \code{\link{plot_efficiency_of_windows}},
   \code{\link{plot_model_prediction}}
 }
-
+\concept{Simulation}
+\concept{evaluate_design}

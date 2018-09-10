@@ -12,9 +12,9 @@
 #' @param PRED Should a PRED line be drawn.
 #' @param IPRED.lines Should IPRED lines be drawn?
 #' @param alpha.IPRED.lines What should the transparency for the IPRED.lines be?
-#' @param alpha.IPRED What should the tranparency of the IPRED CI?
+#' @param alpha.IPRED What should the transparency of the IPRED CI?
 #' @param sample.times.size What should the size of the sample.times be?
-#' @param alpha.DV What should the tranparency of the DV CI?
+#' @param alpha.DV What should the transparency of the DV CI?
 #' @param DV.lines Should DV lines be drawn?
 #' @param DV.points Should DV points be drawn?
 #' @param alpha.DV.lines What should the transparency for the DV.lines be?
@@ -29,6 +29,9 @@
 #' @param IPRED.lines.pctls Should lines be drawn at the chosen percentiles of the IPRED values?  
 #' @param groupsize_sim How many individuals per group  should be 
 #'   simulated when DV=TRUE or IPRED=TRUE to create prediction intervals?
+#' @param model.names A vector of names of the response model/s (the length of the 
+#' vector should be equal to the number of response models). It is Null by default.
+#' @param ... Additional arguments passed to the \code{\link{model_prediction}} function.
 #' 
 #' @return A \link[ggplot2]{ggplot} object.  If you would like to further edit this plot don't 
 #' forget to load the ggplot2 library using \code{library(ggplot2)}.
@@ -36,6 +39,8 @@
 #' @family evaluate_design
 #' @family Simulation
 #' @family Graphics
+#' 
+#' @seealso \code{\link{model_prediction}}
 #' 
 #' @example tests/testthat/examples_fcn_doc/examples_plot_model_prediction.R
 #' 
@@ -75,6 +80,7 @@ plot_model_prediction <- function(poped.db,
                                   y_lab="Model Predictions",
                                   facet_scales="fixed", # could be "free", "fixed", "free_x" or "free_y"
                                   facet_label_names = T, 
+                                  model.names=NULL,
                                   ...){
   
   df <-  model_prediction(poped.db,
@@ -84,6 +90,9 @@ plot_model_prediction <- function(poped.db,
                           ##model_maxxt,
                           ##groups_to_plot,
                           ...)
+  if(!is.null(model.names)){
+    levels(df$Model) <- model.names
+  }
   
   if(sample.times){
     df.2 <-  model_prediction(poped.db,
@@ -93,10 +102,13 @@ plot_model_prediction <- function(poped.db,
                               ##groups_to_plot,
                               ...)
   }
+  if(!is.null(model.names)){
+    levels(df.2$Model) <- model.names
+  }
   
-  if(IPRED || IPRED.lines || DV || IPRED.lines.pctls){
+  if(IPRED || IPRED.lines || DV || IPRED.lines.pctls || sample.times.DV || sample.times.DV.points || sample.times.DV.lines){
     dv_val <- FALSE
-    if(DV) dv_val <- TRUE
+    if(DV || sample.times.DV || sample.times.DV.points || sample.times.DV.lines) dv_val <- TRUE
     poped.db_tmp <- poped.db
     poped.db_tmp$design$groupsize <- poped.db$design$groupsize*0+groupsize_sim
     df.ipred <-  model_prediction(poped.db_tmp,
@@ -123,9 +135,14 @@ plot_model_prediction <- function(poped.db,
     #                                     DV=DV,
     #                                     ...)
     #     }    
-    
+    if(!is.null(model.names)){
+      levels(df.ipred$Model) <- model.names
+    }
     if(sample.times.IPRED || sample.times.DV || sample.times.DV.points || sample.times.DV.lines){
       df.ipred.samples <- df.ipred[df.ipred$Time %in% poped.db$design$xt,]  
+      if(!is.null(model.names)){  
+        levels(df.ipred.samples$Model) <- model.names 
+      }
     }
   }
   

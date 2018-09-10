@@ -7,7 +7,7 @@
 #' constraints. \item A line search. See \code{\link{a_line_search}}. } The
 #' optimization algorithms run in series, taking as input the output from the
 #' previous method. The stopping rule used is to test if the line search
-#' algorithm fids a better optimum then its inital value. If so, then the chain
+#' algorithm fids a better optimum then its initial value. If so, then the chain
 #' of algorithms is run again.  If line search is not used then the argument
 #' \code{iter_tot} defines the number of times the chain of algorithms is run. 
 #' This function takes information from the PopED database supplied as an
@@ -25,10 +25,10 @@
 #'   User Defined Distribution, 4 = lognormal and 5 = truncated normal) \item
 #'   column 2  defines the mean. \item column 3 defines the variance of the
 #'   distribution (or length of uniform distribution). }
-#' @param ddescr Matrix defining the diagnonals of the IIV (same logic as for
+#' @param ddescr Matrix defining the diagonals of the IIV (same logic as for
 #'   the \code{bpopdescr}).
 #' @param fmf The initial value of the FIM. If set to zero then it is computed.
-#' @param dmf The inital OFV. If set to zero then it is computed.
+#' @param dmf The initial OFV. If set to zero then it is computed.
 #' @param trflag Should the optimization be output to the screen and to a file?
 #' @param ls_step_size Number of grid points in the line search.
 #' @param iter_tot Number of iterations to use if line search is not used. Must
@@ -243,7 +243,7 @@ Doptim <- function(poped.db,ni, xt, model_switch, x, a, bpopdescr,
               fmf=designsout[[it]]$FIM
             }
             
-            if((trflag && (rem(it,poped.db$settings$rsit_output)==0 || it==poped.db$settings$rsit))){
+            if((trflag && ((it %% poped.db$settings$rsit_output)==0 || it==poped.db$settings$rsit))){
               itvector[ceiling(it/poped.db$settings$rsit_output)+1]=it
               dmfvector[ceiling(it/poped.db$settings$rsit_output)+1]=dmf
               Dtrace(fn,it,ni,xtopt,xopt,aopt,matrix(0,0,0),matrix(0,0,0),dmf,matrix(0,0,0),matrix(0,0,0),matrix(0,0,0),itvector,dmfvector,poped.db)
@@ -303,7 +303,7 @@ Doptim <- function(poped.db,ni, xt, model_switch, x, a, bpopdescr,
               write_iterationfile('Random Search',it,xtopt,aopt,xopt,ni,poped.db$design$groupsize,fmf,dmf,poped.db)
             }
             
-            if((trflag && (rem(it,poped.db$settings$rsit_output)==0 || it==poped.db$settings$rsit))){
+            if((trflag && ((it %% poped.db$settings$rsit_output)==0 || it==poped.db$settings$rsit))){
               itvector[ceiling(it/poped.db$settings$rsit_output)+1]=it
               dmfvector[ceiling(it/poped.db$settings$rsit_output)+1]=dmf
               Dtrace(fn,it,ni,xtopt,xopt,aopt,matrix(0,0,0),matrix(0,0,0),dmf,matrix(0,0,0),matrix(0,0,0),matrix(0,0,0),itvector,dmfvector,poped.db)
@@ -449,7 +449,7 @@ Doptim <- function(poped.db,ni, xt, model_switch, x, a, bpopdescr,
         xopt=xopto
         aopt=aopto
         
-        if((matrix_all(axt==0) && matrix_all(aa==0))){
+        if((all(axt==0) && all(aa==0))){
           diff=0
         }
         
@@ -485,7 +485,7 @@ Doptim <- function(poped.db,ni, xt, model_switch, x, a, bpopdescr,
           aopto=aopt
           
           
-          if((sum(sum(isnan(xtopt)))>0 || sum(sum(isnan(xopt)))>0 || sum(sum(isnan(aopt)))>0)){
+          if((sum(sum(is.nan(xtopt)))>0 || sum(sum(is.nan(xopt)))>0 || sum(sum(is.nan(aopt)))>0)){
             break
           }
           
@@ -515,7 +515,7 @@ Doptim <- function(poped.db,ni, xt, model_switch, x, a, bpopdescr,
             }
             odmf=ndmf
           }
-          if((trflag==TRUE && (rem(it,poped.db$settings$sgit_output)==0 || abs(diff)<poped.db$settings$convergence_eps || it==sgit))){
+          if((trflag==TRUE && ((it %% poped.db$settings$sgit_output)==0 || abs(diff)<poped.db$settings$convergence_eps || it==sgit))){
             itvector[ceiling(it/poped.db$settings$sgit_output)]=it
             dmfvector[ceiling(it/poped.db$settings$sgit_output)]=dmf
             ga_tmp=0
@@ -554,7 +554,8 @@ Doptim <- function(poped.db,ni, xt, model_switch, x, a, bpopdescr,
       if((bUseLineSearch)){
         #------------------------------- LINE SEARCH optimization START HERE
         strLineSearchFile=sprintf('%s_LS_%g%s',poped.db$settings$strOutputFileName,iter,poped.db$settings$strOutputFileExtension)
-        strLineSearchFile = fullfile(poped.db$settings$strOutputFilePath,strLineSearchFile)
+        if (!is.character(poped.db$settings$strOutputFilePath)) poped.db$settings$strOutputFilePath = '.'
+        strLineSearchFile = file.path(poped.db$settings$strOutputFilePath,strLineSearchFile)
         #returnArgs <- a_line_search(strLineSearchFile,FALSE,0,fmf,dmf,poped.db) 
         returnArgs <- a_line_search(poped.db,fn,FALSE,0,fmf,dmf) 
         fmf <- returnArgs[[1]]
@@ -574,7 +575,7 @@ Doptim <- function(poped.db,ni, xt, model_switch, x, a, bpopdescr,
     #--------- Write results
     #     if((trflag)){
     blockfinal(fn,fmf,dmf,poped.db$design$groupsize,ni,xt,x,a,model_switch,
-                 bpopdescr,ddescr,poped.db$parameters$docc,poped.db$parameters$sigma,poped.db,
+                 bpopdescr[,2],ddescr,poped.db$parameters$docc,poped.db$parameters$sigma,poped.db,
                  opt_xt=optxt,opt_a=opta,opt_x=optx,fmf_init=fmf_init,
                  dmf_init=dmf_init,trflag=trflag,...)
     #}
@@ -632,7 +633,7 @@ calc_autofocus <- function(m,ni_var,dmf,varopt,varopto,maxvar,minvar,gradvar,nor
         varopt=varopto
         tavar=avar[i,ct1]
         varopt[i,ct1]=varopto[i,ct1]+tavar*normgvar[i,ct1]
-        varopt[i,ct1]=limit_value(varopt[i,ct1],maxvar[i,ct1],minvar[i,ct1])
+        varopt[i,ct1]=min(maxvar[i,ct1], max(varopt[i,ct1], minvar[i,ct1]))
         returnArgs <-  mftot(model_switch,groupsize,ni,xtopt,xopt,aopt,bpop,d,sigma,docc,poped.db) 
         mf_tmp <- returnArgs[[1]]
         poped.db <- returnArgs[[2]]
@@ -641,7 +642,7 @@ calc_autofocus <- function(m,ni_var,dmf,varopt,varopto,maxvar,minvar,gradvar,nor
         while(ct2<=10 && ndmf<dmf){
           tavar=tavar/2
           varopt[i,ct1]=varopto[i,ct1]+tavar*normgvar[i,ct1]
-          varopt[i,ct1]=limit_value(varopt[i,ct1],maxvar[i,ct1],minvar[i,ct1])
+          varopt[i,ct1]=min(maxvar[i,ct1], max(varopt[i,ct1], minvar[i,ct1]))
           returnArgs <- mftot(model_switch,groupsize,ni,xtopt,xopt,aopt,bpop,d,sigma,docc,poped.db) 
           mf_tmp <- returnArgs[[1]]
           poped.db <- returnArgs[[2]]
@@ -666,7 +667,7 @@ sg_search <- function(graddetvar,mnormvar,avar,maxvar,minvar,varopto,lgvaro,oldk
   varopt=varopt-((varopt>maxvar)*(varopt-maxvar))
   varopt=varopt+((varopt<minvar)*(minvar-varopt))
   lgvar=varopt-varopto
-  lgvar=reshape_matlab(lgvar,m*numvar,1)
+  dim(lgvar) = c(m*numvar,1)
   if(any(t(lgvar)%*%lgvaro<0)){
     kitvar=oldkitvar+1
     inversionvar=TRUE

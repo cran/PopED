@@ -4,7 +4,7 @@
 #' Compute the expectation of the \code{det(FIM)} using the Laplace
 #' approximation to the expectation. Computations are made based on the model,
 #' parameters, distributions of parameter uncertainty, design and methods
-#' defined in the PopED database or as arguments to the funciton.
+#' defined in the PopED database or as arguments to the function.
 #' 
 #' This computation follows the method outlined in Dodds et al, 
 #' "Robust Population Pharmacokinetic Experiment Design" JPP, 2005, equation 16.
@@ -155,7 +155,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
   if(!isempty(exp_index) && !is.null(gf_k)){
     gf_k[exp_index]=gf_k[exp_index]*exp(alpha_k_log[exp_index])
   }
-  if(isnan(f_k)){
+  if(is.nan(f_k)){
     f=0
     gf=zeros(size(x))
     if(return_gradient) return(list( f= f,gf=gf))
@@ -318,7 +318,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
     grada=matrix(0,0,0)
     if((optxt==TRUE)){
       notfixed=poped.db$design_space$minxt!=poped.db$design_space$maxxt
-      gradxt=-gradlndetmfxt(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db)
+      gradxt=-graddetmf(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE,gradxt=TRUE)
       gradxt=gradxt(notfixed)
       if(poped.db$design_space$bUseGrouped_xt){
         index=unique(poped.db$design_space$G_xt)
@@ -327,7 +327,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
     }
     if((opta==TRUE)){
       notfixed=poped.db$design_space$mina!=poped.db$design_space$maxa
-      grada=-gradlndetmfa(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db)                
+      grada=-graddetmf(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE)
       grada=grada(notfixed)
       if(poped.db$design_space$bUseGrouped_a){
         index=unique(poped.db$design_space$G_a)
@@ -350,7 +350,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
         d=getfulld(d,covd)
         if((optxt==TRUE)){
           notfixed=poped.db$design_space$minxt!=poped.db$design_space$maxxt
-          gradxt=t(gradlndetmfxt(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db))
+          gradxt=t(graddetmf(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE,gradxt=TRUE))
           gradxt=gradxt(notfixed)
           if(poped.db$design_space$bUseGrouped_xt){
             index=unique(poped.db$design_space$G_xt)
@@ -359,7 +359,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
         }
         if((opta==TRUE)){
           notfixed=poped.db$design_space$mina!=poped.db$design_space$maxa
-          grada=-gradlndetmfa(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db)
+          grada=-graddetmf(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE)
           grada=grada(notfixed)
           if(poped.db$design_space$bUseGrouped_a){
             index=unique(poped.db$design_space$G_a)
@@ -378,7 +378,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
         d=getfulld(d,covd)
         if((optxt==TRUE)){
           notfixed=poped.db$design_space$minxt!=poped.db$design_space$maxxt
-          gradxt=t(gradlndetmfxt(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db))
+          gradxt=t(graddetmf(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE,gradxt=TRUE))
           gradxt=gradxt(notfixed)
           if(poped.db$design_space$bUseGrouped_xt){
             index=unique(poped.db$design_space$G_xt)
@@ -387,7 +387,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
         }
         if((opta==TRUE)){
           notfixed=poped.db$design_space$mina!=poped.db$design_space$maxa
-          grada=-gradlndetmfa(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db)
+          grada=-graddetmf(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE)
           grada=grada(notfixed)
           if(poped.db$design_space$bUseGrouped_a){
             index=unique(poped.db$design_space$G_a)
@@ -406,7 +406,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
         d=getfulld(d,covd)
         if((optxt==TRUE)){
           notfixed=poped.db$design_space$minxt!=poped.db$design_space$maxxt
-          gradxt=t(gradlndetmfxt(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db))
+          gradxt=t(graddetmf(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE,gradxt=TRUE))
           gradxt=gradxt(notfixed)
           if(poped.db$design_space$bUseGrouped_xt){
             index=unique(poped.db$design_space$G_xt)
@@ -415,7 +415,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
         }
         if((opta==TRUE)){
           notfixed=poped.db$design_space$mina!=poped.db$design_space$maxa
-          grada=-gradlndetmfa(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db)
+          grada=-graddetmf(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE)
           grada=grada(notfixed)
           if(poped.db$design_space$bUseGrouped_a){
             index=unique(poped.db$design_space$G_a)
@@ -434,7 +434,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
         d=getfulld(d,covd)
         if((optxt==TRUE)){
           notfixed=poped.db$design_space$minxt!=poped.db$design_space$maxxt
-          gradxt=t(gradlndetmfxt(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db))
+          gradxt=t(graddetmf(model_switch,xtopto,groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE,gradxt=TRUE))
           gradxt=gradxt(notfixed)
           if(poped.db$design_space$bUseGrouped_xt){
             index=unique(poped.db$design_space$G_xt)
@@ -443,7 +443,7 @@ ed_laplace_ofv <- function(model_switch,groupsize,ni,xtopto,xopto,aopto,
         }
         if((opta==TRUE)){
           notfixed=poped.db$design_space$mina!=poped.db$design_space$maxa
-          grada=-gradlndetmfa(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db)
+          grada=-graddetmf(model_switch,matrix(1,size(aopto)),groupsize,ni,xtopto,xopto,aopto,bpop,d,sigma,docc,poped.db,lndet=TRUE)
           grada=grada(notfixed)
           if(poped.db$design_space$bUseGrouped_a){
             index=unique(poped.db$design_space$G_a)
@@ -478,8 +478,8 @@ calc_k <- function(alpha, model_switch,groupsize,ni,xtoptn,xoptn,aoptn,bpopdescr
   fim <- retargs$ret
   
   det_fim <- det(fim)
-  if(det_fim<0){
-    warning("Determinant of the FIM is negative")
+  if(det_fim<.Machine$double.eps){
+    warning("Determinant of the FIM is not positive")
     if(return_gradient) return(list(k=NaN,grad_k = NaN))
     return(c(k=NaN))
   }
@@ -496,7 +496,8 @@ calc_k <- function(alpha, model_switch,groupsize,ni,xtoptn,xoptn,aoptn,bpopdescr
       fim <- returnArgs[[2]]
       ifim <- inv(fim)
       dim(ifim) <- c(length(ifim),1)
-      gradlogdfim=t(reshape_matlab(d_fim,length(fim),length(grad_p)))%*%ifim
+      dim(d_fim) = c(length(fim),length(grad_p))
+      gradlogdfim=t(d_fim)%*%ifim
       grad_k=-(gradlogdfim+grad_p)
     }
     

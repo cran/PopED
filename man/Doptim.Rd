@@ -4,8 +4,8 @@
 \alias{Doptim}
 \title{D-family optimization function}
 \usage{
-Doptim(poped.db, ni, xt, model_switch, x, a, bpopdescr, ddescr, maxxt, minxt,
-  maxa, mina, fmf = 0, dmf = 0, trflag = TRUE,
+Doptim(poped.db, ni, xt, model_switch, x, a, bpopdescr, ddescr, maxxt,
+  minxt, maxa, mina, fmf = 0, dmf = 0, trflag = TRUE,
   bUseRandomSearch = poped.db$settings$bUseRandomSearch,
   bUseStochasticGradient = poped.db$settings$bUseStochasticGradient,
   bUseBFGSMinimizer = poped.db$settings$bUseBFGSMinimizer,
@@ -40,7 +40,7 @@ User Defined Distribution, 4 = lognormal and 5 = truncated normal) \item
 column 2  defines the mean. \item column 3 defines the variance of the
 distribution (or length of uniform distribution). }}
 
-\item{ddescr}{Matrix defining the diagnonals of the IIV (same logic as for
+\item{ddescr}{Matrix defining the diagonals of the IIV (same logic as for
 the \code{bpopdescr}).}
 
 \item{maxxt}{Matrix or single value defining the maximum value for each xt sample.  If a single value is 
@@ -57,7 +57,7 @@ all a values are given the same max value}
 
 \item{fmf}{The initial value of the FIM. If set to zero then it is computed.}
 
-\item{dmf}{The inital OFV. If set to zero then it is computed.}
+\item{dmf}{The initial OFV. If set to zero then it is computed.}
 
 \item{trflag}{Should the optimization be output to the screen and to a file?}
 
@@ -103,7 +103,7 @@ Goldfarb Shanno (BFGS) method for nonlinear minimization with box
 constraints. \item A line search. See \code{\link{a_line_search}}. } The
 optimization algorithms run in series, taking as input the output from the
 previous method. The stopping rule used is to test if the line search
-algorithm fids a better optimum then its inital value. If so, then the chain
+algorithm fids a better optimum then its initial value. If so, then the chain
 of algorithms is run again.  If line search is not used then the argument
 \code{iter_tot} defines the number of times the chain of algorithms is run. 
 This function takes information from the PopED database supplied as an
@@ -143,9 +143,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -238,12 +238,13 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
 }
 \seealso{
 Other Optimize: \code{\link{LEDoptim}},
-  \code{\link{RS_opt_gen}}, \code{\link{RS_opt}},
-  \code{\link{a_line_search}}, \code{\link{bfgsb_min}},
-  \code{\link{calc_autofocus}},
+  \code{\link{RS_opt}}, \code{\link{a_line_search}},
+  \code{\link{bfgsb_min}}, \code{\link{calc_autofocus}},
   \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
   \code{\link{optim_ARS}}, \code{\link{optim_LS}},
+  \code{\link{poped_optim_1}}, \code{\link{poped_optim_2}},
+  \code{\link{poped_optim_3}},
   \code{\link{poped_optimize}}, \code{\link{poped_optim}}
 }
+\concept{Optimize}
 \keyword{internal}
-

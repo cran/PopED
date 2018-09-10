@@ -4,8 +4,8 @@
 \alias{start_parallel}
 \title{Start parallel computational processes}
 \usage{
-start_parallel(parallel = TRUE, num_cores = NULL, parallel_type = NULL,
-  seed = NULL, dlls = NULL, ...)
+start_parallel(parallel = TRUE, num_cores = NULL,
+  parallel_type = NULL, seed = NULL, dlls = NULL, ...)
 }
 \arguments{
 \item{parallel}{Should the parallel functionality start up?}
@@ -34,4 +34,3 @@ This tool chooses the type of parallelization process to use based on the
 computer OS being used.  For windows the default is "snow" and for Linux-like
 systems the default is "multicore"
 }
-

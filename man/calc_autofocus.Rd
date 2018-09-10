@@ -13,7 +13,7 @@ calc_autofocus(m, ni_var, dmf, varopt, varopto, maxvar, minvar, gradvar,
 
 \item{ni_var}{The ni_var.}
 
-\item{dmf}{The inital OFV. If set to zero then it is computed.}
+\item{dmf}{The initial OFV. If set to zero then it is computed.}
 
 \item{varopt}{The varopt.}
 
@@ -31,7 +31,7 @@ calc_autofocus(m, ni_var, dmf, varopt, varopto, maxvar, minvar, gradvar,
 
 \item{model_switch}{A matrix that is the same size as xt, specifying which model each sample belongs to.}
 
-\item{groupsize}{A vector of the numer of individuals in each group.}
+\item{groupsize}{A vector of the number of individuals in each group.}
 
 \item{xtopt}{The optimal sampling times matrix.}
 
@@ -51,11 +51,11 @@ calc_autofocus(m, ni_var, dmf, varopt, varopto, maxvar, minvar, gradvar,
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
 parameter value is to be used.}
 
-\item{d}{Matrix defining the diagnonals of the IIV (same logic as for the fixed efects 
+\item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
 matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}.}
 
 \item{sigma}{Matrix defining the variances can covariances of the residual variability terms of the model.
-can also just supply the diagnonal parameter values (variances) as a \code{c()}.}
+can also just supply the diagonal parameter values (variances) as a \code{c()}.}
 
 \item{docc}{Matrix defining the IOV, the IOV variances and the IOV distribution as for d and bpop.}
 
@@ -100,9 +100,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -135,12 +135,13 @@ sg.output <- poped_optimize(poped.db,opt_xt=1,opt_a=1,
 }
 \seealso{
 Other Optimize: \code{\link{Doptim}},
-  \code{\link{LEDoptim}}, \code{\link{RS_opt_gen}},
-  \code{\link{RS_opt}}, \code{\link{a_line_search}},
-  \code{\link{bfgsb_min}}, \code{\link{calc_ofv_and_grad}},
-  \code{\link{mfea}}, \code{\link{optim_ARS}},
-  \code{\link{optim_LS}}, \code{\link{poped_optimize}},
-  \code{\link{poped_optim}}
+  \code{\link{LEDoptim}}, \code{\link{RS_opt}},
+  \code{\link{a_line_search}}, \code{\link{bfgsb_min}},
+  \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
+  \code{\link{optim_ARS}}, \code{\link{optim_LS}},
+  \code{\link{poped_optim_1}}, \code{\link{poped_optim_2}},
+  \code{\link{poped_optim_3}},
+  \code{\link{poped_optimize}}, \code{\link{poped_optim}}
 }
+\concept{Optimize}
 \keyword{internal}
-

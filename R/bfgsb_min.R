@@ -6,7 +6,7 @@
 #' @param f_name A function name (as a text string) that returns an objective function and the gradient of that objective function, in that order. 
 #' See \code{\link{calc_ofv_and_grad}} as used in \code{\link{Doptim}}.
 #' @param f_options Options for the f_name argument.
-#' @param x0 the intial values to optimize
+#' @param x0 the initial values to optimize
 #' @param l the lower bounds
 #' @param u the upper bounds 
 #' @param options a list of additional settings arguments
@@ -54,6 +54,21 @@ bfgsb_min <- function(f_name,f_options, x0, l, u, options=list()){
     if(is.null(options$update_fhandle)) options$update_fhandle="print_information"
     
     do.call(options$update_fhandle,list(0, f_k, x_k))
+    
+    ##function projected_gradient_norm for condition in while-loop
+    projected_gradient_norm <- function(l,u,x,g){
+      norm=0
+      for(i in 1:length(x)){
+        if(g[i]<0){
+          gi=max(x[i]-u[i],g[i])
+        } else {
+          gi=min(x[i]-l[i],g[i])
+        }
+        norm=max(norm,abs(gi))
+      }
+      return( norm)
+    }
+    
     iter=1
     ##as long as gradient is bigger than certain value
     while(projected_gradient_norm(l,u,x_k,gf_k)>options$pgtol){

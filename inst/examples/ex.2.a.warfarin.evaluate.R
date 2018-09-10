@@ -27,7 +27,7 @@ sfg <- function(x,a,bpop,b,bocc){
 feps <- function(model_switch,xt,parameters,epsi,poped.db){
   ## -- Residual Error function
   ## -- Proportional 
-  returnArgs <- ff(model_switch,xt,parameters,poped.db) 
+  returnArgs <- do.call(poped.db$model$ff_pointer,list(model_switch,xt,parameters,poped.db)) 
   y <- returnArgs[[1]]
   poped.db <- returnArgs[[2]]
   y = y*(1+epsi[,1])
@@ -61,6 +61,7 @@ model_prediction(poped.db)
 
 ## evaluate initial design
 evaluate_design(poped.db)
+shrinkage(poped.db)
 
 ## Evaluate with full FIM
 evaluate_design(poped.db, fim.calc.type=0)

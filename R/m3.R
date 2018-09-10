@@ -43,25 +43,24 @@ m3 <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,bUseVarS
     #Differentiate the variance w.r.t iiv
     for(i in 1:poped.db$parameters$NumRanEff){
       if((poped.db$parameters$notfixed_d[i]==1)){
-        dv_db_new[,j]=reshape_matlab(l[,i,drop=F]*t(l[,i,drop=F])+diag_matlab(diag_matlab(lh[,(i-1)*NumSigma+1:i*NumSigma,drop=F]*sigma*t(lh[,(i-1)*NumSigma+1:i*NumSigma,drop=F]))),ns,1) #Last term is interaction
+        dv_db_new[,j]=as.vector(l[,i,drop=F]*t(l[,i,drop=F])+diag_matlab(diag_matlab(lh[,(i-1)*NumSigma+1:i*NumSigma,drop=F]*sigma*t(lh[,(i-1)*NumSigma+1:i*NumSigma,drop=F])))) #Last term is interaction
         j=j+1
       }
     }
     
     if((sum(poped.db$parameters$notfixed_covd)!=0)){
-      for(i in 1:length(poped.db$parameters$notfixed_covd) ){
-        if((poped.db$parameters$notfixed_covd[i]==1)){
-          returnArgs <- get_cov_matrix_index(d,i)   
-          m <- returnArgs[[1]]
-          n <- returnArgs[[2]]
-          if((m==-1 || n==-1)){
-            stop(sprintf('Wrong index in get_covariance_matrix_index d, PopED is stoping!'))
-          }
+      covIdx = which(lower.tri(d))
+      covRow = nrow(d)
+      if (length(covIdx) != length(poped.db$parameters$notfixed_covd)){
+        stop(sprintf('Wrong length of notfixed_covd, PopED is stoping!'))
+      }
+      for (i in which(poped.db$parameters$notfixed_covd == 1) ){
+          m <- (covIdx[i]-1) %% covRow + 1
+          n <- ceiling(covIdx[i] / covRow)
           lh1 = diag_matlab(diag_matlab(lh[,(m-1)*NumSigma+1:m*NumSigma,drop=F]*sigma*t(lh[,(n-1)*NumSigma+1:n*NumSigma,drop=F]))) #Interaction term
           lh2 = diag_matlab(diag_matlab(lh[,(n-1)*NumSigma+1:n*NumSigma,drop=F]*sigma*t(lh[,(m-1)*NumSigma+1:m*NumSigma,drop=F]))) #Interaction term
-          dv_db_new[,j]=reshape_matlab(l[,m,drop=F]*t(l[,n,drop=F])+l[,n,drop=F]*t(l[,m,drop=F])+lh1+lh2,ns,1)
+          dv_db_new[,j]=as.vector(l[,m,drop=F]*t(l[,n,drop=F])+l[,n,drop=F]*t(l[,m,drop=F])+lh1+lh2)
           j=j+1
-        }
       }
     }
     
@@ -72,28 +71,27 @@ m3 <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,bUseVarS
         for(k in 1:poped.db$parameters$NumOcc){
           tmp = tmp+locc[[k]][,i,drop=F]*t(locc[[k]][,i,drop=F])
         }
-        dv_db_new[,j]=reshape_matlab(tmp,ns,1)
+        dv_db_new[,j]=as.vector(tmp)
         j=j+1
       }
     }
     
     #Differentiate the variance w$r.t. occasion covariances
     if((sum(poped.db$parameters$notfixed_covdocc)!=0)      ){
-      for(i in 1:length(poped.db$parameters$notfixed_covdocc) ){
-        if((poped.db$parameters$notfixed_covdocc[i]==1)){
-          returnArgs <- get_cov_matrix_index(docc,i)   
-          m <- returnArgs[[1]]
-          n <- returnArgs[[2]]
-          if((m==-1 || n==-1)){
-            stop(sprintf('Wrong index in get_covariance_matrix_index docc, PopED is stoping!'))
-          }
-          tmp = zeros(size(xt_ind,1),size(xt_ind,1))
-          for(k in 1:poped.db$parameters$NumOcc){
-            tmp = tmp+locc[[k]][,m,drop=F]*t(locc[[k]][,n,drop=F])+locc[[k]][,n,drop=F]*t(locc[[k]][,m,drop=F])
-          }
-          dv_db_new[,j]=reshape_matlab(tmp,ns,1)
-          j=j+1
+      covIdx = which(lower.tri(docc))
+      covRow = nrow(docc)
+      if (length(covIdx) != length(poped.db$parameters$notfixed_covdocc)){
+        stop(sprintf('Wrong length of notfixed_covdocc, PopED is stoping!'))
+      }
+      for (i in which(poped.db$parameters$notfixed_covdocc == 1) ){
+        m <- (covIdx[i]-1) %% covRow + 1
+        n <- ceiling(covIdx[i] / covRow)
+        tmp = zeros(size(xt_ind,1),size(xt_ind,1))
+        for(k in 1:poped.db$parameters$NumOcc){
+          tmp = tmp+locc[[k]][,m,drop=F]*t(locc[[k]][,n,drop=F])+locc[[k]][,n,drop=F]*t(locc[[k]][,m,drop=F])
         }
+        dv_db_new[,j]=as.vector(tmp)
+        j=j+1
       }
     }
     
@@ -105,33 +103,32 @@ m3 <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,bUseVarS
           tmp_lh[,k] = lh[,i+(k-1)*NumSigma,drop=F]
         }
         if((bUseVarSigmaDerivative) ){#Derivative w$r.t. sigma as variance
-          dv_db_new[,j]= reshape_matlab(diag_matlab(diag_matlab(h(,i)*t(h(,i))))+diag_matlab(diag_matlab(tmp_lh*d*t(tmp_lh))),ns,1)
+          dv_db_new[,j]= as.vector(diag_matlab(diag_matlab(h(,i)*t(h(,i))))+diag_matlab(diag_matlab(tmp_lh*d*t(tmp_lh))))
         } else { #Derivarite w$r.t. sigma as stdev
-          dv_db_new[,j]= reshape_matlab(2*sqrt(sigma[i,i])*diag_matlab(diag_matlab(h(,i)*t(h(,i))))+2*sqrt(sigma[i,i])*diag_matlab(diag_matlab(tmp_lh*d*t(tmp_lh))),ns,1)
+          dv_db_new[,j]= as.vector(2*sqrt(sigma[i,i])*diag_matlab(diag_matlab(h(,i)*t(h(,i))))+2*sqrt(sigma[i,i])*diag_matlab(diag_matlab(tmp_lh*d*t(tmp_lh))))
         }
         j=j+1
       }
     }
     
     if((sum(poped.db$parameters$notfixed_covsigma)!=0)){
-      for(i in 1:length(poped.db$parameters$notfixed_covsigma) ){
-        if((poped.db$parameters$notfixed_covsigma[i]==1)){
-          returnArgs <- get_cov_matrix_index(sigma,i)   
-          m <- returnArgs[[1]]
-          n <- returnArgs[[2]]
-          if((m==-1 || n==-1)){
-            stop(sprintf('Wrong index in get_covariance_matrix_index sigma, PopED is }ing!'))
-          }
-          tmp_lh_m = zeros(size(xt_ind,1),poped.db$parameters$NumRanEff)
-          tmp_lh_n = zeros(size(xt_ind,1),poped.db$parameters$NumRanEff)
-          
-          for(k in 1:poped.db$parameters$NumRanEff ){#Only use the Random Eff interacting with sigma_m or sigma_n
-            tmp_lh_m[,k] = lh[,m+(k-1)*NumSigma,drop=F]
-            tmp_lh_n[,k] = lh[,n+(k-1)*NumSigma,drop=F]
-          }
-          dv_db_new[,j]=reshape_matlab(diag_matlab(diag_matlab(h(,m)*t(h(,n))))+diag_matlab(diag_matlab(h(,n)*t(h(,m))))+diag_matlab(diag_matlab(tmp_lh_m*d*t(tmp_lh_n)))+diag_matlab(diag_matlab(tmp_lh_n*d*t(tmp_lh_m))),ns,1)
-          j=j+1
+      covIdx = which(lower.tri(sigma))
+      covRow = nrow(sigma)
+      if (length(covIdx) != length(poped.db$parameters$notfixed_covsigma)){
+        stop(sprintf('Wrong length of notfixed_covsigma, PopED is stoping!'))
+      }
+      for (i in which(poped.db$parameters$notfixed_covsigma == 1) ){
+        m <- (covIdx[i]-1) %% covRow + 1
+        n <- ceiling(covIdx[i] / covRow)
+        tmp_lh_m = zeros(size(xt_ind,1),poped.db$parameters$NumRanEff)
+        tmp_lh_n = zeros(size(xt_ind,1),poped.db$parameters$NumRanEff)
+        
+        for(k in 1:poped.db$parameters$NumRanEff ){#Only use the Random Eff interacting with sigma_m or sigma_n
+          tmp_lh_m[,k] = lh[,m+(k-1)*NumSigma,drop=F]
+          tmp_lh_n[,k] = lh[,n+(k-1)*NumSigma,drop=F]
         }
+        dv_db_new[,j]=as.vector(diag_matlab(diag_matlab(h(,m)*t(h(,n))))+diag_matlab(diag_matlab(h(,n)*t(h(,m))))+diag_matlab(diag_matlab(tmp_lh_m*d*t(tmp_lh_n)))+diag_matlab(diag_matlab(tmp_lh_n*d*t(tmp_lh_m))))
+        j=j+1
       }
     }
     
@@ -171,7 +168,7 @@ m3 <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,bUseVarS
           dv=v_plus-v_minus
           if((!isempty(dv))){
             ir=dv/(2*poped.db$settings$hm2)
-            ir=reshape_matlab(ir,ns,1)
+            ir=as.vector(ir)
             dv_db_new[,k]=ir
           }
           k=k+1
@@ -206,7 +203,7 @@ m3 <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,bUseVarS
           dv=v_plus-v_minus
           if((!isempty(dv))){
             ir=dv/(2*poped.db$settings$hm2)
-            ir=reshape_matlab(ir,ns,1)
+            ir=as.vector(ir)
             dv_db_new[,k]=ir
           }
           k=k+1
@@ -243,45 +240,46 @@ m3 <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,bUseVarS
           dv=v_plus-v_minus
           if((!isempty(dv))){
             ir=dv/(2*poped.db$settings$hm2)
-            ir=reshape_matlab(ir,ns,1)
+            ir=as.vector(ir)
             dv_db_new[,k]=ir
           }
           k=k+1
         }
       }
       
-      for(i in 1:length(poped.db$parameters$notfixed_covdocc)){
-        if((poped.db$parameters$notfixed_covdocc[i]==1)){
-          
-          docc_plus=update_offdiag(docc,i,poped.db$settings$hm2)
-          docc_minus=update_offdiag(docc,i,-poped.db$settings$hm2)
-          
-          if((poped.db$settings$bCalculateEBE)){
-            start_bind = t(b_ind)
-            warning('EBE calculation with covariance of occasions is not available in the current version!')
-            b_ind_plus = b_ind#ind_estimates(poped.db$mean_data,bpop,d_plus,sigma,start_bind,(poped.db$settings$iApproximationMethod==2),FALSE,model_switch,xt_ind,x,a,b_ind,bocc_ind,poped.db)
-            b_ind_minus = b_ind#ind_estimates(poped.db$mean_data,bpop,d_minus,sigma,start_bind,(poped.db$settings$iApproximationMethod==2),FALSE,model_switch,xt_ind,x,a,b_ind,bocc_ind,poped.db)
-          } else {
-            b_ind_plus = b_ind
-            b_ind_minus = b_ind
+      if(!isempty(poped.db$parameters$notfixed_covdocc)){
+        for(i in 1:length(poped.db$parameters$notfixed_covdocc)){
+          if((poped.db$parameters$notfixed_covdocc[i]==1)){
+            
+            docc_plus=update_offdiag(docc,i,poped.db$settings$hm2)
+            docc_minus=update_offdiag(docc,i,-poped.db$settings$hm2)
+            
+            if((poped.db$settings$bCalculateEBE)){
+              start_bind = t(b_ind)
+              warning('EBE calculation with covariance of occasions is not available in the current version!')
+              b_ind_plus = b_ind#ind_estimates(poped.db$mean_data,bpop,d_plus,sigma,start_bind,(poped.db$settings$iApproximationMethod==2),FALSE,model_switch,xt_ind,x,a,b_ind,bocc_ind,poped.db)
+              b_ind_minus = b_ind#ind_estimates(poped.db$mean_data,bpop,d_minus,sigma,start_bind,(poped.db$settings$iApproximationMethod==2),FALSE,model_switch,xt_ind,x,a,b_ind,bocc_ind,poped.db)
+            } else {
+              b_ind_plus = b_ind
+              b_ind_minus = b_ind
+            }
+            
+            returnArgs <- v(model_switch,xt_ind,x,a,bpop,b_ind_plus,bocc_ind,d,sigma,docc_plus,poped.db) 
+            v_plus <- returnArgs[[1]]
+            poped.db <- returnArgs[[2]]
+            returnArgs <- v(model_switch,xt_ind,x,a,bpop,b_ind_minus,bocc_ind,d,sigma,docc_minus,poped.db) 
+            v_minus <- returnArgs[[1]]
+            poped.db <- returnArgs[[2]]
+            dv=v_plus-v_minus
+            if((!isempty(dv))){
+              ir=dv/(2*poped.db$settings$hm2)
+              ir=as.vector(ir)
+              dv_db_new[,k]=ir
+            }
+            k=k+1
           }
-          
-          returnArgs <- v(model_switch,xt_ind,x,a,bpop,b_ind_plus,bocc_ind,d,sigma,docc_plus,poped.db) 
-          v_plus <- returnArgs[[1]]
-          poped.db <- returnArgs[[2]]
-          returnArgs <- v(model_switch,xt_ind,x,a,bpop,b_ind_minus,bocc_ind,d,sigma,docc_minus,poped.db) 
-          v_minus <- returnArgs[[1]]
-          poped.db <- returnArgs[[2]]
-          dv=v_plus-v_minus
-          if((!isempty(dv))){
-            ir=dv/(2*poped.db$settings$hm2)
-            ir=reshape_matlab(ir,ns,1)
-            dv_db_new[,k]=ir
-          }
-          k=k+1
         }
       }
-      
       
     }
     for(i in 1:NumSigma){
@@ -321,7 +319,7 @@ m3 <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,bUseVarS
           } else {
             ir=2*sqrt(sigma[i,i])*dv/(2*poped.db$settings$hm2) #Derivative w$r.t. sigma as stdev
           }
-          ir=reshape_matlab(ir,ns,1)
+          ir=as.vector(ir)
           dv_db_new[,k]=ir
         }
         k=k+1
@@ -357,7 +355,7 @@ m3 <- function(model_switch,xt_ind,x,a,bpop,b_ind,bocc_ind,d,sigma,docc,bUseVarS
           #else
           #    ir=2*sqrt(sigma[i,i])*dv/(2*poped.db$settings$hm2) #Derivative w$r.t. sigma as stdev
           #end
-          ir=reshape_matlab(ir,ns,1)
+          ir=as.vector(ir)
           dv_db_new[,k]=ir
         }
         k=k+1

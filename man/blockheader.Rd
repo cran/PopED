@@ -6,11 +6,12 @@
 \usage{
 blockheader(poped.db, name = "Default", iter = NULL,
   e_flag = !(poped.db$settings$d_switch),
-  opt_xt = poped.db$settings$optsw[2], opt_a = poped.db$settings$optsw[4],
+  opt_xt = poped.db$settings$optsw[2],
+  opt_a = poped.db$settings$optsw[4],
   opt_x = poped.db$settings$optsw[3],
   opt_samps = poped.db$settings$optsw[1],
-  opt_inds = poped.db$settings$optsw[5], fmf = 0, dmf = 0, bpop = NULL,
-  d = NULL, docc = NULL, sigma = NULL,
+  opt_inds = poped.db$settings$optsw[5], fmf = 0, dmf = 0,
+  bpop = NULL, d = NULL, docc = NULL, sigma = NULL,
   name_header = poped.db$settings$strOutputFileName,
   file_path = poped.db$settings$strOutputFilePath, out_file = NULL,
   compute_inv = TRUE, trflag = TRUE, header_flag = TRUE, ...)
@@ -23,7 +24,7 @@ If \code{""} then output is to the screen.}
 
 \item{iter}{The last number in the name printed to the output file, combined with \code{name}.}
 
-\item{e_flag}{Shuould output be with uncertainty around parameters?}
+\item{e_flag}{Should output be with uncertainty around parameters?}
 
 \item{opt_xt}{Should the sample times be optimized?}
 
@@ -31,13 +32,13 @@ If \code{""} then output is to the screen.}
 
 \item{opt_x}{Should the discrete design variables be optimized?}
 
-\item{opt_samps}{Are the nuber of sample times per group being optimized?}
+\item{opt_samps}{Are the number of sample times per group being optimized?}
 
-\item{opt_inds}{Are the nuber of individuals per group being optimized?}
+\item{opt_inds}{Are the number of individuals per group being optimized?}
 
 \item{fmf}{The initial value of the FIM. If set to zero then it is computed.}
 
-\item{dmf}{The inital OFV. If set to zero then it is computed.}
+\item{dmf}{The initial OFV. If set to zero then it is computed.}
 
 \item{bpop}{Matrix defining the fixed effects, per row (row number = parameter_number) we should have:
 \itemize{
@@ -49,13 +50,13 @@ If \code{""} then output is to the screen.}
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
 parameter value is to be used.}
 
-\item{d}{Matrix defining the diagnonals of the IIV (same logic as for the fixed efects 
+\item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
 matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}.}
 
 \item{docc}{Matrix defining the IOV, the IOV variances and the IOV distribution as for d and bpop.}
 
 \item{sigma}{Matrix defining the variances can covariances of the residual variability terms of the model.
-can also just supply the diagnonal parameter values (variances) as a \code{c()}.}
+can also just supply the diagonal parameter values (variances) as a \code{c()}.}
 
 \item{name_header}{The initial portion of the file name.}
 
@@ -110,9 +111,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -192,5 +193,5 @@ blockheader(poped.db.1,name="",trflag=2,opt_xt=TRUE)
 Other Helper: \code{\link{blockexp}},
   \code{\link{blockfinal}}, \code{\link{blockopt}}
 }
+\concept{Helper}
 \keyword{internal}
-

@@ -2,13 +2,14 @@
 % Please edit documentation in R/poped_optim.R
 \name{poped_optim}
 \alias{poped_optim}
-\title{Optimization main module for PopED}
+\title{Optimize a design defined in a PopED database}
 \usage{
 poped_optim(poped.db, opt_xt = poped.db$settings$optsw[2],
-  opt_a = poped.db$settings$optsw[4], opt_x = poped.db$settings$optsw[3],
+  opt_a = poped.db$settings$optsw[4],
+  opt_x = poped.db$settings$optsw[3],
   opt_samps = poped.db$settings$optsw[1],
-  opt_inds = poped.db$settings$optsw[5], method = c("ARS", "BFGS", "LS"),
-  control = list(), trace = TRUE,
+  opt_inds = poped.db$settings$optsw[5], method = c("ARS", "BFGS",
+  "LS"), control = list(), trace = TRUE,
   fim.calc.type = poped.db$settings$iFIMCalculationType,
   ofv_calc_type = poped.db$settings$ofv_calc_type,
   approx_type = poped.db$settings$iApproximationMethod,
@@ -17,9 +18,10 @@ poped_optim(poped.db, opt_xt = poped.db$settings$optsw[2],
   bLHS = poped.db$settings$bLHS,
   use_laplace = poped.db$settings$iEDCalculationType, out_file = "",
   parallel = F, parallel_type = NULL, num_cores = NULL,
-  loop_methods = ifelse(length(method) > 1, TRUE, FALSE), iter_max = 10,
-  stop_crit_eff = 1.001, stop_crit_diff = NULL, stop_crit_rel = NULL,
-  ofv_fun = poped.db$settings$ofv_fun, maximize = T, ...)
+  loop_methods = ifelse(length(method) > 1, TRUE, FALSE),
+  iter_max = 10, stop_crit_eff = 1.001, stop_crit_diff = NULL,
+  stop_crit_rel = NULL, ofv_fun = poped.db$settings$ofv_fun,
+  maximize = T, ...)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
@@ -30,9 +32,9 @@ poped_optim(poped.db, opt_xt = poped.db$settings$optsw[2],
 
 \item{opt_x}{Should the discrete design variables be optimized?}
 
-\item{opt_samps}{Are the nuber of sample times per group being optimized?}
+\item{opt_samps}{Are the number of sample times per group being optimized?}
 
-\item{opt_inds}{Are the nuber of individuals per group being optimized?}
+\item{opt_inds}{Are the number of individuals per group being optimized?}
 
 \item{method}{A vector of optimization methods to use in a sequential 
 fashion.  Options are \code{c("ARS","BFGS","LS","GA")}. \code{c("ARS")} is 
@@ -47,17 +49,17 @@ genetic algorithm from \code{\link[GA]{ga}}.}
 
 \item{fim.calc.type}{The method used for calculating the FIM. Potential values:
 \itemize{
-\item 0 = Full FIM.  No assumption that fixed and random effects are uncorrelated.  See \code{\link{mftot0}}.
+\item 0 = Full FIM.  No assumption that fixed and random effects are uncorrelated.  
 \item 1 = Reduced FIM. Assume that there is no correlation in the FIM between the fixed and random effects, and set these elements in 
-the FIM to zero. See \code{\link{mftot1}}.
+the FIM to zero. 
 \item 2 = weighted models (placeholder).
 \item 3 = Not currently used.
 \item 4 = Reduced FIM and computing all derivatives with respect to the standard deviation of the residual unexplained variation (sqrt(SIGMA) in NONMEM). 
 This matches what is done in PFIM, and assumes that the standard deviation of the residual unexplained variation is the estimated parameter
-(NOTE: NONMEM estimates the variance of the resudual unexplained variation by default). See \code{\link{mftot4}}.
-\item 5 = Full FIM parameterized with A,B,C matrices & derivative of variance. See \code{\link{mftot5}}.
-\item 6 = Calculate one model switch at a time, good for large matrices. See \code{\link{mftot6}}.
-\item 7 = Reduced FIM parameterized with A,B,C matrices & derivative of variance See \code{\link{mftot7}}.
+(NOTE: NONMEM estimates the variance of the residual unexplained variation by default). 
+\item 5 = Full FIM parameterized with A,B,C matrices & derivative of variance. 
+\item 6 = Calculate one model switch at a time, good for large matrices. 
+\item 7 = Reduced FIM parameterized with A,B,C matrices & derivative of variance.
 }}
 
 \item{ofv_calc_type}{OFV calculation type for FIM 
@@ -75,7 +77,7 @@ rows and columns of the FIM: det(FIM)/det(FIM_u)
 
 \item{d_switch}{\itemize{
 \item \bold{******START OF CRITERION SPECIFICATION OPTIONS**********}}
-D-family design (1) or ED-familty design (0) (with or without parameter uncertainty)}
+D-family design (1) or ED-family design (0) (with or without parameter uncertainty)}
 
 \item{ED_samp_size}{Sample size for E-family sampling}
 
@@ -85,7 +87,7 @@ D-family design (1) or ED-familty design (0) (with or without parameter uncertai
 
 \item{out_file}{Save output from the optimization to a file.}
 
-\item{parallel}{Should we use parallelize the computation.}
+\item{parallel}{Should we use parallel computations?}
 
 \item{parallel_type}{Which type of parallelization should be used? 
 Can be "snow" or "multicore".  "snow"  works on Linux-like systems & Windows. "multicore" works only on 
@@ -123,7 +125,7 @@ the series) is less than, or equal to, \code{stop_crit_rel} (if \code{maximize==
 off and the relative difference in criterion value must be greater than or equal to this value to stop the looping).}
 
 \item{ofv_fun}{User defined function used to compute the objective function. The function must have a poped database object as its first
-argument and have "..." in its argument list.  Can be referenced as a function or as a file name where the funciton defined in the file has the same name as the file.
+argument and have "..." in its argument list.  Can be referenced as a function or as a file name where the function defined in the file has the same name as the file.
 e.g. "cost.txt" has a function named "cost" in it.}
 
 \item{maximize}{Should the objective function be maximized or minimized?}
@@ -131,12 +133,10 @@ e.g. "cost.txt" has a function named "cost" in it.}
 \item{...}{arguments passed to other functions.}
 }
 \description{
-Optimize the objective function. The function works for both discrete and 
-continuous optimization variables. If more than one optimization method is 
-specified then the methods are run in series.  If \code{loop_methods=TRUE} 
-then the series of optimization methods will be run for \code{iter_max} 
-iterations, or until the efficiency of the design after the current series 
-(compared to the start of the series) is less than \code{stop_crit_eff}.
+Optimize a design defined in a PopED database using the objective function
+described in the database (or in the arguments to this function). The 
+function works for both discrete and 
+continuous optimization variables.
 }
 \details{
 This function takes information from the PopED database supplied as an 
@@ -144,6 +144,12 @@ argument. The PopED database supplies information about the the model,
 parameters, design and methods to use. Some of the arguments coming from the 
 PopED database can be overwritten; if they are supplied then they are used 
 instead of the arguments from the PopED database.
+
+If more than one optimization method is 
+specified then the methods are run in series.  If \code{loop_methods=TRUE} 
+then the series of optimization methods will be run for \code{iter_max} 
+iterations, or until the efficiency of the design after the current series 
+(compared to the start of the series) is less than \code{stop_crit_eff}.
 }
 \examples{
 library(PopED)
@@ -176,9 +182,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -228,15 +234,14 @@ out_2 <- poped_optim(poped.db,opt_a =TRUE,
                      iter_max = 2)
 
 # minimize the cost function
-out_2 <- poped_optim(poped.db,opt_a =TRUE,
+out_3 <- poped_optim(poped.db,opt_a =TRUE,
                      ofv_fun=crit_fcn,
                      control = list(ARS=list(iter=2),
                                     BFGS=list(maxit=2),
                                     LS=list(line_length=2)),
                      iter_max = 2,
                      maximize = FALSE,
-                     evaluate_fim = FALSE
-                    )
+                     evaluate_fim = FALSE)
 
 
 \dontrun{
@@ -252,7 +257,7 @@ out_2 <- poped_optim(poped.db,opt_a =TRUE,
   poped.db.2 <- poped.db
   poped.db.2$design_space$xt_space <- matrix(list(seq(1,120)),1,8)
   output_2 <- poped_optim(poped.db.2,opt_xt=T,parallel = TRUE)
-  
+
   get_rse(output_2$FIM,output_2$poped.db)
   plot_model_prediction(output_2$poped.db)
   
@@ -275,7 +280,7 @@ out_2 <- poped_optim(poped.db,opt_a =TRUE,
   ars.output <- poped_optim(poped.db,opt_xt=T,opt_a=T,method = "ARS",
                            control = list(ARS=list(iter=5)))
   
-  # L-BFGS-B gradient search from the stats::optim() function, 
+  # BFGS gradient search from the stats::optim() function, 
   # DOSE and sample time optimization
   bfgs.output <- poped_optim(poped.db,opt_xt=T,opt_a=T,method = "BFGS",
                             control = list(BFGS=list(maxit=5)))
@@ -360,11 +365,12 @@ out_2 <- poped_optim(poped.db,opt_a =TRUE,
 }
 \seealso{
 Other Optimize: \code{\link{Doptim}},
-  \code{\link{LEDoptim}}, \code{\link{RS_opt_gen}},
-  \code{\link{RS_opt}}, \code{\link{a_line_search}},
-  \code{\link{bfgsb_min}}, \code{\link{calc_autofocus}},
+  \code{\link{LEDoptim}}, \code{\link{RS_opt}},
+  \code{\link{a_line_search}}, \code{\link{bfgsb_min}},
+  \code{\link{calc_autofocus}},
   \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
   \code{\link{optim_ARS}}, \code{\link{optim_LS}},
-  \code{\link{poped_optimize}}
+  \code{\link{poped_optim_1}}, \code{\link{poped_optim_2}},
+  \code{\link{poped_optim_3}}, \code{\link{poped_optimize}}
 }
-
+\concept{Optimize}

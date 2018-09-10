@@ -1,6 +1,6 @@
 PopED Results 
 
-        2016-12-12 12:50:38
+        2018-09-10 08:27:20
 
 ==============================================================================
 Model description : PopED model 
@@ -37,16 +37,16 @@ SIGMA[2,2]:  0.25 [  0.5]
 ==============================================================================
 Experiment description (design and design space)
 
-Numer of individuals: 32
+Number of individuals: 32
 Number of groups (individuals with same design): 1
-Numer of individuals per group:
+Number of individuals per group:
      Group 1: 32
-Numer of samples per group:
+Number of samples per group:
  Number of discrete experimental variables: 0
 Number of model covariates: 1
 
 Initial Sampling Schedule
-   0.5      1      2      6     24     36     72    120
+Group 1:    0.5      1      2      6     24     36     72    120
 
 Covariates  (min, max):
 Group 1: 70 (0.01, 100)
@@ -58,17 +58,18 @@ Initial OFV = 55.3964
 
 Efficiency criterion [usually defined as OFV^(1/npar)]  = 1016.94
 
-Initial design expected parameter 
-relative standard error (%RSE)
+Initial design
+expected relative standard error
+(%RSE, rounded to nearest integer)
     Parameter   Values   RSE_0
-      bpop[1]     0.15    5.10
-      bpop[2]     8.00    3.03
-      bpop[3]     1.00   14.26
-       D[1,1]     0.07   29.76
-       D[2,2]     0.02   36.68
-       D[3,3]     0.60   26.75
-   SIGMA[1,1]     0.01   32.01
-   SIGMA[2,2]     0.25   25.64
+      bpop[1]     0.15       5
+      bpop[2]        8       3
+      bpop[3]        1      14
+       D[1,1]     0.07      30
+       D[2,2]     0.02      37
+       D[3,3]      0.6      27
+   SIGMA[1,1]     0.01      32
+   SIGMA[2,2]     0.25      26
 
 ==============================================================================
 Criterion Specification
@@ -96,7 +97,7 @@ Fisher Information Matrix type: 1
 
 Design family: 1
   D-family design (1) or 
-  ED-familty design (0) 
+  ED-family design (0) 
   (with or without parameter uncertainty)
 
 ==============================================================================
@@ -143,16 +144,16 @@ Efficiency criterion [usually defined as det(FIM)^(1/npar)]  = 1101.03
 Efficiency: 
   ((exp(ofv_final) / exp(ofv_init))^(1/n_parameters)) = 1.0827
 
-Expected parameter 
-relative standard error (%RSE):
-    Parameter   Values   RSE_0     RSE
-      bpop[1]     0.15    5.10    4.93
-      bpop[2]     8.00    3.03    2.92
-      bpop[3]     1.00   14.26   14.11
-       D[1,1]     0.07   29.76   27.85
-       D[2,2]     0.02   36.68   34.08
-       D[3,3]     0.60   26.75   26.32
-   SIGMA[1,1]     0.01   32.01   23.16
-   SIGMA[2,2]     0.25   25.64   30.21
+Expected relative standard error
+(%RSE, rounded to nearest integer):
+    Parameter   Values   RSE_0   RSE
+      bpop[1]     0.15       5     5
+      bpop[2]        8       3     3
+      bpop[3]        1      14    14
+       D[1,1]     0.07       0     0
+       D[2,2]     0.02      37    34
+       D[3,3]      0.6       0     0
+   SIGMA[1,1]     0.01      32    23
+   SIGMA[2,2]     0.25      26    30
 
-Total running time: 0.072 seconds
+Total running time: 0.069 seconds

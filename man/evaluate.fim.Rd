@@ -5,31 +5,32 @@
 \title{Evaluate the Fisher Information Matrix (FIM)}
 \usage{
 evaluate.fim(poped.db, fim.calc.type = NULL, approx.method = NULL,
-  FOCE.num = NULL, bpop.val = NULL, d_full = NULL, docc_full = NULL,
-  sigma_full = NULL, model_switch = NULL, ni = NULL, xt = NULL,
-  x = NULL, a = NULL, groupsize = NULL, deriv.type = NULL, ...)
+  FOCE.num = NULL, bpop.val = NULL, d_full = NULL,
+  docc_full = NULL, sigma_full = NULL, model_switch = NULL,
+  ni = NULL, xt = NULL, x = NULL, a = NULL, groupsize = NULL,
+  deriv.type = NULL, ...)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
 
 \item{fim.calc.type}{The method used for calculating the FIM. Potential values:
 \itemize{
-\item 0 = Full FIM.  No assumption that fixed and random effects are uncorrelated.  See \code{\link{mftot0}}.
+\item 0 = Full FIM.  No assumption that fixed and random effects are uncorrelated.  
 \item 1 = Reduced FIM. Assume that there is no correlation in the FIM between the fixed and random effects, and set these elements in 
-the FIM to zero. See \code{\link{mftot1}}.
+the FIM to zero. 
 \item 2 = weighted models (placeholder).
 \item 3 = Not currently used.
 \item 4 = Reduced FIM and computing all derivatives with respect to the standard deviation of the residual unexplained variation (sqrt(SIGMA) in NONMEM). 
 This matches what is done in PFIM, and assumes that the standard deviation of the residual unexplained variation is the estimated parameter
-(NOTE: NONMEM estimates the variance of the resudual unexplained variation by default). See \code{\link{mftot4}}.
-\item 5 = Full FIM parameterized with A,B,C matrices & derivative of variance. See \code{\link{mftot5}}.
-\item 6 = Calculate one model switch at a time, good for large matrices. See \code{\link{mftot6}}.
-\item 7 = Reduced FIM parameterized with A,B,C matrices & derivative of variance See \code{\link{mftot7}}.
+(NOTE: NONMEM estimates the variance of the residual unexplained variation by default). 
+\item 5 = Full FIM parameterized with A,B,C matrices & derivative of variance. 
+\item 6 = Calculate one model switch at a time, good for large matrices. 
+\item 7 = Reduced FIM parameterized with A,B,C matrices & derivative of variance.
 }}
 
 \item{approx.method}{Approximation method for model, 0=FO, 1=FOCE, 2=FOCEI, 3=FOI}
 
-\item{FOCE.num}{Number indivduals in each step of FOCE approximation method}
+\item{FOCE.num}{Number individuals in each step of FOCE approximation method}
 
 \item{bpop.val}{The fixed effects parameter values.  Supplied as a vector.}
 
@@ -49,7 +50,7 @@ This matches what is done in PFIM, and assumes that the standard deviation of th
 
 \item{a}{A matrix of covariates.  Each row is a group.}
 
-\item{groupsize}{A vector of the numer of individuals in each group.}
+\item{groupsize}{A vector of the number of individuals in each group.}
 
 \item{deriv.type}{A number indicating the type of derivative to use:
 \itemize{
@@ -142,16 +143,13 @@ FIM.7
 det(FIM.7)
 get_rse(FIM.7,poped.db,fim.calc.type=7)
 
+## evaluate FIM and rse with prior FIM.1
+poped.db.prior = create.poped.database(poped.db, prior_fim = FIM.1)
+FIM.1.prior <- evaluate.fim(poped.db.prior)
+all.equal(FIM.1.prior,FIM.1) # the FIM is only computed from the design in the poped.db
+get_rse(FIM.1.prior,poped.db.prior) # the RSE is computed with the prior information
 }
 \seealso{
-Other evaluate_design: \code{\link{evaluate_design}},
-  \code{\link{get_rse}}, \code{\link{model_prediction}},
-  \code{\link{plot_efficiency_of_windows}},
-  \code{\link{plot_model_prediction}}
-
-Other evaluate_FIM: \code{\link{calc_ofv_and_fim}},
-  \code{\link{evaluate.e.ofv.fim}}, \code{\link{ofv_fim}}
-
 Other FIM: \code{\link{LinMatrixH}},
   \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
   \code{\link{calc_ofv_and_fim}},
@@ -159,13 +157,18 @@ Other FIM: \code{\link{LinMatrixH}},
   \code{\link{efficiency}},
   \code{\link{evaluate.e.ofv.fim}},
   \code{\link{gradf_eps}}, \code{\link{mf3}},
-  \code{\link{mf5}}, \code{\link{mf6}}, \code{\link{mf7}},
-  \code{\link{mf8}}, \code{\link{mftot0}},
-  \code{\link{mftot1}}, \code{\link{mftot2}},
-  \code{\link{mftot3}}, \code{\link{mftot4}},
-  \code{\link{mftot5}}, \code{\link{mftot6}},
-  \code{\link{mftot7}}, \code{\link{mftot}},
-  \code{\link{mf}}, \code{\link{ofv_criterion}},
-  \code{\link{ofv_fim}}
-}
+  \code{\link{mf7}}, \code{\link{mftot}},
+  \code{\link{ofv_criterion}}, \code{\link{ofv_fim}}
 
+Other evaluate_design: \code{\link{evaluate_design}},
+  \code{\link{evaluate_power}}, \code{\link{get_rse}},
+  \code{\link{model_prediction}},
+  \code{\link{plot_efficiency_of_windows}},
+  \code{\link{plot_model_prediction}}
+
+Other evaluate_FIM: \code{\link{calc_ofv_and_fim}},
+  \code{\link{evaluate.e.ofv.fim}}, \code{\link{ofv_fim}}
+}
+\concept{FIM}
+\concept{evaluate_FIM}
+\concept{evaluate_design}

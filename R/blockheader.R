@@ -7,7 +7,6 @@
 #' @inheritParams blockexp
 #' @inheritParams Doptim
 #' @inheritParams create.poped.database
-#' @inheritParams RS_opt_gen
 #' @param name The name used for the output file. Combined with \code{name_header} and \code{iter}. 
 #' If \code{""} then output is to the screen.
 #' @param iter The last number in the name printed to the output file, combined with \code{name}.
@@ -67,7 +66,8 @@ blockheader <- function(poped.db,name="Default",iter=NULL,
     tmpfile=paste(tmpfile,".txt",sep="")
     #tmpfile=sprintf('%s_%s.txt',name_header,name)
     #if(!is.null(iter)) tmpfile=sprintf('%s_%s_%g.txt',name_header,name,iter)
-    tmpfile = fullfile(poped.db$settings$strOutputFilePath,tmpfile)
+    if (!is.character(poped.db$settings$strOutputFilePath)) poped.db$settings$strOutputFilePath = '.'
+    tmpfile = file.path(poped.db$settings$strOutputFilePath,tmpfile)
     fn=file(tmpfile,'w')
     if((fn==-1)){
       stop(sprintf('output file could not be opened'))
@@ -95,7 +95,7 @@ blockheader <- function(poped.db,name="Default",iter=NULL,
     if(fn!="") fprintf(fn,'PopED Results \n\n')
   }
   if(fn!="") fprintf(fn,'        ')
-  if(fn!="") fprintf(fn,datestr_poped(poped.db$settings$Engine$Type))
+  if(fn!="") fprintf(fn,as.character(Sys.time()))
   if(fn!="") fprintf(fn,'\n\n')
   
   if(fn!="" || trflag>1) blockexp(fn,poped.db,
@@ -126,21 +126,21 @@ blockheader <- function(poped.db,name="Default",iter=NULL,
   }
   
   if(is.matrix(fmf) && compute_inv && is.finite(dmf)){
-    param_vars=diag_matlab(inv(fmf))
-    returnArgs <-  get_cv(param_vars,bpop,d,docc,sigma,poped.db) 
-    params <- returnArgs[[1]]
-    param_cvs <- returnArgs[[2]]
+    #param_vars=diag_matlab(inv(fmf))
+    #returnArgs <-  get_cv(param_vars,bpop,d,docc,sigma,poped.db) 
+    #params <- returnArgs[[1]]
+    #param_cvs <- returnArgs[[2]]
+    params <- get_unfixed_params(poped.db,get_all_params(poped.db)[[8]])[[8]]
+    param_rse <- get_rse(fmf, poped.db)
     
-    
-      
     #fprintf(fn,'\nEfficiency criterion [usually defined as OFV^(1/npar)]  = %g\n',dmf^(1/length(params)))
     #fprintf(fn,'\nEfficiency criterion [usually defined as OFV^(1/npar)]  = %g\n',
     #        ofv_criterion(dmf,length(params),poped.db))
     
     parnam <- get_parnam(poped.db)
-    fprintf(fn,'\nInitial design expected parameter \nrelative standard error (%sRSE)\n','%')
-    if(fn!="") fprintf('\nInitial design expected parameter \nrelative standard error (%sRSE)\n','%')
-    df <- data.frame("Parameter"=parnam,"Values"=params,"RSE_0"=t(param_cvs*100))
+    fprintf(fn,'\nInitial design\nexpected relative standard error\n(%sRSE, rounded to nearest integer)\n','%')
+    if(fn!="") fprintf('\nInitial design\nexpected relative standard error\n(%sRSE, rounded to nearest integer)\n','%')
+    df <- data.frame("Parameter"=parnam,"Values"=sprintf("%6.3g",params),"RSE_0"=round(param_rse))
     print(df,digits=3, print.gap=3,row.names=F)
     if(fn!="") capture.output(print(df,digits=3, print.gap=3,row.names=F),file=fn)
     fprintf('\n')

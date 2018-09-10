@@ -4,8 +4,10 @@
 \alias{blockexp}
 \title{Summarize your experiment for optimization routines}
 \usage{
-blockexp(fn, poped.db, e_flag = FALSE, opt_xt = poped.db$settings$optsw[2],
-  opt_a = poped.db$settings$optsw[4], opt_x = poped.db$settings$optsw[4],
+blockexp(fn, poped.db, e_flag = FALSE,
+  opt_xt = poped.db$settings$optsw[2],
+  opt_a = poped.db$settings$optsw[4],
+  opt_x = poped.db$settings$optsw[4],
   opt_samps = poped.db$settings$optsw[1],
   opt_inds = poped.db$settings$optsw[5])
 }
@@ -14,7 +16,7 @@ blockexp(fn, poped.db, e_flag = FALSE, opt_xt = poped.db$settings$optsw[2],
 
 \item{poped.db}{A PopED database.}
 
-\item{e_flag}{Shuould output be with uncertainty around parameters?}
+\item{e_flag}{Should output be with uncertainty around parameters?}
 
 \item{opt_xt}{Should the sample times be optimized?}
 
@@ -22,9 +24,9 @@ blockexp(fn, poped.db, e_flag = FALSE, opt_xt = poped.db$settings$optsw[2],
 
 \item{opt_x}{Should the discrete design variables be optimized?}
 
-\item{opt_samps}{Are the nuber of sample times per group being optimized?}
+\item{opt_samps}{Are the number of sample times per group being optimized?}
 
-\item{opt_inds}{Are the nuber of individuals per group being optimized?}
+\item{opt_inds}{Are the number of individuals per group being optimized?}
 }
 \description{
 Create some output to the screen and a text file that summarizes the initial design and the design space
@@ -61,9 +63,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -89,5 +91,5 @@ blockexp("",poped.db, opt_xt=TRUE)
 Other Helper: \code{\link{blockfinal}},
   \code{\link{blockheader}}, \code{\link{blockopt}}
 }
+\concept{Helper}
 \keyword{internal}
-

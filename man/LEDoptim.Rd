@@ -4,36 +4,28 @@
 \alias{LEDoptim}
 \title{Optimization function for D-family, E-family and Laplace approximated ED designs}
 \usage{
-LEDoptim(poped.db, model_switch = NULL, ni = NULL, xt = NULL, x = NULL,
-  a = NULL, bpopdescr = NULL, ddescr = NULL, maxxt = NULL,
-  minxt = NULL, maxa = NULL, mina = NULL, ofv_init = 0, fim_init = 0,
-  trflag = TRUE, header_flag = TRUE, footer_flag = TRUE,
-  opt_xt = poped.db$settings$optsw[2], opt_a = poped.db$settings$optsw[4],
-  opt_x = poped.db$settings$optsw[3], out_file = NULL, d_switch = FALSE,
-  use_laplace = T, laplace.fim = FALSE,
+LEDoptim(poped.db, model_switch = NULL, ni = NULL, xt = NULL,
+  x = NULL, a = NULL, bpopdescr = NULL, ddescr = NULL,
+  maxxt = NULL, minxt = NULL, maxa = NULL, mina = NULL,
+  ofv_init = 0, fim_init = 0, trflag = TRUE, header_flag = TRUE,
+  footer_flag = TRUE, opt_xt = poped.db$settings$optsw[2],
+  opt_a = poped.db$settings$optsw[4],
+  opt_x = poped.db$settings$optsw[3], out_file = NULL,
+  d_switch = FALSE, use_laplace = T, laplace.fim = FALSE,
   use_RS = poped.db$settings$bUseRandomSearch, ...)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
 
-\item{model_switch}{Matrix defining which response a certain sampling time belongs to.}
+\item{model_switch}{A matrix that is the same size as xt, specifying which model each sample belongs to.}
 
-\item{ni}{Vector defining the number of samples for each group.}
+\item{ni}{A vector of the number of samples in each group.}
 
-\item{xt}{\itemize{
-\item \bold{******START OF INITIAL DESIGN OPTIONS**********}}
- Matrix defining the initial sampling schedule. 
- Each row is a group/individual.
- If only one vector is supplied, e.g. \code{c(1,2,3,4)}, then all groups will 
-have the same inital design.}
+\item{xt}{A matrix of sample times.  Each row is a vector of sample times for a group.}
 
-\item{x}{A matrix defining the initial discrete values for the model 
-Each row is a group/individual.}
+\item{x}{A matrix for the discrete design variables.  Each row is a group.}
 
-\item{a}{Matrix defining the initial continuous covariate values. 
-n_rows=number of groups, n_cols=number of covariates.
-If the number of rows is one and the number of groups > 1 then all groups are assigned the 
-same values.}
+\item{a}{A matrix of covariates.  Each row is a group.}
 
 \item{bpopdescr}{Matrix defining the fixed effects, per row (row number =
 parameter_number) we should have: \itemize{ \item column 1 the type of the
@@ -42,7 +34,7 @@ User Defined Distribution, 4 = lognormal and 5 = truncated normal) \item
 column 2  defines the mean. \item column 3 defines the variance of the
 distribution (or length of uniform distribution). }}
 
-\item{ddescr}{Matrix defining the diagnonals of the IIV (same logic as for
+\item{ddescr}{Matrix defining the diagonals of the IIV (same logic as for
 the \code{bpopdescr}).}
 
 \item{maxxt}{Matrix or single value defining the maximum value for each xt sample.  If a single value is 
@@ -57,7 +49,7 @@ all a values are given the same max value}
 \item{mina}{Vector defining the min value for each covariate. If a single value is supplied then
 all a values are given the same max value}
 
-\item{ofv_init}{The inital OFV. If set to zero then it is computed.}
+\item{ofv_init}{The initial OFV. If set to zero then it is computed.}
 
 \item{fim_init}{The initial value of the FIM. If set to zero then it is computed.}
 
@@ -78,24 +70,24 @@ all a values are given the same max value}
 
 \item{d_switch}{\itemize{
 \item \bold{******START OF CRITERION SPECIFICATION OPTIONS**********}}
-D-family design (1) or ED-familty design (0) (with or without parameter uncertainty)}
+D-family design (1) or ED-family design (0) (with or without parameter uncertainty)}
 
 \item{use_laplace}{Should the Laplace method be used in calculating the expectation of the OFV?}
 
 \item{laplace.fim}{Should an E(FIM) be calculated when computing the Laplace approximated E(OFV).  Typically
 the FIM does not need to be computed and, if desired,  this calculation
-is done usng the standard MC integration technique, so can be slow.}
+is done using the standard MC integration technique, so can be slow.}
 
-\item{use_RS}{should the fucntion use a random search algorithm?}
+\item{use_RS}{should the function use a random search algorithm?}
 
 \item{...}{arguments passed to \code{\link{evaluate.fim}} and \code{\link{ofv_fim}}.}
 }
 \description{
-Optimize the objective fucntion for D-family, E-family and Laplace approximated ED designs.  
+Optimize the objective function for D-family, E-family and Laplace approximated ED designs.  
 Right now there is only one optimization algorithm used in this 
 function 
 \enumerate{
-\item Adaptive random search. See \code{\link{RS_opt_gen}}.
+\item Adaptive random search. See \code{\link{RS_opt}}.
 }
 This function takes information from the PopED database supplied as an argument.
 The PopED database supplies information about the the model, parameters, design and methods to use.
@@ -142,9 +134,9 @@ bpop_vals_ed_ln["Favail",]  <- c(0,1,0)
 bpop_vals_ed_ln
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=bpop_vals_ed_ln, 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -205,12 +197,13 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
 }
 }
 \seealso{
-Other Optimize: \code{\link{Doptim}},
-  \code{\link{RS_opt_gen}}, \code{\link{RS_opt}},
+Other Optimize: \code{\link{Doptim}}, \code{\link{RS_opt}},
   \code{\link{a_line_search}}, \code{\link{bfgsb_min}},
   \code{\link{calc_autofocus}},
   \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
   \code{\link{optim_ARS}}, \code{\link{optim_LS}},
+  \code{\link{poped_optim_1}}, \code{\link{poped_optim_2}},
+  \code{\link{poped_optim_3}},
   \code{\link{poped_optimize}}, \code{\link{poped_optim}}
 }
-
+\concept{Optimize}

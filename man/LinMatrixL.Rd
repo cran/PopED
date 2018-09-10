@@ -9,8 +9,6 @@ LinMatrixL(model_switch, xt_ind, x, a, bpop, b_ind, bocc_ind, poped.db)
 \arguments{
 \item{model_switch}{A vector that is the same size as xt, specifying which model each sample belongs to.}
 
-\item{xt_ind}{A vector of sample times.}
-
 \item{x}{A vector for the discrete design variables.}
 
 \item{a}{A vector of covariates.}
@@ -65,9 +63,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -99,4 +97,3 @@ LinMatrixL(model_switch=t(poped.db$design$model_switch[ind,,drop=FALSE]),
 
 }
 \keyword{internal}
-

@@ -11,7 +11,7 @@ blockopt(fn, poped.db, opt_method = "")
 
 \item{poped.db}{A PopED database.}
 
-\item{opt_method}{If "RS" (random search), "SG" (stochastic gradient) or "DO" (discrete optimization) then specifc output is produced.}
+\item{opt_method}{If "RS" (random search), "SG" (stochastic gradient) or "DO" (discrete optimization) then specific output is produced.}
 }
 \description{
 Create some output to the screen and a text file that summarizes the optimization settings
@@ -48,9 +48,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -77,5 +77,5 @@ blockopt(fn="",poped.db,opt_method="DO")
 Other Helper: \code{\link{blockexp}},
   \code{\link{blockfinal}}, \code{\link{blockheader}}
 }
+\concept{Helper}
 \keyword{internal}
-

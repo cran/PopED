@@ -8,16 +8,18 @@ poped_optimize(poped.db, ni = NULL, xt = NULL, model_switch = NULL,
   x = NULL, a = NULL, bpop = NULL, d = NULL, maxxt = NULL,
   minxt = NULL, maxa = NULL, mina = NULL, fmf = 0, dmf = 0,
   trflag = TRUE, opt_xt = poped.db$settings$optsw[2],
-  opt_a = poped.db$settings$optsw[4], opt_x = poped.db$settings$optsw[3],
+  opt_a = poped.db$settings$optsw[4],
+  opt_x = poped.db$settings$optsw[3],
   opt_samps = poped.db$settings$optsw[1],
-  opt_inds = poped.db$settings$optsw[5], cfaxt = poped.db$settings$cfaxt,
-  cfaa = poped.db$settings$cfaa, rsit = poped.db$settings$rsit,
+  opt_inds = poped.db$settings$optsw[5],
+  cfaxt = poped.db$settings$cfaxt, cfaa = poped.db$settings$cfaa,
+  rsit = poped.db$settings$rsit,
   rsit_output = poped.db$settings$rsit_output,
   fim.calc.type = poped.db$settings$iFIMCalculationType,
   ofv_calc_type = poped.db$settings$ofv_calc_type,
   approx_type = poped.db$settings$iApproximationMethod,
-  bUseExchangeAlgorithm = poped.db$settings$bUseExchangeAlgorithm, iter = 1,
-  d_switch = poped.db$settings$d_switch,
+  bUseExchangeAlgorithm = poped.db$settings$bUseExchangeAlgorithm,
+  iter = 1, d_switch = poped.db$settings$d_switch,
   ED_samp_size = poped.db$settings$ED_samp_size,
   bLHS = poped.db$settings$bLHS,
   use_laplace = poped.db$settings$iEDCalculationType, ...)
@@ -45,7 +47,7 @@ poped_optimize(poped.db, ni = NULL, xt = NULL, model_switch = NULL,
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
 parameter value is to be used.}
 
-\item{d}{Matrix defining the diagnonals of the IIV (same logic as for the fixed efects 
+\item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
 matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}.}
 
 \item{maxxt}{Matrix or single value defining the maximum value for each xt sample.  If a single value is 
@@ -62,7 +64,7 @@ all a values are given the same max value}
 
 \item{fmf}{The initial value of the FIM. If set to zero then it is computed.}
 
-\item{dmf}{The inital OFV. If set to zero then it is computed.}
+\item{dmf}{The initial OFV. If set to zero then it is computed.}
 
 \item{trflag}{Should the optimization be output to the screen and to a file?}
 
@@ -72,9 +74,9 @@ all a values are given the same max value}
 
 \item{opt_x}{Should the discrete design variables be optimized?}
 
-\item{opt_samps}{Are the nuber of sample times per group being optimized?}
+\item{opt_samps}{Are the number of sample times per group being optimized?}
 
-\item{opt_inds}{Are the nuber of individuals per group being optimized?}
+\item{opt_inds}{Are the number of individuals per group being optimized?}
 
 \item{cfaxt}{First step factor for sample times}
 
@@ -86,17 +88,17 @@ all a values are given the same max value}
 
 \item{fim.calc.type}{The method used for calculating the FIM. Potential values:
 \itemize{
-\item 0 = Full FIM.  No assumption that fixed and random effects are uncorrelated.  See \code{\link{mftot0}}.
+\item 0 = Full FIM.  No assumption that fixed and random effects are uncorrelated.  
 \item 1 = Reduced FIM. Assume that there is no correlation in the FIM between the fixed and random effects, and set these elements in 
-the FIM to zero. See \code{\link{mftot1}}.
+the FIM to zero. 
 \item 2 = weighted models (placeholder).
 \item 3 = Not currently used.
 \item 4 = Reduced FIM and computing all derivatives with respect to the standard deviation of the residual unexplained variation (sqrt(SIGMA) in NONMEM). 
 This matches what is done in PFIM, and assumes that the standard deviation of the residual unexplained variation is the estimated parameter
-(NOTE: NONMEM estimates the variance of the resudual unexplained variation by default). See \code{\link{mftot4}}.
-\item 5 = Full FIM parameterized with A,B,C matrices & derivative of variance. See \code{\link{mftot5}}.
-\item 6 = Calculate one model switch at a time, good for large matrices. See \code{\link{mftot6}}.
-\item 7 = Reduced FIM parameterized with A,B,C matrices & derivative of variance See \code{\link{mftot7}}.
+(NOTE: NONMEM estimates the variance of the residual unexplained variation by default). 
+\item 5 = Full FIM parameterized with A,B,C matrices & derivative of variance. 
+\item 6 = Calculate one model switch at a time, good for large matrices. 
+\item 7 = Reduced FIM parameterized with A,B,C matrices & derivative of variance.
 }}
 
 \item{ofv_calc_type}{OFV calculation type for FIM 
@@ -114,11 +116,11 @@ rows and columns of the FIM: det(FIM)/det(FIM_u)
 
 \item{bUseExchangeAlgorithm}{Use Exchange algorithm (1=TRUE, 0=FALSE)}
 
-\item{iter}{The number of iterations entered into the \code{\link{blockheader}} function.}
+\item{iter}{The number of iterations entered into the \code{blockheader_2} function.}
 
 \item{d_switch}{\itemize{
 \item \bold{******START OF CRITERION SPECIFICATION OPTIONS**********}}
-D-family design (1) or ED-familty design (0) (with or without parameter uncertainty)}
+D-family design (1) or ED-family design (0) (with or without parameter uncertainty)}
 
 \item{ED_samp_size}{Sample size for E-family sampling}
 
@@ -167,9 +169,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -251,7 +253,6 @@ out_1 <- poped_optimize(poped.db,opt_a=TRUE,opt_xt=TRUE,
                                 bUseBFGSMinimizer = 1,
                                 bUseLineSearch = 0)
   
-
   ##############
   # E-family Optimization
   ##############
@@ -304,11 +305,12 @@ Computer Methods and Programs in Biomedicine, 108, 2012.
 }
 \seealso{
 Other Optimize: \code{\link{Doptim}},
-  \code{\link{LEDoptim}}, \code{\link{RS_opt_gen}},
-  \code{\link{RS_opt}}, \code{\link{a_line_search}},
-  \code{\link{bfgsb_min}}, \code{\link{calc_autofocus}},
+  \code{\link{LEDoptim}}, \code{\link{RS_opt}},
+  \code{\link{a_line_search}}, \code{\link{bfgsb_min}},
+  \code{\link{calc_autofocus}},
   \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
   \code{\link{optim_ARS}}, \code{\link{optim_LS}},
-  \code{\link{poped_optim}}
+  \code{\link{poped_optim_1}}, \code{\link{poped_optim_2}},
+  \code{\link{poped_optim_3}}, \code{\link{poped_optim}}
 }
-
+\concept{Optimize}

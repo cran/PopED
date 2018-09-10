@@ -2,7 +2,7 @@
 % Please edit documentation in R/models.R
 \name{ff.PKPD.1.comp.sd.CL.emax}
 \alias{ff.PKPD.1.comp.sd.CL.emax}
-\title{Structural model: one-compartment, single bolus IV dose, parameterized using CL driving an EMAX model with a direct efect.}
+\title{Structural model: one-compartment, single bolus IV dose, parameterized using CL driving an EMAX model with a direct effect.}
 \usage{
 ff.PKPD.1.comp.sd.CL.emax(model_switch, xt, parameters, poped.db)
 }
@@ -70,9 +70,9 @@ feps <- function(model_switch,xt,parameters,epsi,poped.db){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PKPD.1.comp.sd.CL.emax",
-                                  fError_file="feps",
-                                  fg_file="sfg",
+poped.db <- create.poped.database(ff_fun=ff.PKPD.1.comp.sd.CL.emax,
+                                  fError_fun=feps,
+                                  fg_fun=sfg,
                                   groupsize=20,
                                   m=3,
                                   sigma=diag(c(0.15,0.15)),
@@ -113,4 +113,5 @@ Other structural_models: \code{\link{ff.PK.1.comp.oral.md.CL}},
   \code{\link{ff.PK.1.comp.oral.sd.KE}},
   \code{\link{ff.PKPD.1.comp.oral.md.CL.imax}}
 }
-
+\concept{models}
+\concept{structural_models}

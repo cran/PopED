@@ -1,9 +1,29 @@
+## ----setup, include = FALSE----------------------------------------------
+set.seed(1234)
+
+knitr::opts_chunk$set(
+  collapse = TRUE
+  , comment = "#>"
+  #, fig.width=6
+  #, cache = TRUE
+)
+
+## ----eval=FALSE----------------------------------------------------------
+#  system.file("examples", package="PopED")
+
+## ----eval=FALSE----------------------------------------------------------
+#  ex_dir <- system.file("examples", package="PopED")
+#  list.files(ex_dir)
+
+## ----eval=FALSE----------------------------------------------------------
+#  file_name <- "ex.1.a.PK.1.comp.oral.md.intro.R"
+#  ex_file <- system.file("examples",file_name,package="PopED")
+#  file.copy(ex_file,tempdir(),overwrite = T)
+#  file.edit(file.path(tempdir(),file_name))
+
 ## ----eval=TRUE-----------------------------------------------------------
 library(PopED)
-
-## ----include = FALSE-----------------------------------------------------
-set.seed(1234)
-knitr::opts_chunk$set(cache = FALSE)
+packageVersion("PopED")
 
 ## ----struct_model--------------------------------------------------------
 ff <- function(model_switch,xt,parameters,poped.db){
@@ -56,32 +76,60 @@ poped.db <- create.poped.database(ff_fun=ff,
                                   maxxt=c(10,10,10,248,248),
                                   bUseGrouped_xt=TRUE)
 
-## ---- fig.width=6--------------------------------------------------------
+## ----simulate_without_BSV------------------------------------------------
 plot_model_prediction(poped.db, model_num_points = 500)
 
-## ----simulate_with_BSV, fig.width=6--------------------------------------
-plot_model_prediction(poped.db, model_num_points=500, IPRED=T)
+## ----simulate_with_BSV---------------------------------------------------
+plot_model_prediction(poped.db, model_num_points=500, IPRED=TRUE, sample.times = FALSE)
 
 ## ------------------------------------------------------------------------
-dat <- model_prediction(poped.db,DV=T)
+dat <- model_prediction(poped.db,DV=TRUE)
 head(dat,n=5);tail(dat,n=5)
 
 ## ------------------------------------------------------------------------
 evaluate_design(poped.db)
 
-## ---- fig.width=6--------------------------------------------------------
+## ------------------------------------------------------------------------
+poped.db.new <- create.poped.database(ff_fun=ff,
+                                      fg_fun=sfg,
+                                      fError_fun=feps,
+                                      bpop=c(V=72.8,KA=0.25,CL=3.75,Favail=0.9), 
+                                      notfixed_bpop=c(1,1,1,0),
+                                      d=c(V=0.09,KA=0.09,CL=0.25^2), 
+                                      sigma=c(0.04,5e-6),
+                                      notfixed_sigma=c(1,0),
+                                      m=2,
+                                      groupsize=20,
+                                      a=list(c(DOSE=20,TAU=24),c(DOSE=40, TAU=24)),
+                                      maxa=c(DOSE=200,TAU=24),
+                                      mina=c(DOSE=0,TAU=24),
+                                      xt=c( 1,2,245),
+                                      minxt=c(0,0,240),
+                                      maxxt=c(10,10,248),
+                                      bUseGrouped_xt=TRUE)
+
+## ------------------------------------------------------------------------
+evaluate_design(poped.db.new)
+
+## ----simulate_optimal_design---------------------------------------------
 summary(output)
 plot_model_prediction(output$poped.db)
 
+## ----simulate_efficiency_windows,fig.width=6,fig.height=6----------------
+plot_efficiency_of_windows(output$poped.db,xt_windows=0.5)
+
 ## ---- message = FALSE,results='hide'-------------------------------------
-poped.db.discrete <- create.poped.database(poped.db,discrete_xt = list(0:248))
+poped.db.discrete <- create.poped.database(poped.db,discrete_xt = list(c(0:10,240:248)))
                                           
-output_discrete <- poped_optim(poped.db.discrete, opt_xt=T)
+output_discrete <- poped_optim(poped.db.discrete, opt_xt=TRUE)
 
 
-## ----fig.width=6---------------------------------------------------------
+## ----simulate_discrete_optimization--------------------------------------
 summary(output_discrete)
 plot_model_prediction(output_discrete$poped.db)
+
+## ----optimize_dose,message = FALSE,results='hide', eval=FALSE------------
+#  output_dose_opt <- poped_optim(output$poped.db, opt_xt=TRUE, opt_a=TRUE)
 
 ## ------------------------------------------------------------------------
 crit_fcn <- function(poped.db,...){
@@ -90,7 +138,7 @@ crit_fcn <- function(poped.db,...){
 }
 crit_fcn(output$poped.db)
 
-## ---- fig.width=6--------------------------------------------------------
+## ----simulate_cost_optmization-------------------------------------------
 summary(output_cost)
 get_rse(output_cost$FIM, output_cost$poped.db)
 plot_model_prediction(output_cost$poped.db)

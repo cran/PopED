@@ -8,10 +8,9 @@
 #' @inheritParams create.poped.database
 #' @inheritParams blockexp
 #' @inheritParams blockheader
-#' @inheritParams RS_opt_gen
 #' @param fmf_init Initial FIM.
 #' @param dmf_init Initial OFV.
-#' @param param_cvs_init The inital design parameter RSE values.
+#' @param param_cvs_init The initial design parameter RSE values in percent.
 #' 
 #' @family Helper
 #' @example tests/testthat/examples_fcn_doc/warfarin_optimize.R
@@ -110,14 +109,16 @@ blockfinal <- function(fn,fmf,dmf,groupsize,ni,xt,x,a,model_switch,bpop,d,docc,s
     if(fn!="") fprintf('\nOFV = %g\n',dmf)
     
     if(compute_inv){
-      param_vars=diag_matlab(inv(fmf))
-      returnArgs <-  get_cv(param_vars,bpop,d,docc,sigma,poped.db) 
-      params <- returnArgs[[1]]
-      param_cvs <- returnArgs[[2]]
+      #param_vars=diag_matlab(inv(fmf))
+      #returnArgs <-  get_cv(param_vars,bpop,d,docc,sigma,poped.db) 
+      #params <- returnArgs[[1]]
+      #param_cvs <- returnArgs[[2]]
+      param_cvs <- get_rse(fim=fmf,poped.db,bpop,diag(d),docc,sigma)
     }
     
     output <- get_unfixed_params(poped.db)
-    npar <- length(output$all)
+    params <- output$all
+    npar <- length(params)
     
     if(fn!="" || trflag>1) fprintf(fn,'\nEfficiency criterion [usually defined as det(FIM)^(1/npar)]  = %g\n',
             ofv_criterion(dmf,npar,poped.db))
@@ -152,21 +153,21 @@ blockfinal <- function(fn,fmf,dmf,groupsize,ni,xt,x,a,model_switch,bpop,d,docc,s
     
     if(is.null(param_cvs_init) && !is.null(fmf_init) && is.matrix(fmf_init) && compute_inv){
       if(is.finite(dmf_init)) {
-        
-      
-      param_vars_init=diag_matlab(inv(fmf_init))
-      returnArgs <-  get_cv(param_vars_init,bpop,d,docc,sigma,poped.db) 
-      params_init <- returnArgs[[1]]
-      param_cvs_init <- returnArgs[[2]]
+        #param_vars_init=diag_matlab(inv(fmf_init))
+        #returnArgs <-  get_cv(param_vars_init,bpop,d,docc,sigma,poped.db) 
+        #params_init <- returnArgs[[1]]
+        #param_cvs_init <- returnArgs[[2]]
+        param_cvs_init <- get_rse(fim=fmf_init,poped.db,bpop,diag(d),docc,sigma)
       }
     }
     
     if(compute_inv){
       parnam <- get_parnam(poped.db)
-      fprintf(fn,'\nExpected parameter \nrelative standard error (%sRSE):\n','%')
-      if(fn!="") fprintf('\nExpected parameter \nrelative standard error (%sRSE):\n','%')
-      df <- data.frame("Parameter"=parnam,"Values"=params, #"Variance"=param_vars, 
-                       "RSE_0"=t(param_cvs_init*100),"RSE"=t(param_cvs*100))
+      fprintf(fn,'\nExpected relative standard error\n(%sRSE, rounded to nearest integer):\n','%')
+      if(fn!="") fprintf('\nExpected relative standard error\n(%sRSE, rounded to nearest integer):\n','%')
+      df <- data.frame("Parameter"=parnam,"Values"=sprintf("%6.3g",params), #"Variance"=param_vars, 
+                       "RSE_0"=round(param_cvs_init),"RSE"=round(param_cvs))
+                       #"RSE_0"=sprintf("%6.3g",param_cvs_init),"RSE"=sprintf("%6.3g",param_cvs))
       print(df,digits=3, print.gap=3,row.names=F)
       if(fn!="") capture.output(print(df,digits=3, print.gap=3,row.names=F),file=fn)
     }
@@ -180,7 +181,8 @@ blockfinal <- function(fn,fmf,dmf,groupsize,ni,xt,x,a,model_switch,bpop,d,docc,s
   return(invisible(time_value)) 
 }
 
-print_xt <- function (xtopt, ni, model_switch,fn="",head_txt="Optimized xt values:\n",xt_other=NULL) {
+print_xt <- function (xtopt, ni, model_switch,fn="",head_txt="Optimized sample times:\n",xt_other=NULL,
+                      digits=4) {
   cat(head_txt,file=fn)
   for(j in 1:size(xtopt,1)){
     xtopt_i = xtopt[j,1:ni[j]]
@@ -189,18 +191,42 @@ print_xt <- function (xtopt, ni, model_switch,fn="",head_txt="Optimized xt value
     for(i in unique(as.vector(model_switch_i))){
       xtopt_i_sort = sort(xtopt_i[model_switch_i==i])
       if(!is.null(xt_other)) xt_other_i_sort = xt_other_i[order(xtopt_i[model_switch_i==i])]
-      if(size(xtopt,1)>1) cat(sprintf("Group %g : ", j),file=fn)
-      if(length(unique(as.vector(model_switch_i)))>1) cat(sprintf("Model %g : ", i),file=fn)
+      # if(size(xtopt,1)>1) cat(sprintf("Group %g : ", j),file=fn)
+      cat(sprintf("Group %g: ", j),file=fn)
+      if(length(unique(as.vector(model_switch_i)))>1) cat(sprintf("Model %g: ", i),file=fn)
       if(!is.null(xt_other)) {
-        cat(sprintf("%6.4g", xt_other_i_sort),file=fn)
+        cat(sprintf(paste0("%",digits+2,".",digits,"g"), xt_other_i_sort),file=fn)
       } else {
-        cat(sprintf("%6.4g", xtopt_i_sort),file=fn)
+        cat(sprintf(paste0("%",digits+2,".",digits,"g"), xtopt_i_sort),file=fn)
+        # cat(sprintf("%6.4g", xtopt_i_sort),file=fn)
       }
       cat("\n",file=fn)
     }
   }
   invisible()
 }
+
+# print_a <- function (aopt,fn="",head_txt="Optimized covariates:\n") {
+#   cat(head_txt,file=fn)
+#   for(j in 1:size(a,1)){
+#     aopt_i = aopt[j,1:ni[j]]
+#     model_switch_i = model_switch[j,1:ni[j]]
+#     if(!is.null(xt_other)) xt_other_i = xt_other[j,1:ni[j]]
+#     for(i in unique(as.vector(model_switch_i))){
+#       xtopt_i_sort = sort(xtopt_i[model_switch_i==i])
+#       if(!is.null(xt_other)) xt_other_i_sort = xt_other_i[order(xtopt_i[model_switch_i==i])]
+#       if(size(xtopt,1)>1) cat(sprintf("Group %g : ", j),file=fn)
+#       if(length(unique(as.vector(model_switch_i)))>1) cat(sprintf("Model %g : ", i),file=fn)
+#       if(!is.null(xt_other)) {
+#         cat(sprintf("%6.4g", xt_other_i_sort),file=fn)
+#       } else {
+#         cat(sprintf("%6.4g", xtopt_i_sort),file=fn)
+#       }
+#       cat("\n",file=fn)
+#     }
+#   }
+#   invisible()
+# }
 
 get_parnam <- function (poped.db) {
   nbpop = length(poped.db$parameters$notfixed_bpop)
@@ -232,7 +258,7 @@ get_parnam <- function (poped.db) {
       #     }
       if(not_fixed[[i]][j]==1){ 
         if(names(not_fixed[i])=="bpop") parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,"]",sep=""))  
-        if(any(names(not_fixed[i])==c("D","SIGMA"))) parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,",",j,"]",sep=""))
+        if(any(names(not_fixed[i])==c("D","SIGMA","D.occ"))) parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,",",j,"]",sep=""))
         if(length(grep("_cov",names(not_fixed[i])))!=0) parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,"]",sep="")) 
       }
     }

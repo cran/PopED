@@ -4,13 +4,13 @@
 \alias{ed_mftot}
 \title{Evaluate the expectation of the Fisher Information Matrix (FIM) and the expectation of the OFV(FIM).}
 \usage{
-ed_mftot(model_switch, groupsize, ni, xtoptn, xoptn, aoptn, bpopdescr, ddescr,
-  covd, sigma, docc, poped.db, calc_fim = TRUE)
+ed_mftot(model_switch, groupsize, ni, xtoptn, xoptn, aoptn, bpopdescr,
+  ddescr, covd, sigma, docc, poped.db, calc_fim = TRUE)
 }
 \arguments{
 \item{model_switch}{A matrix that is the same size as xt, specifying which model each sample belongs to.}
 
-\item{groupsize}{A vector of the numer of individuals in each group.}
+\item{groupsize}{A vector of the number of individuals in each group.}
 
 \item{ni}{A vector of the number of samples in each group.}
 
@@ -27,14 +27,14 @@ User Defined Distribution, 4 = lognormal and 5 = truncated normal) \item
 column 2  defines the mean. \item column 3 defines the variance of the
 distribution (or length of uniform distribution). }}
 
-\item{ddescr}{Matrix defining the diagnonals of the IIV (same logic as for
+\item{ddescr}{Matrix defining the diagonals of the IIV (same logic as for
 the \code{bpopdescr}).}
 
 \item{covd}{Column major vector defining the covariances of the IIV variances. 
 That is, from your full IIV matrix  \code{covd <-  IIV[lower.tri(IIV)]}.}
 
 \item{sigma}{Matrix defining the variances can covariances of the residual variability terms of the model.
-can also just supply the diagnonal parameter values (variances) as a \code{c()}.}
+can also just supply the diagonal parameter values (variances) as a \code{c()}.}
 
 \item{docc}{Matrix defining the IOV, the IOV variances and the IOV distribution as for d and bpop.}
 
@@ -89,9 +89,9 @@ bpop_vals_ed_ln["Favail",]  <- c(0,1,0)
 bpop_vals_ed_ln
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=bpop_vals_ed_ln, 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -129,24 +129,20 @@ ed_mftot(model_switch=poped.db$design$model_switch,
   
 }
 \seealso{
-Other E-family: \code{\link{calc_ofv_and_fim}},
-  \code{\link{ed_laplace_ofv}},
-  \code{\link{evaluate.e.ofv.fim}}
-
 Other FIM: \code{\link{LinMatrixH}},
   \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
   \code{\link{calc_ofv_and_fim}},
   \code{\link{ed_laplace_ofv}}, \code{\link{efficiency}},
   \code{\link{evaluate.e.ofv.fim}},
   \code{\link{evaluate.fim}}, \code{\link{gradf_eps}},
-  \code{\link{mf3}}, \code{\link{mf5}}, \code{\link{mf6}},
-  \code{\link{mf7}}, \code{\link{mf8}},
-  \code{\link{mftot0}}, \code{\link{mftot1}},
-  \code{\link{mftot2}}, \code{\link{mftot3}},
-  \code{\link{mftot4}}, \code{\link{mftot5}},
-  \code{\link{mftot6}}, \code{\link{mftot7}},
-  \code{\link{mftot}}, \code{\link{mf}},
-  \code{\link{ofv_criterion}}, \code{\link{ofv_fim}}
-}
-\keyword{internal}
+  \code{\link{mf3}}, \code{\link{mf7}},
+  \code{\link{mftot}}, \code{\link{ofv_criterion}},
+  \code{\link{ofv_fim}}
 
+Other E-family: \code{\link{calc_ofv_and_fim}},
+  \code{\link{ed_laplace_ofv}},
+  \code{\link{evaluate.e.ofv.fim}}
+}
+\concept{E-family}
+\concept{FIM}
+\keyword{internal}

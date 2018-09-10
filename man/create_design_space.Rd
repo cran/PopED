@@ -2,15 +2,16 @@
 % Please edit documentation in R/create_design_space.R
 \name{create_design_space}
 \alias{create_design_space}
-\title{Create design variables and a design space for a full decription of an optimization problem.}
+\title{Create design variables and a design space for a full description of an optimization problem.}
 \usage{
-create_design_space(design, maxni = NULL, minni = NULL, maxtotni = NULL,
-  mintotni = NULL, maxgroupsize = NULL, mingroupsize = NULL,
-  maxtotgroupsize = NULL, mintotgroupsize = NULL, maxxt = NULL,
-  minxt = NULL, xt_space = NULL, maxa = NULL, mina = NULL,
-  a_space = NULL, x_space = NULL, use_grouped_xt = FALSE,
-  grouped_xt = NULL, use_grouped_a = FALSE, grouped_a = NULL,
-  use_grouped_x = FALSE, grouped_x = NULL, our_zero = NULL)
+create_design_space(design, maxni = NULL, minni = NULL,
+  maxtotni = NULL, mintotni = NULL, maxgroupsize = NULL,
+  mingroupsize = NULL, maxtotgroupsize = NULL,
+  mintotgroupsize = NULL, maxxt = NULL, minxt = NULL,
+  xt_space = NULL, maxa = NULL, mina = NULL, a_space = NULL,
+  x_space = NULL, use_grouped_xt = FALSE, grouped_xt = NULL,
+  use_grouped_a = FALSE, grouped_a = NULL, use_grouped_x = FALSE,
+  grouped_x = NULL, our_zero = NULL)
 }
 \arguments{
 \item{design}{The output from a call to \code{\link{create_design}}.}
@@ -80,7 +81,7 @@ list of list) or matricies.
 Returns a list of matricies compatible with PopED.
 }
 \details{
-If a value (or a vector or a list of values) is supplied that correponds to only one group and the design has
+If a value (or a vector or a list of values) is supplied that corresponds to only one group and the design has
 multiple groups then all groups will have the same value(s). If a matrix is expected then a list of lists can be supplied 
 instead, each list corresponding to a group.
 }
@@ -171,4 +172,4 @@ Other poped_input: \code{\link{convert_variables}},
   \code{\link{downsizing_general_design}},
   \code{\link{poped.choose}}
 }
-
+\concept{poped_input}

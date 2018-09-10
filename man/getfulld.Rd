@@ -2,14 +2,15 @@
 % Please edit documentation in R/getfulld.R
 \name{getfulld}
 \alias{getfulld}
-\title{Create a full D (between subject variability) matrix given a vector of variances and covariances.}
+\title{Create a full D (between subject variability) matrix given a vector of variances and covariances.
+Note, this does not test matching vector lengths.}
 \usage{
 getfulld(variance_vector, covariance_vector = NULL)
 }
 \arguments{
 \item{variance_vector}{The vector of the variances.}
 
-\item{covariance_vector}{A vector of the covariances. Writen in column major 
+\item{covariance_vector}{A vector of the covariances. Written in column major 
 order for the lower triangular matrix.}
 }
 \value{
@@ -17,6 +18,7 @@ The full matrix of variances for the between subject variances
 }
 \description{
 Create a full D (between subject variability) matrix given a vector of variances and covariances.
+Note, this does not test matching vector lengths.
 }
 \examples{
 
@@ -26,4 +28,3 @@ getfulld(c(1,2,3),c(7,6,5))
 
 }
 \keyword{internal}
-

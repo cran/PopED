@@ -3,8 +3,8 @@
 \docType{package}
 \name{PopED}
 \alias{PopED}
-\alias{PopED-package}
 \alias{poped}
+\alias{PopED-package}
 \title{PopED - \bold{Pop}ulation (and individual) optimal \bold{E}xperimental \bold{D}esign.}
 \description{
 PopED computes optimal experimental designs for both 
@@ -19,10 +19,10 @@ To get started you need to define
 \item The tasks to perform.  
 }
 There are a number of functions to help you with these tasks.  The user-level functions  defined below are 
-meant to be run with a minimum of arguments (for begininers to advanced users).  Many of the other functions in the package
+meant to be run with a minimum of arguments (for beginners to advanced users).  Many of the other functions in the package
 (and not listed here) are called by these user-level functions 
 and are often not as user 
-freindly (developer level or advanced user functions).
+friendly (developer level or advanced user functions).
 
 Define a structural model: 
 \code{\link{ff.PK.1.comp.oral.md.CL}}, 
@@ -32,7 +32,7 @@ Define a structural model:
  \code{\link{ff.PKPD.1.comp.oral.md.CL.imax}}, 
  \code{\link{ff.PKPD.1.comp.sd.CL.emax}}.
 
-Defne a residual unexplained variability model (residual error model): 
+Define a residual unexplained variability model (residual error model): 
 \code{\link{feps.add.prop}},
 \code{\link{feps.add}}, 
 \code{\link{feps.prop}}.
@@ -103,9 +103,9 @@ feps <- function(model_switch,xt,parameters,epsi,poped.db){
 }
 
 ## -- Define design and design space
-poped.db <- create.poped.database(ff_file="ff",
-                                  fg_file="sfg",
-                                  fError_file="feps",
+poped.db <- create.poped.database(ff_fun=ff,
+                                  fg_fun=sfg,
+                                  fError_fun=feps,
                                   bpop=c(V=72.8,KA=0.25,CL=3.75,Favail=0.9), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(V=0.09,KA=0.09,CL=0.25^2), 
@@ -151,9 +151,9 @@ evaluate_design(poped.db)
   
   # Optimization of sample times with only integer time points in design space
   # faster than continuous optimization in this case
-  poped.db.discrete <- create.poped.database(ff_file="ff",
-                                             fg_file="sfg",
-                                             fError_file="feps",
+  poped.db.discrete <- create.poped.database(ff_fun=ff,
+                                             fg_fun=sfg,
+                                             fError_fun=feps,
                                              bpop=c(V=72.8,KA=0.25,CL=3.75,Favail=0.9), 
                                              notfixed_bpop=c(1,1,1,0),
                                              d=c(V=0.09,KA=0.09,CL=0.25^2), 
@@ -195,4 +195,3 @@ experimental design in population kinetics", Computer Methods and Programs in Bi
 \item \url{https://github.com/andrewhooker/PopED.git}
 }
 }
-

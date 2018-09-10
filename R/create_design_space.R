@@ -1,4 +1,4 @@
-#' Create design variables and a design space for a full decription of an optimization problem.
+#' Create design variables and a design space for a full description of an optimization problem.
 #' 
 #' \code{create_design_space} takes an initial design and arguments for a design space and 
 #' creates a design and design space for design optimization.
@@ -8,7 +8,7 @@
 #' list of list) or matricies.
 #' Returns a list of matricies compatible with PopED.
 #' 
-#' If a value (or a vector or a list of values) is supplied that correponds to only one group and the design has
+#' If a value (or a vector or a list of values) is supplied that corresponds to only one group and the design has
 #' multiple groups then all groups will have the same value(s). If a matrix is expected then a list of lists can be supplied 
 #' instead, each list corresponding to a group.   
 #' 
@@ -309,9 +309,9 @@ create_design_space <- function(
     
     # check for zeros
     if(!is.null(our_zero)){
-      minxt=test_for_zeros(minxt,our_zero)
-      maxxt=test_for_zeros(maxxt,our_zero)
-      xt=test_for_zeros(xt,our_zero)
+      minxt = minxt + our_zero*(minxt == 0)
+      maxxt = maxxt + our_zero*(maxxt == 0)
+      xt = xt + our_zero*(xt == 0)
     }
     
     # check  given max and min
@@ -438,6 +438,15 @@ create_design_space <- function(
     
     ## for xt_space
     if(!is.null(xt_space)){
+      if(is.null(dim(xt_space))){ # then we have a vector or a list
+        if(is.list(xt_space)){ # then it is a list
+          
+        } else { # assume the vector is the same for all xt's
+          tmp_lst <- list(xt_space)
+          xt_space <- cell(size(xt))
+          xt_space[,] <- tmp_lst
+        }
+      }
       #       if(is.list(x_space)) x_space <- as.matrix(dplyr::rbind_all(lapply(x_space,function(x){data.frame(rbind(unlist(x)))})))
       if(size(xt_space,1)==1 && m!=1) xt_space <- matrix(rep(xt_space,m),ncol=length(xt_space),nrow=m,byrow=T)
       if(size(xt_space,2)==1 && size(xt,2)!=1) xt_space <- matrix(rep(xt_space,size(xt,2)),ncol=size(xt,2),nrow=m,byrow=F)

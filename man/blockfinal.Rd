@@ -4,21 +4,22 @@
 \alias{blockfinal}
 \title{Result function for optimization routines}
 \usage{
-blockfinal(fn, fmf, dmf, groupsize, ni, xt, x, a, model_switch, bpop, d, docc,
-  sigma, poped.db, opt_xt = poped.db$settings$optsw[2],
-  opt_a = poped.db$settings$optsw[4], opt_x = poped.db$settings$optsw[3],
-  fmf_init = NULL, dmf_init = NULL, param_cvs_init = NULL,
-  compute_inv = TRUE, out_file = NULL, trflag = TRUE,
-  footer_flag = TRUE, run_time = NULL, ...)
+blockfinal(fn, fmf, dmf, groupsize, ni, xt, x, a, model_switch, bpop, d,
+  docc, sigma, poped.db, opt_xt = poped.db$settings$optsw[2],
+  opt_a = poped.db$settings$optsw[4],
+  opt_x = poped.db$settings$optsw[3], fmf_init = NULL,
+  dmf_init = NULL, param_cvs_init = NULL, compute_inv = TRUE,
+  out_file = NULL, trflag = TRUE, footer_flag = TRUE,
+  run_time = NULL, ...)
 }
 \arguments{
 \item{fn}{The file handle to write to.}
 
 \item{fmf}{The initial value of the FIM. If set to zero then it is computed.}
 
-\item{dmf}{The inital OFV. If set to zero then it is computed.}
+\item{dmf}{The initial OFV. If set to zero then it is computed.}
 
-\item{groupsize}{A vector of the numer of individuals in each group.}
+\item{groupsize}{A vector of the number of individuals in each group.}
 
 \item{ni}{A vector of the number of samples in each group.}
 
@@ -40,13 +41,13 @@ blockfinal(fn, fmf, dmf, groupsize, ni, xt, x, a, model_switch, bpop, d, docc,
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
 parameter value is to be used.}
 
-\item{d}{Matrix defining the diagnonals of the IIV (same logic as for the fixed efects 
+\item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
 matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}.}
 
 \item{docc}{Matrix defining the IOV, the IOV variances and the IOV distribution as for d and bpop.}
 
 \item{sigma}{Matrix defining the variances can covariances of the residual variability terms of the model.
-can also just supply the diagnonal parameter values (variances) as a \code{c()}.}
+can also just supply the diagonal parameter values (variances) as a \code{c()}.}
 
 \item{poped.db}{A PopED database.}
 
@@ -60,7 +61,7 @@ can also just supply the diagnonal parameter values (variances) as a \code{c()}.
 
 \item{dmf_init}{Initial OFV.}
 
-\item{param_cvs_init}{The inital design parameter RSE values.}
+\item{param_cvs_init}{The initial design parameter RSE values in percent.}
 
 \item{compute_inv}{should the inverse of the FIM be used to compute expected RSE values?  Often not needed
 except for diagnostic purposes.}
@@ -108,9 +109,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -148,7 +149,7 @@ blockfinal(fn="",fmf=FIM,
            opt_xt=TRUE,
            fmf_init=FIM,
            dmf_init=dmf,
-           param_cvs_init=rbind(get_rse(FIM,poped.db,use_percent=FALSE)))
+           param_cvs_init=get_rse(FIM,poped.db))
 
 
 }
@@ -156,5 +157,5 @@ blockfinal(fn="",fmf=FIM,
 Other Helper: \code{\link{blockexp}},
   \code{\link{blockheader}}, \code{\link{blockopt}}
 }
+\concept{Helper}
 \keyword{internal}
-

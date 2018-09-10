@@ -38,13 +38,10 @@ diag(rbind(1,2,3))
 \seealso{
 Other MATLAB: \code{\link{cell}}, \code{\link{feval}},
   \code{\link{fileparts}}, \code{\link{isempty}},
-  \code{\link{isfield}}, \code{\link{ones}},
-  \code{\link{randn}}, \code{\link{randperm}},
+  \code{\link{ones}}, \code{\link{randn}},
   \code{\link{rand}}, \code{\link{size}},
   \code{\link{tic}}, \code{\link{toc}}, \code{\link{zeros}}
-
-Other matrix_manipulation: \code{\link{test_for_max}},
-  \code{\link{test_for_min}}, \code{\link{test_for_zeros}}
 }
+\concept{MATLAB}
+\concept{matrix_manipulation}
 \keyword{internal}
-

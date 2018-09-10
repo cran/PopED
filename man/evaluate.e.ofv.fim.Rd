@@ -8,29 +8,30 @@ evaluate.e.ofv.fim(poped.db, fim.calc.type = NULL,
   bpop = poped.db$parameters$bpop, d = poped.db$parameters$d,
   covd = poped.db$parameters$covd, docc = poped.db$parameters$docc,
   sigma = poped.db$parameters$sigma, model_switch = NULL, ni = NULL,
-  xt = NULL, x = NULL, a = NULL, groupsize = poped.db$design$groupsize,
-  deriv.type = NULL, bLHS = poped.db$settings$bLHS,
+  xt = NULL, x = NULL, a = NULL,
+  groupsize = poped.db$design$groupsize, deriv.type = NULL,
+  bLHS = poped.db$settings$bLHS,
   ofv_calc_type = poped.db$settings$ofv_calc_type,
   ED_samp_size = poped.db$settings$ED_samp_size,
-  use_laplace = poped.db$settings$iEDCalculationType, laplace.fim = FALSE,
-  ...)
+  use_laplace = poped.db$settings$iEDCalculationType,
+  laplace.fim = FALSE, ...)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
 
 \item{fim.calc.type}{The method used for calculating the FIM. Potential values:
 \itemize{
-\item 0 = Full FIM.  No assumption that fixed and random effects are uncorrelated.  See \code{\link{mftot0}}.
+\item 0 = Full FIM.  No assumption that fixed and random effects are uncorrelated.  
 \item 1 = Reduced FIM. Assume that there is no correlation in the FIM between the fixed and random effects, and set these elements in 
-the FIM to zero. See \code{\link{mftot1}}.
+the FIM to zero. 
 \item 2 = weighted models (placeholder).
 \item 3 = Not currently used.
 \item 4 = Reduced FIM and computing all derivatives with respect to the standard deviation of the residual unexplained variation (sqrt(SIGMA) in NONMEM). 
 This matches what is done in PFIM, and assumes that the standard deviation of the residual unexplained variation is the estimated parameter
-(NOTE: NONMEM estimates the variance of the resudual unexplained variation by default). See \code{\link{mftot4}}.
-\item 5 = Full FIM parameterized with A,B,C matrices & derivative of variance. See \code{\link{mftot5}}.
-\item 6 = Calculate one model switch at a time, good for large matrices. See \code{\link{mftot6}}.
-\item 7 = Reduced FIM parameterized with A,B,C matrices & derivative of variance See \code{\link{mftot7}}.
+(NOTE: NONMEM estimates the variance of the residual unexplained variation by default). 
+\item 5 = Full FIM parameterized with A,B,C matrices & derivative of variance. 
+\item 6 = Calculate one model switch at a time, good for large matrices. 
+\item 7 = Reduced FIM parameterized with A,B,C matrices & derivative of variance.
 }}
 
 \item{bpop}{Matrix defining the fixed effects, per row (row number = parameter_number) we should have:
@@ -43,7 +44,7 @@ This matches what is done in PFIM, and assumes that the standard deviation of th
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
 parameter value is to be used.}
 
-\item{d}{Matrix defining the diagnonals of the IIV (same logic as for the fixed efects 
+\item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
 matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}.}
 
 \item{covd}{Column major vector defining the covariances of the IIV variances. 
@@ -52,7 +53,7 @@ That is, from your full IIV matrix  \code{covd <-  IIV[lower.tri(IIV)]}.}
 \item{docc}{Matrix defining the IOV, the IOV variances and the IOV distribution as for d and bpop.}
 
 \item{sigma}{Matrix defining the variances can covariances of the residual variability terms of the model.
-can also just supply the diagnonal parameter values (variances) as a \code{c()}.}
+can also just supply the diagonal parameter values (variances) as a \code{c()}.}
 
 \item{model_switch}{A matrix that is the same size as xt, specifying which model each sample belongs to.}
 
@@ -64,7 +65,7 @@ can also just supply the diagnonal parameter values (variances) as a \code{c()}.
 
 \item{a}{A matrix of covariates.  Each row is a group.}
 
-\item{groupsize}{A vector of the numer of individuals in each group.}
+\item{groupsize}{A vector of the number of individuals in each group.}
 
 \item{deriv.type}{A number indicating the type of derivative to use:
 \itemize{
@@ -93,7 +94,7 @@ rows and columns of the FIM: det(FIM)/det(FIM_u)
 
 \item{laplace.fim}{Should an E(FIM) be calculated when computing the Laplace approximated E(OFV).  Typically
 the FIM does not need to be computed and, if desired,  this calculation
-is done usng the standard MC integration technique, so can be slow.}
+is done using the standard MC integration technique, so can be slow.}
 
 \item{...}{Other arguments passed to the function.}
 }
@@ -146,9 +147,9 @@ bpop_vals_ed_ln["Favail",]  <- c(0,1,0)
 bpop_vals_ed_ln
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=bpop_vals_ed_ln, 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -202,25 +203,21 @@ output$E_ofv
 }
 }
 \seealso{
-Other E-family: \code{\link{calc_ofv_and_fim}},
-  \code{\link{ed_laplace_ofv}}, \code{\link{ed_mftot}}
-
-Other evaluate_FIM: \code{\link{calc_ofv_and_fim}},
-  \code{\link{evaluate.fim}}, \code{\link{ofv_fim}}
-
 Other FIM: \code{\link{LinMatrixH}},
   \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
   \code{\link{calc_ofv_and_fim}},
   \code{\link{ed_laplace_ofv}}, \code{\link{ed_mftot}},
   \code{\link{efficiency}}, \code{\link{evaluate.fim}},
   \code{\link{gradf_eps}}, \code{\link{mf3}},
-  \code{\link{mf5}}, \code{\link{mf6}}, \code{\link{mf7}},
-  \code{\link{mf8}}, \code{\link{mftot0}},
-  \code{\link{mftot1}}, \code{\link{mftot2}},
-  \code{\link{mftot3}}, \code{\link{mftot4}},
-  \code{\link{mftot5}}, \code{\link{mftot6}},
-  \code{\link{mftot7}}, \code{\link{mftot}},
-  \code{\link{mf}}, \code{\link{ofv_criterion}},
-  \code{\link{ofv_fim}}
-}
+  \code{\link{mf7}}, \code{\link{mftot}},
+  \code{\link{ofv_criterion}}, \code{\link{ofv_fim}}
 
+Other E-family: \code{\link{calc_ofv_and_fim}},
+  \code{\link{ed_laplace_ofv}}, \code{\link{ed_mftot}}
+
+Other evaluate_FIM: \code{\link{calc_ofv_and_fim}},
+  \code{\link{evaluate.fim}}, \code{\link{ofv_fim}}
+}
+\concept{E-family}
+\concept{FIM}
+\concept{evaluate_FIM}

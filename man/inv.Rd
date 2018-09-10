@@ -4,14 +4,20 @@
 \alias{inv}
 \title{Compute the inverse of a matrix}
 \usage{
-inv(mat, method = 1, tol = .Machine$double.eps)
+inv(mat, method = 1, tol = .Machine$double.eps,
+  pseudo_on_fail = TRUE, ...)
 }
 \arguments{
 \item{mat}{A matrix}
 
-\item{method}{Which method to use. 1 is cholesky, 2 is using solve and 3 is the Moore-Penrose generalized inverse.}
+\item{method}{Which method to use. 1 is Cholesky \code{chol2inv(chol(mat)}, 
+2 is using \code{solve(mat)} and 3 is the Moore-Penrose generalized inverse (pseudoinverse).}
 
-\item{tol}{The tolerance at wich we should identify a sigular value as zero.}
+\item{tol}{The tolerance at which we should identify a singular value as zero (used in pseudoinverse calculation).}
+
+\item{pseudo_on_fail}{If another method fails should the Moore-Penrose generalized inverse (pseudoinverse) be used?}
+
+\item{...}{Not used.}
 }
 \value{
 The inverse matrix
@@ -20,4 +26,3 @@ The inverse matrix
 Function computes the inverse of a matrix.
 }
 \keyword{internal}
-

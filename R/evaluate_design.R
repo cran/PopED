@@ -1,6 +1,6 @@
 #' Evaluate a design
 #' 
-#' This tunction evaluates the design defined in a poped database.
+#' This function evaluates the design defined in a poped database.
 #' 
 #' @param poped.db A poped database
 #' @param ... Extra parameters passed to \code{\link{calc_ofv_and_fim}} and \code{\link{get_rse}}
@@ -13,6 +13,10 @@
 
 evaluate_design <- function(poped.db, ...) {
   out <- calc_ofv_and_fim(poped.db,...)
-  out$rse <- get_rse(out$fim,poped.db,...)
+  if(is.null(out$fim)){
+    out$rse <- NULL
+  } else{
+    out$rse <- get_rse(out$fim,poped.db,...)
+  }
   return(out)
 }

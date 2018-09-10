@@ -1,10 +1,10 @@
 #' Optimization function for D-family, E-family and Laplace approximated ED designs
 #' 
-#' Optimize the objective fucntion for D-family, E-family and Laplace approximated ED designs.  
+#' Optimize the objective function for D-family, E-family and Laplace approximated ED designs.  
 #' Right now there is only one optimization algorithm used in this 
 #' function 
 #' \enumerate{
-#' \item Adaptive random search. See \code{\link{RS_opt_gen}}.
+#' \item Adaptive random search. See \code{\link{RS_opt}}.
 #' }
 #' This function takes information from the PopED database supplied as an argument.
 #' The PopED database supplies information about the the model, parameters, design and methods to use.
@@ -12,14 +12,13 @@
 #' if they are supplied then they are used instead of the arguments from the PopED database.
 #' 
 #' @inheritParams RS_opt
-#' @inheritParams RS_opt_gen
 #' @inheritParams create.poped.database
 #' @inheritParams Doptim
 #' @inheritParams calc_ofv_and_fim
 #' @param fim_init The initial value of the FIM. If set to zero then it is computed.
-#' @param ofv_init The inital OFV. If set to zero then it is computed.
+#' @param ofv_init The initial OFV. If set to zero then it is computed.
 #' @param trflag Should the optimization be output to the screen and to a file?
-#' @param use_RS should the fucntion use a random search algorithm?
+#' @param use_RS should the function use a random search algorithm?
 #' 
 #' @family Optimize
 #' 
@@ -112,7 +111,7 @@ LEDoptim <- function(poped.db,
   
   if((use_RS) ){#If we want to perform random search
     # ----------------- RANDOM SEARCH BEGINS HERE                           
-    rs_output <- RS_opt_gen(poped.db,
+    rs_output <- RS_opt(poped.db,
                             d_switch=d_switch,
                             use_laplace=use_laplace,
                             fmf=fmf,
@@ -255,7 +254,7 @@ LEDoptim <- function(poped.db,
   #if((trflag)){
   #  if(footer_flag){
   blockfinal(fn,fmf,dmf,poped.db$design$groupsize,ni,xtopt,xopt,aopt,model_switch,
-             bpopdescr,ddescr,poped.db$parameters$docc,poped.db$parameters$sigma,poped.db,
+             bpopdescr[,2],ddescr,poped.db$parameters$docc,poped.db$parameters$sigma,poped.db,
              opt_xt=opt_xt,opt_a=opt_a,opt_x=opt_x,
              fmf_init=fmf_init,dmf_init=dmf_init,out_file=out_file,
              trflag=trflag,

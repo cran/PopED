@@ -1,6 +1,6 @@
-#' Modified Federov Exchange Algorithm
+#' Modified Fedorov Exchange Algorithm
 #' 
-#' Optimize the objective function using a modified Federov exchange algorithm.
+#' Optimize the objective function using a modified Fedorov exchange algorithm.
 #' The function works for continuous and discrete optimization variables.
 #' This function takes information from the PopED database supplied as an argument.
 #' The PopED database supplies information about the the model, parameters, design and methods to use.
@@ -98,7 +98,7 @@ mfea <- function(poped.db,model_switch,ni,xt,x,a,bpopdescr,ddescr,maxxt,minxt,ma
       }
     }
     if((iParallelN==1)){
-      if((it==0 && (optofv<=0 || isnan(optofv)))){
+      if((it==0 && (optofv<=0 || is.nan(optofv)))){
         fprintf('The OFV is negative or zero, new initial values might be needed. OFV : %g\n',optofv)
       }
     }
@@ -138,7 +138,7 @@ mfea <- function(poped.db,model_switch,ni,xt,x,a,bpopdescr,ddescr,maxxt,minxt,ma
               nfmf = designout[[des_num]]$FIM
               optofv = ofv_fim(nfmf,poped.db)
               des_num = des_num +1
-              if((it==0 && (optofv<=0 || isnan(optofv)))){
+              if((it==0 && (optofv<=0 || is.nan(optofv)))){
                 fprintf('The OFV is negative or zero, new initial values might be needed. OFV : %g\n',optofv)
               }
             }
@@ -311,7 +311,7 @@ mfea <- function(poped.db,model_switch,ni,xt,x,a,bpopdescr,ddescr,maxxt,minxt,ma
               nfmf = designout[[des_num]]$FIM
               optofv = ofv_fim(nfmf,poped.db)
               des_num = des_num +1
-              if((it==0 && (optofv<=0 || isnan(optofv)))){
+              if((it==0 && (optofv<=0 || is.nan(optofv)))){
                 fprintf('The OFV is negative or zero, new initial values might be needed. OFV : %g\n',optofv)
               }
             }
@@ -448,7 +448,7 @@ mfea <- function(poped.db,model_switch,ni,xt,x,a,bpopdescr,ddescr,maxxt,minxt,ma
               nfmf = designout[[des_num]]$FIM
               optofv = ofv_fim(nfmf,poped.db)
               des_num = des_num +1
-              if((it==0 && (optofv<=0 || isnan(optofv)))){
+              if((it==0 && (optofv<=0 || is.nan(optofv)))){
                 fprintf('The OFV is negative or zero, new initial values might be needed. OFV : %g\n',optofv)
               }
             }
@@ -650,7 +650,7 @@ mfea <- function(poped.db,model_switch,ni,xt,x,a,bpopdescr,ddescr,maxxt,minxt,ma
   #--------- Write results
   #if((trflag)){
   #fprintf(fn,"\n")
-  blockfinal(fn,fmf,dmf,poped.db$design$groupsize,ni,xt,x,a,model_switch,bpopdescr,ddescr,
+  blockfinal(fn,fmf,dmf,poped.db$design$groupsize,ni,xt,x,a,model_switch,bpopdescr[,2],ddescr,
                poped.db$parameters$docc,poped.db$parameters$sigma,poped.db,
                opt_xt=opt_xt,opt_a=opt_a,opt_x=opt_x,fmf_init=fmf_init,dmf_init=dmf_init,
                trflag=trflag,

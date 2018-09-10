@@ -68,9 +68,9 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.add.prop",
+poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                  fg_fun=sfg,
+                                  fError_fun=feps.add.prop,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -105,10 +105,6 @@ ofv_fim(FIM,poped.db,ofv_calc_type=7) # 1/sum(get_rse(FIM,poped.db,use_percent=F
 
 }
 \seealso{
-Other evaluate_FIM: \code{\link{calc_ofv_and_fim}},
-  \code{\link{evaluate.e.ofv.fim}},
-  \code{\link{evaluate.fim}}
-
 Other FIM: \code{\link{LinMatrixH}},
   \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
   \code{\link{calc_ofv_and_fim}},
@@ -116,13 +112,12 @@ Other FIM: \code{\link{LinMatrixH}},
   \code{\link{efficiency}},
   \code{\link{evaluate.e.ofv.fim}},
   \code{\link{evaluate.fim}}, \code{\link{gradf_eps}},
-  \code{\link{mf3}}, \code{\link{mf5}}, \code{\link{mf6}},
-  \code{\link{mf7}}, \code{\link{mf8}},
-  \code{\link{mftot0}}, \code{\link{mftot1}},
-  \code{\link{mftot2}}, \code{\link{mftot3}},
-  \code{\link{mftot4}}, \code{\link{mftot5}},
-  \code{\link{mftot6}}, \code{\link{mftot7}},
-  \code{\link{mftot}}, \code{\link{mf}},
-  \code{\link{ofv_criterion}}
-}
+  \code{\link{mf3}}, \code{\link{mf7}},
+  \code{\link{mftot}}, \code{\link{ofv_criterion}}
 
+Other evaluate_FIM: \code{\link{calc_ofv_and_fim}},
+  \code{\link{evaluate.e.ofv.fim}},
+  \code{\link{evaluate.fim}}
+}
+\concept{FIM}
+\concept{evaluate_FIM}

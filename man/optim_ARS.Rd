@@ -32,7 +32,7 @@ except in cases when  there are no upper or lower limits (e.g. when \code{upper=
 \item{no_bounds_sd}{The standard deviation of the sampling distribution around the current
 position of the parameters when there are no upper or lower limits (e.g. when \code{upper=Inf} or \code{lower=-Inf}).}
 
-\item{iter}{The number of iterations for the algorithm to perfrom (this is a maximum number, it could be less).}
+\item{iter}{The number of iterations for the algorithm to perform (this is a maximum number, it could be less).}
 
 \item{iter_adapt}{The number of iterations before adapting (shrinking) the parameter search space.}
 
@@ -46,7 +46,7 @@ When adapting, the  standard deviation of the sampling distribution is calculate
 
 \item{trace}{Should the algorithm output results intermittently.}
 
-\item{trace_iter}{How many interations between each update to the screen about the result of the search.}
+\item{trace_iter}{How many iterations between each update to the screen about the result of the search.}
 
 \item{new_par_max_it}{The algorithm randomly chooses samples based on the current best set of parameters.  If when drawing 
 these samples the new parameter set has already been tested then a new draw is performed. After \code{new_par_max_it} draws, with
@@ -54,7 +54,7 @@ no new parameter sets, then the algorithm stops.}
 
 \item{maximize}{Should the function be maximized?  Default is to minimize.}
 
-\item{parallel}{Should we use parallelize the computation.}
+\item{parallel}{Should we use parallel computations?}
 
 \item{parallel_type}{Which type of parallelization should be used? 
 Can be "snow" or "multicore".  "snow"  works on Linux-like systems & Windows. "multicore" works only on 
@@ -91,7 +91,9 @@ res1 <- optim_ARS(50, fw,lower = -50, upper=100)
 res2 <- optim_ARS(50, fw, lower=-Inf,upper=Inf)
 
 # Only integer values allowed
+\dontrun{ 
 res_int <- optim_ARS(50, fw, allowed_values = seq(-50,100,by=1))
+}
 
 \dontrun{ 
   #plot of the function and solutions
@@ -272,11 +274,12 @@ Computer Methods and Programs in Biomedicine, 108, 2012.
 }
 \seealso{
 Other Optimize: \code{\link{Doptim}},
-  \code{\link{LEDoptim}}, \code{\link{RS_opt_gen}},
-  \code{\link{RS_opt}}, \code{\link{a_line_search}},
-  \code{\link{bfgsb_min}}, \code{\link{calc_autofocus}},
+  \code{\link{LEDoptim}}, \code{\link{RS_opt}},
+  \code{\link{a_line_search}}, \code{\link{bfgsb_min}},
+  \code{\link{calc_autofocus}},
   \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
-  \code{\link{optim_LS}}, \code{\link{poped_optimize}},
-  \code{\link{poped_optim}}
+  \code{\link{optim_LS}}, \code{\link{poped_optim_1}},
+  \code{\link{poped_optim_2}}, \code{\link{poped_optim_3}},
+  \code{\link{poped_optimize}}, \code{\link{poped_optim}}
 }
-
+\concept{Optimize}

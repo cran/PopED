@@ -4,8 +4,8 @@
 \alias{create_design}
 \title{Create design variables for a full description of a design.}
 \usage{
-create_design(xt, groupsize, m = NULL, x = NULL, a = NULL, ni = NULL,
-  model_switch = NULL)
+create_design(xt, groupsize, m = NULL, x = NULL, a = NULL,
+  ni = NULL, model_switch = NULL)
 }
 \arguments{
 \item{xt}{Matrix defining the  sampling schedule. 
@@ -32,7 +32,7 @@ sense if there are inconsistencies.
 Returns a list of matricies compatible with PopED.
 }
 \details{
-If a value (or a vector/list of values) is supplied that correponds to only one group and the design has
+If a value (or a vector/list of values) is supplied that corresponds to only one group and the design has
 multiple groups then all groups will have the same value(s). If a matrix is expected then a list of lists can be supplied 
 instead, each list corresponding to a group.
 }
@@ -87,4 +87,4 @@ Other poped_input: \code{\link{convert_variables}},
   \code{\link{downsizing_general_design}},
   \code{\link{poped.choose}}
 }
-
+\concept{poped_input}

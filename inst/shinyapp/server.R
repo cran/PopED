@@ -1,19 +1,18 @@
+library(shiny)
 library(PopED)
-
 library(rhandsontable)
 
-# Define server logic required to plot various variables against mpg
-shinyServer(function(input, output, session) {
-  
-  
-  
+function(input, output, session) {
   
   model_name <- reactive({
     mod_name <- NULL
-    if(input$struct_PK_model!="NULL") mod_name <- paste(input$struct_PK_model,"sd",input$param_PK_model,sep=".")
-    if(input$struct_PD_model!="NULL"){
-      if(input$struct_PK_model=="NULL") mod_name <- paste0(input$struct_PD_model)
-      if(input$struct_PK_model!="NULL") mod_name <- paste(mod_name,input$link_fcn,input$struct_PD_model,sep=".")
+    if(input$pk_mod) mod_name <- paste(input$struct_PK_model,"sd",input$param_PK_model,sep=".")
+    if(input$pd_mod){
+      if(!input$pk_mod){
+        mod_name <- paste0(input$struct_PD_model)
+      } else {
+        mod_name <- paste(mod_name,input$link_fcn,input$struct_PD_model,sep=".")
+      }
     }
     return(mod_name)
   })
@@ -100,20 +99,36 @@ shinyServer(function(input, output, session) {
   output$hot2 = renderRHandsontable({
     if (!is.null(input$hot2)) {
       DF = hot_to_r(input$hot2)
+      par_name <- param_names()
+      if(!all(par_name %in% DF$name)){
+        new_par_name <- par_name[!(par_name %in% DF$name)]
+        old_par_name <- par_name[(par_name %in% DF$name)]
+        bsv_model <- rep("Exponential",length(new_par_name))
+        df <- data.frame(name=new_par_name,
+                         bsv_model=factor(bsv_model,
+                                          levels = c("Exponential",
+                                                     "Additive",
+                                                     "Proportional",
+                                                     "None"),
+                                          ordered=TRUE),
+                         stringsAsFactors = FALSE)
+        df$bsv_model[df$name %in% c("Favail","F")] <- "None"
+        DF = rbind(dplyr::filter(DF,name %in% old_par_name),df) 
+      }
     } else {
-      
       par_name <- param_names()
       bsv_model <- rep("Exponential",length(par_name))
-      
-      
       df <- data.frame(name=par_name,
-                       bsv_model=factor(bsv_model,levels = c("Exponential","Additive","Proportional","None"),ordered=TRUE),
+                       bsv_model=factor(bsv_model,
+                                        levels = c("Exponential",
+                                                   "Additive",
+                                                   "Proportional",
+                                                   "None"),
+                                          ordered=TRUE),
                        stringsAsFactors = FALSE)
-      
       df$bsv_model[df$name %in% c("Favail","F")] <- "None"
       DF = df 
     }
-    
     setHot2(DF)
     rhandsontable(DF) %>%
       hot_table(highlightCol = TRUE, highlightRow = TRUE, overflow="visible")
@@ -400,7 +415,7 @@ shinyServer(function(input, output, session) {
       
       
       df <- data.frame(group = 1L, 
-                         amount = 20,
+                       amount = 20,
                        time = 0,
                        duration = 0,
                        n = 1L,
@@ -420,64 +435,64 @@ shinyServer(function(input, output, session) {
     num_groups <- input$num_groups
     DF <- data()
     #if(any(DF$covariate))
-      for(i in 1:num_groups){
-        out <- c(out,list(h3(paste0("Group ", i))))
-        out <- c(out,list(textInput(paste0("groupsize_",i), 
-                                    paste0("Number of individuals in group ",i,":"), "" )))
-        if(input$struct_PK_model!="NULL"){
-          out <- c(out,list(
-            #wellPanel(
-            h3(paste0("Regimen")),
-            textInput(paste0("amt_",i),
-                      paste0("Dose amount(s):")),
-            textInput(paste0("d_time_",i),
-                      paste0("Dose time(s):"),
-                      value="0"),
-            selectInput(paste0("dose_type_",i), "Dose type",
-                        list(
-                          "Bolus" = "bolus",
-                          "Infusion" = "infusion"
-                        ))
-            #)
-            
-            # conditionalPanel(
-            #   condition = "input.dose_type == 'infusion'",
-            #   sliderInput("breakCount", "Break Count", min=1, max=1000, value=10)
-            # )
-          ))
-          #if(!is.null(input$dose_type)){
-          out <- c(out,list(
-            conditionalPanel(
-              condition = paste0("input.dose_type_",i," == 'infusion'"),
-              textInput(paste0("inf_dur_",i),
-                        paste0("Infusion duration(s):"),
-                        value="")
-              )))
-              
-          #   if(input$dose_type=="bolus") textInput(paste0("amt33_",i),paste0("dooo amount"))
-          #}
-          #if(get_dose_type()=="bolus") out <- c(out,list(h3(paste0("Group ", i))))
+    for(i in 1:num_groups){
+      out <- c(out,list(h3(paste0("Group ", i))))
+      out <- c(out,list(textInput(paste0("groupsize_",i), 
+                                  paste0("Number of individuals in group ",i,":"), "" )))
+      if(input$struct_PK_model!="NULL"){
+        out <- c(out,list(
+          #wellPanel(
+          h3(paste0("Regimen")),
+          textInput(paste0("amt_",i),
+                    paste0("Dose amount(s):")),
+          textInput(paste0("d_time_",i),
+                    paste0("Dose time(s):"),
+                    value="0"),
+          selectInput(paste0("dose_type_",i), "Dose type",
+                      list(
+                        "Bolus" = "bolus",
+                        "Infusion" = "infusion"
+                      ))
+          #)
           
-        }
+          # conditionalPanel(
+          #   condition = "input.dose_type == 'infusion'",
+          #   sliderInput("breakCount", "Break Count", min=1, max=1000, value=10)
+          # )
+        ))
+        #if(!is.null(input$dose_type)){
+        out <- c(out,list(
+          conditionalPanel(
+            condition = paste0("input.dose_type_",i," == 'infusion'"),
+            textInput(paste0("inf_dur_",i),
+                      paste0("Infusion duration(s):"),
+                      value="")
+          )))
         
-        if(input$struct_PK_model!="NULL"){
-          out <- c(out,list(textInput(paste0("xt_pk_",i), paste0("PK Sample times:"))))
-        }
-        if(input$struct_PD_model!="NULL"){
-          out <- c(out,list(textInput(paste0("xt_pd_",i), paste0("PD Sample times:"))))
-        }
-        if(any(DF$covariate)){
-          cov_names <- DF[DF["covariate"]==T,"name"]
-          names_par <- cov_names[!cov_names %in% c("Dose","DOSE","dose","tau","TAU","Tau")]
-          for(j in names_par){
-            out <- c(out,list(textInput(paste0(j,"_",i),paste0(j,":"))))
-          }
-        }
-        #       if(num_groups > 1){
-        #         out <- c(out,list(actionButton(paste0("remove_group_",i),paste0("Remove Group ",i)))) 
-        #         #out <- c(out,list(renderPrint({ input[[paste0("remove_group_",i)]] })))
-        #       }
+        #   if(input$dose_type=="bolus") textInput(paste0("amt33_",i),paste0("dooo amount"))
+        #}
+        #if(get_dose_type()=="bolus") out <- c(out,list(h3(paste0("Group ", i))))
+        
       }
+      
+      if(input$struct_PK_model!="NULL"){
+        out <- c(out,list(textInput(paste0("xt_pk_",i), paste0("PK Sample times:"))))
+      }
+      if(input$struct_PD_model!="NULL"){
+        out <- c(out,list(textInput(paste0("xt_pd_",i), paste0("PD Sample times:"))))
+      }
+      if(any(DF$covariate)){
+        cov_names <- DF[DF["covariate"]==T,"name"]
+        names_par <- cov_names[!cov_names %in% c("Dose","DOSE","dose","tau","TAU","Tau")]
+        for(j in names_par){
+          out <- c(out,list(textInput(paste0(j,"_",i),paste0(j,":"))))
+        }
+      }
+      #       if(num_groups > 1){
+      #         out <- c(out,list(actionButton(paste0("remove_group_",i),paste0("Remove Group ",i)))) 
+      #         #out <- c(out,list(renderPrint({ input[[paste0("remove_group_",i)]] })))
+      #       }
+    }
     #out <- c(out,list(renderPrint({ input$new_group })))
     #out <- c(out,list(actionButton("new_group","Add a new group")))  
     return(as.list(out))
@@ -579,6 +594,7 @@ shinyServer(function(input, output, session) {
   updateModel <- reactive({
     struct_pk_model <- input$struct_pk_model
     struct_pd_model <- input$struct_pd_model
+    link_model <- input$link_fcn
     ruv_pk_model <- input$ruv_pk_model
     ruv_pd_model <- input$ruv_pd_model
     bsv_pk_model <- input$bsv_pk_model
@@ -695,7 +711,7 @@ shinyServer(function(input, output, session) {
     # bpop_notfixed <- !df_2[["pop_fixed"]]
     # names(bpop_notfixed) <- df_2[["name"]]
     # par_names <- df_2[["name"]]
-
+    
     
     sfg <- build_sfg(model=NULL,
                      par_names = df[["name"]],
@@ -766,4 +782,4 @@ shinyServer(function(input, output, session) {
     #print(plot_model_prediction(poped.db.1,IPRED=input$IPRED,DV=input$DV,separate.groups=input$separate.groups))
     #print(plot_model_prediction(poped.db.2,IPRED=TRUE,DV=TRUE))
   })
-})
+}
