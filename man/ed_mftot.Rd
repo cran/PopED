@@ -4,8 +4,22 @@
 \alias{ed_mftot}
 \title{Evaluate the expectation of the Fisher Information Matrix (FIM) and the expectation of the OFV(FIM).}
 \usage{
-ed_mftot(model_switch, groupsize, ni, xtoptn, xoptn, aoptn, bpopdescr,
-  ddescr, covd, sigma, docc, poped.db, calc_fim = TRUE)
+ed_mftot(
+  model_switch,
+  groupsize,
+  ni,
+  xtoptn,
+  xoptn,
+  aoptn,
+  bpopdescr,
+  ddescr,
+  covd,
+  sigma,
+  docc,
+  poped.db,
+  calc_fim = TRUE,
+  ...
+)
 }
 \arguments{
 \item{model_switch}{A matrix that is the same size as xt, specifying which model each sample belongs to.}
@@ -41,6 +55,8 @@ can also just supply the diagonal parameter values (variances) as a \code{c()}.}
 \item{poped.db}{A PopED database.}
 
 \item{calc_fim}{Should the FIM be calculated or should we just use the user defined ed_penalty_pointer.}
+
+\item{...}{Other arguments passed to the function.}
 }
 \value{
 A list containing the E(FIM) and E(OFV(FIM)) and the a poped.db.
@@ -129,19 +145,26 @@ ed_mftot(model_switch=poped.db$design$model_switch,
   
 }
 \seealso{
-Other FIM: \code{\link{LinMatrixH}},
-  \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
-  \code{\link{calc_ofv_and_fim}},
-  \code{\link{ed_laplace_ofv}}, \code{\link{efficiency}},
-  \code{\link{evaluate.e.ofv.fim}},
-  \code{\link{evaluate.fim}}, \code{\link{gradf_eps}},
-  \code{\link{mf3}}, \code{\link{mf7}},
-  \code{\link{mftot}}, \code{\link{ofv_criterion}},
-  \code{\link{ofv_fim}}
+Other FIM: 
+\code{\link{LinMatrixH}()},
+\code{\link{LinMatrixLH}()},
+\code{\link{LinMatrixL_occ}()},
+\code{\link{calc_ofv_and_fim}()},
+\code{\link{ed_laplace_ofv}()},
+\code{\link{efficiency}()},
+\code{\link{evaluate.e.ofv.fim}()},
+\code{\link{evaluate.fim}()},
+\code{\link{gradf_eps}()},
+\code{\link{mf3}()},
+\code{\link{mf7}()},
+\code{\link{mftot}()},
+\code{\link{ofv_criterion}()},
+\code{\link{ofv_fim}()}
 
-Other E-family: \code{\link{calc_ofv_and_fim}},
-  \code{\link{ed_laplace_ofv}},
-  \code{\link{evaluate.e.ofv.fim}}
+Other E-family: 
+\code{\link{calc_ofv_and_fim}()},
+\code{\link{ed_laplace_ofv}()},
+\code{\link{evaluate.e.ofv.fim}()}
 }
 \concept{E-family}
 \concept{FIM}

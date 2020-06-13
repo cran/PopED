@@ -1,4 +1,4 @@
-#' Optimization Using Adaptive Random Search. 
+#' Optimize a function using adaptive random search. 
 #' 
 #' Optimize an objective function using an adaptive random search algorithm.  
 #' The function works for both discrete and continuous optimization parameters 
@@ -61,6 +61,7 @@ optim_ARS <- function(par,
                       parallel=F,
                       parallel_type=NULL,
                       num_cores = NULL,
+                      mrgsolve_model=NULL,
                       seed=round(runif(1,0,10000000)),
                       allow_replicates=TRUE,
                       generator=NULL,
@@ -101,18 +102,12 @@ optim_ARS <- function(par,
   dpar[is.infinite(dpar)] <- no_bounds_sd
   if(!is.null(seed)) set.seed(seed)
   
-  if(parallel){
-    parallel <- start_parallel(parallel,seed=seed,parallel_type=parallel_type,num_cores=num_cores,...) 
-    on.exit(if(parallel && (attr(parallel,"type")=="snow")) parallel::stopCluster(attr(parallel,"cluster")))
-  }  
-  iter_chunk = NULL
-  if(is.null(iter_chunk)) if(parallel) iter_chunk <- attr(parallel,"cores") else iter_chunk <- 1
   
   # continuous and discrete parameters
   par_type <- rep("cont",npar)
   if(!is.null(allowed_values)){
     for(k in 1:npar){
-      if(!is.na(allowed_values[[k]]) && length(allowed_values[[k]]>0)){
+      if(!all(is.na(allowed_values[[k]])) && length(allowed_values[[k]]>0)){
         par_type[k] <- "cat"          
       }
     }
@@ -199,6 +194,13 @@ optim_ARS <- function(par,
     return(list(ofv=ofv,par=par,need_new_par=need_new_par))
   } # end function
   
+  if(parallel){
+    parallel <- start_parallel(parallel,seed=seed,parallel_type=parallel_type,num_cores=num_cores,mrgsolve_model=mrgsolve_model,...) 
+    on.exit(if(parallel && (attr(parallel,"type")=="snow")) parallel::stopCluster(attr(parallel,"cluster")))
+  }  
+  iter_chunk = NULL
+  if(is.null(iter_chunk)) if(parallel) iter_chunk <- attr(parallel,"cores") else iter_chunk <- 1
+  
   for(it in 1:ceiling(iter/iter_chunk)){
     start_it <- (it-1)*iter_chunk+1
     stop_it <- min(it*iter_chunk,iter)
@@ -210,6 +212,8 @@ optim_ARS <- function(par,
       res <- mapply(c,parallel::mclapply(it_seq,gen_par_ofv,par_opt,mc.cores=attr(parallel, "cores")))
     } else if(parallel && (attr(parallel,"type")=="snow")){
       res <- mapply(c,parallel::parLapply(attr(parallel, "cluster"),it_seq,gen_par_ofv,par_opt))
+      # library(doParallel)
+      # foreach::foreach(i=it_seq) %dopar% gen_par_ofv(i,par_opt)
     } else {
       res <- mapply(c,lapply(it_seq,gen_par_ofv,par_opt))  
     }
@@ -264,6 +268,12 @@ optim_ARS <- function(par,
       nullit=1
     }
     
+    if(trace && start_it==1){
+      cat(sprintf("Initial OFV = %g",res2[["ofv",1]]))
+      if(trace==2 | trace==3) cat(" | par = ",res2[["par",1]])
+      cat("\n")
+    } 
+    
     if((trace && any((it_seq %% trace_iter)==0))){
       if(length(it_seq)==1){ 
         cat(sprintf(paste0("It. %",wd_iter,"i"),start_it))
@@ -274,7 +284,7 @@ optim_ARS <- function(par,
       if(trace==2) cat(" | opt. par. = ",par_opt)
       #cat(" | runs = ",runs)
       #cat(" | nullit = ",nullit)
-      if(trace==3) cat(" | par tried = ",par)
+      if(trace==3) cat(" | best par tried = ",par)
       cat("\n")
     }
     

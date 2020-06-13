@@ -4,21 +4,33 @@
 \alias{model_prediction}
 \title{Model predictions}
 \usage{
-model_prediction(poped.db = NULL, design = list(xt =
-  poped.db$design[["xt"]], groupsize = poped.db$design$groupsize, m =
-  poped.db$design[["m"]], x = poped.db$design[["x"]], a =
-  poped.db$design[["a"]], ni = poped.db$design$ni, model_switch =
-  poped.db$design$model_switch), model = list(fg_pointer =
-  poped.db$model$fg_pointer, ff_pointer = poped.db$model$ff_pointer,
-  ferror_pointer = poped.db$model$ferror_pointer), parameters = list(docc
-  = poped.db$parameters$docc, d = poped.db$parameters$d, bpop =
-  poped.db$parameters$bpop, covd = poped.db$parameters$covd, covdocc =
-  poped.db$parameters$covdocc, sigma = poped.db$parameters$sigma),
-  IPRED = FALSE, DV = FALSE, dosing = NULL, predictions = NULL,
-  filename = NULL, models_to_use = "all", model_num_points = NULL,
-  model_minxt = NULL, model_maxxt = NULL, include_sample_times = T,
-  groups_to_use = "all", include_a = TRUE, include_x = TRUE,
-  manipulation = NULL)
+model_prediction(
+  poped.db = NULL,
+  design = list(xt = poped.db$design[["xt"]], groupsize = poped.db$design$groupsize, m
+    = poped.db$design[["m"]], x = poped.db$design[["x"]], a = poped.db$design[["a"]], ni
+    = poped.db$design$ni, model_switch = poped.db$design$model_switch),
+  model = list(fg_pointer = poped.db$model$fg_pointer, ff_pointer =
+    poped.db$model$ff_pointer, ferror_pointer = poped.db$model$ferror_pointer),
+  parameters = list(docc = poped.db$parameters$docc, d = poped.db$parameters$d, bpop =
+    poped.db$parameters$bpop, covd = poped.db$parameters$covd, covdocc =
+    poped.db$parameters$covdocc, sigma = poped.db$parameters$sigma),
+  IPRED = FALSE,
+  DV = FALSE,
+  dosing = NULL,
+  predictions = NULL,
+  filename = NULL,
+  models_to_use = "all",
+  model_num_points = NULL,
+  model_minxt = NULL,
+  model_maxxt = NULL,
+  include_sample_times = T,
+  groups_to_use = "all",
+  include_a = TRUE,
+  include_x = TRUE,
+  manipulation = NULL,
+  PI = FALSE,
+  PI_conf_level = 0.95
+)
 }
 \arguments{
 \item{poped.db}{A PopED database created by \code{\link{create.poped.database}}.}
@@ -67,7 +79,12 @@ a vector of numbers indicating the groups to include, e.g. \code{c(1,3,6)}.}
 evaluated using the code \code{for(i in 1:length(manipulation)){df <- within(df,{eval(manipulation[[i]])})}}. 
 Can be used to transform 
 or create new columns in the resulting data frame. Note that these transformations are created after any model predictions occur,
-so transformations in colums having to do with input to model predictions  will not affect the predictions.}
+so transformations in columns having to do with input to model predictions  will not affect the predictions.}
+
+\item{PI}{Compute prediction intervals for the data given the model.  Predictions are based on first-order approximations to 
+the model variance and a normality assumption of that variance.}
+
+\item{PI_conf_level}{The confidence level for the prediction interval computed.}
 }
 \value{
 A dataframe containing a design and (potentially) simulated data with some dense grid of samples and/or 
@@ -201,7 +218,6 @@ dosing_4 <- list(list(AMT=c(1000,20),Time=c(0.5,10))) # multiple dosing
 (df_14 <- model_prediction(design=design_3,DV=TRUE,dosing=dosing_3))
 (df_15 <- model_prediction(design=design_3,DV=TRUE,dosing=dosing_4))
 
-df_16 <- model_prediction(design=design_3,DV=TRUE,dosing=dosing_4,filename="test.csv")
 
 model_prediction(design=design_3,DV=TRUE,dosing=dosing_4,model_num_points = 10)
 model_prediction(design=design_3,DV=TRUE,dosing=dosing_4,model_num_points = 10,model_minxt=20)
@@ -224,14 +240,17 @@ model_prediction(design=design_4,DV=TRUE,dosing=dosing_4,model_num_points = c(10
 
 }
 \seealso{
-Other evaluate_design: \code{\link{evaluate.fim}},
-  \code{\link{evaluate_design}},
-  \code{\link{evaluate_power}}, \code{\link{get_rse}},
-  \code{\link{plot_efficiency_of_windows}},
-  \code{\link{plot_model_prediction}}
+Other evaluate_design: 
+\code{\link{evaluate.fim}()},
+\code{\link{evaluate_design}()},
+\code{\link{evaluate_power}()},
+\code{\link{get_rse}()},
+\code{\link{plot_efficiency_of_windows}()},
+\code{\link{plot_model_prediction}()}
 
-Other Simulation: \code{\link{plot_efficiency_of_windows}},
-  \code{\link{plot_model_prediction}}
+Other Simulation: 
+\code{\link{plot_efficiency_of_windows}()},
+\code{\link{plot_model_prediction}()}
 }
 \concept{Simulation}
 \concept{evaluate_design}

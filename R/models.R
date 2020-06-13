@@ -93,6 +93,10 @@ ff.PK.1.comp.oral.md.CL <- function(model_switch,xt,parameters,poped.db){
 #' @example tests/testthat/examples_fcn_doc/examples_ff.PK.1.comp.oral.sd.KE.R
 #' 
 #' @export
+
+## TODO: change the parameterization to be a function option
+## TODO: only use md and then turn off if single dose
+
 ff.PK.1.comp.oral.sd.KE <- function(model_switch,xt,parameters,poped.db){
   ##-- Model: One comp first order absorption
   with(as.list(parameters),{
@@ -222,7 +226,7 @@ ff.PKPD.1.comp.oral.md.CL.imax <- function(model_switch,xt,parameters,poped.db){
 #'  \code{fError_file} argument.
 #'
 #' @inheritParams ff.PK.1.comp.oral.md.KE
-#' @param epsi A matrix with the same number of rows as the \code{xt} vector, colums match the numbers defined in this 
+#' @param epsi A matrix with the same number of rows as the \code{xt} vector, columns match the numbers defined in this 
 #' function.
 #' 
 #' @return A list consisting of:
@@ -255,7 +259,7 @@ feps.add.prop <- function(model_switch,xt,parameters,epsi,poped.db){
 #'  \code{fError_file} argument.
 #'
 #' @inheritParams ff.PK.1.comp.oral.md.KE
-#' @param epsi A matrix with the same number of rows as the \code{xt} vector, colums match the numbers defined in this 
+#' @param epsi A matrix with the same number of rows as the \code{xt} vector, columns match the numbers defined in this 
 #' function.
 #' 
 #' @return A list consisting of:
@@ -288,7 +292,7 @@ feps.add <- function(model_switch,xt,parameters,epsi,poped.db){
 #'  \code{fError_file} argument.
 #'
 #' @inheritParams ff.PK.1.comp.oral.md.KE
-#' @param epsi A matrix with the same number of rows as the \code{xt} vector, colums match the numbers defined in this 
+#' @param epsi A matrix with the same number of rows as the \code{xt} vector, columns match the numbers defined in this 
 #' function.
 #' 
 #' @return A list consisting of:

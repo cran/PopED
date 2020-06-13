@@ -4,17 +4,28 @@
 \alias{evaluate.e.ofv.fim}
 \title{Evaluate the expectation of the Fisher Information Matrix (FIM) and the expectation of the OFV(FIM).}
 \usage{
-evaluate.e.ofv.fim(poped.db, fim.calc.type = NULL,
-  bpop = poped.db$parameters$bpop, d = poped.db$parameters$d,
-  covd = poped.db$parameters$covd, docc = poped.db$parameters$docc,
-  sigma = poped.db$parameters$sigma, model_switch = NULL, ni = NULL,
-  xt = NULL, x = NULL, a = NULL,
-  groupsize = poped.db$design$groupsize, deriv.type = NULL,
+evaluate.e.ofv.fim(
+  poped.db,
+  fim.calc.type = NULL,
+  bpop = poped.db$parameters$bpop,
+  d = poped.db$parameters$d,
+  covd = poped.db$parameters$covd,
+  docc = poped.db$parameters$docc,
+  sigma = poped.db$parameters$sigma,
+  model_switch = NULL,
+  ni = NULL,
+  xt = NULL,
+  x = NULL,
+  a = NULL,
+  groupsize = poped.db$design$groupsize,
+  deriv.type = NULL,
   bLHS = poped.db$settings$bLHS,
   ofv_calc_type = poped.db$settings$ofv_calc_type,
   ED_samp_size = poped.db$settings$ED_samp_size,
   use_laplace = poped.db$settings$iEDCalculationType,
-  laplace.fim = FALSE, ...)
+  laplace.fim = FALSE,
+  ...
+)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
@@ -42,10 +53,13 @@ This matches what is done in PFIM, and assumes that the standard deviation of th
 \item column 3 defines the variance of the distribution (or length of uniform distribution).
 }
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
-parameter value is to be used.}
+parameter value is to be used. The parameter order of  'bpop' is defined in the 'fg_fun' or 'fg_file'. If you use named 
+arguments in 'bpop' then the order will be worked out automatically.}
 
 \item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
-matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}.}
+matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}. 
+The parameter order of 'd' is defined in the 'fg_fun' or 'fg_file'. If you use named 
+arguments in 'd' then the order will be worked out automatically.}
 
 \item{covd}{Column major vector defining the covariances of the IIV variances. 
 That is, from your full IIV matrix  \code{covd <-  IIV[lower.tri(IIV)]}.}
@@ -203,20 +217,31 @@ output$E_ofv
 }
 }
 \seealso{
-Other FIM: \code{\link{LinMatrixH}},
-  \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
-  \code{\link{calc_ofv_and_fim}},
-  \code{\link{ed_laplace_ofv}}, \code{\link{ed_mftot}},
-  \code{\link{efficiency}}, \code{\link{evaluate.fim}},
-  \code{\link{gradf_eps}}, \code{\link{mf3}},
-  \code{\link{mf7}}, \code{\link{mftot}},
-  \code{\link{ofv_criterion}}, \code{\link{ofv_fim}}
+Other FIM: 
+\code{\link{LinMatrixH}()},
+\code{\link{LinMatrixLH}()},
+\code{\link{LinMatrixL_occ}()},
+\code{\link{calc_ofv_and_fim}()},
+\code{\link{ed_laplace_ofv}()},
+\code{\link{ed_mftot}()},
+\code{\link{efficiency}()},
+\code{\link{evaluate.fim}()},
+\code{\link{gradf_eps}()},
+\code{\link{mf3}()},
+\code{\link{mf7}()},
+\code{\link{mftot}()},
+\code{\link{ofv_criterion}()},
+\code{\link{ofv_fim}()}
 
-Other E-family: \code{\link{calc_ofv_and_fim}},
-  \code{\link{ed_laplace_ofv}}, \code{\link{ed_mftot}}
+Other E-family: 
+\code{\link{calc_ofv_and_fim}()},
+\code{\link{ed_laplace_ofv}()},
+\code{\link{ed_mftot}()}
 
-Other evaluate_FIM: \code{\link{calc_ofv_and_fim}},
-  \code{\link{evaluate.fim}}, \code{\link{ofv_fim}}
+Other evaluate_FIM: 
+\code{\link{calc_ofv_and_fim}()},
+\code{\link{evaluate.fim}()},
+\code{\link{ofv_fim}()}
 }
 \concept{E-family}
 \concept{FIM}

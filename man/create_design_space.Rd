@@ -4,14 +4,31 @@
 \alias{create_design_space}
 \title{Create design variables and a design space for a full description of an optimization problem.}
 \usage{
-create_design_space(design, maxni = NULL, minni = NULL,
-  maxtotni = NULL, mintotni = NULL, maxgroupsize = NULL,
-  mingroupsize = NULL, maxtotgroupsize = NULL,
-  mintotgroupsize = NULL, maxxt = NULL, minxt = NULL,
-  xt_space = NULL, maxa = NULL, mina = NULL, a_space = NULL,
-  x_space = NULL, use_grouped_xt = FALSE, grouped_xt = NULL,
-  use_grouped_a = FALSE, grouped_a = NULL, use_grouped_x = FALSE,
-  grouped_x = NULL, our_zero = NULL)
+create_design_space(
+  design,
+  maxni = NULL,
+  minni = NULL,
+  maxtotni = NULL,
+  mintotni = NULL,
+  maxgroupsize = NULL,
+  mingroupsize = NULL,
+  maxtotgroupsize = NULL,
+  mintotgroupsize = NULL,
+  maxxt = NULL,
+  minxt = NULL,
+  xt_space = NULL,
+  maxa = NULL,
+  mina = NULL,
+  a_space = NULL,
+  x_space = NULL,
+  use_grouped_xt = FALSE,
+  grouped_xt = NULL,
+  use_grouped_a = FALSE,
+  grouped_a = NULL,
+  use_grouped_x = FALSE,
+  grouped_x = NULL,
+  our_zero = NULL
+)
 }
 \arguments{
 \item{design}{The output from a call to \code{\link{create_design}}.}
@@ -39,8 +56,9 @@ supplied then all xt values are given the same maximum value.}
 supplied then all xt values are given the same minimum value}
 
 \item{xt_space}{Cell array \code{\link{cell}} defining the discrete variables allowed for each xt value.
- Can also be a list of values \code{list(1:10)} (same values allowed for all xt), or a list of lists 
-\code{list(1:10, 2:23, 4:6)} (one for each value in xt).}
+ Can also be a vector of values \code{c(1:10)} (same values allowed for all xt), or a list of lists 
+\code{list(1:10, 2:23, 4:6)} (one for each value in xt in row major order or just for one row in xt, 
+and all other rows will be duplicated).}
 
 \item{maxa}{Vector defining the maximum value for each covariate. IF a single value is supplied then
 all a values are given the same maximum value}
@@ -166,10 +184,11 @@ ds_17 <- create_design_space(design_1,a_space = list(1:100,seq(1000,100000,by=10
 
 }
 \seealso{
-Other poped_input: \code{\link{convert_variables}},
-  \code{\link{create.poped.database}},
-  \code{\link{create_design}},
-  \code{\link{downsizing_general_design}},
-  \code{\link{poped.choose}}
+Other poped_input: 
+\code{\link{convert_variables}()},
+\code{\link{create.poped.database}()},
+\code{\link{create_design}()},
+\code{\link{downsizing_general_design}()},
+\code{\link{poped.choose}()}
 }
 \concept{poped_input}

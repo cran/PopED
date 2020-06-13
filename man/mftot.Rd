@@ -4,8 +4,20 @@
 \alias{mftot}
 \title{Evaluate the Fisher Information Matrix (FIM)}
 \usage{
-mftot(model_switch, groupsize, ni, xt, x, a, bpop, d, sigma, docc,
-  poped.db)
+mftot(
+  model_switch,
+  groupsize,
+  ni,
+  xt,
+  x,
+  a,
+  bpop,
+  d,
+  sigma,
+  docc,
+  poped.db,
+  ...
+)
 }
 \arguments{
 \item{model_switch}{A matrix that is the same size as xt, specifying which model each sample belongs to.}
@@ -75,14 +87,14 @@ poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
-                                  sigma=c(0.01,0.25),
+                                  sigma=c(prop=0.01,add=0.25),
                                   groupsize=32,
                                   xt=c( 0.5,1,2,6,24,36,72,120),
                                   minxt=0.01,
                                   maxxt=120,
-                                  a=70,
-                                  mina=0.01,
-                                  maxa=100)
+                                  a=c(DOSE=70),
+                                  mina=c(DOSE=0.01),
+                                  maxa=c(DOSE=100))
 
 ############# END ###################
 ## Create PopED database
@@ -106,15 +118,21 @@ mftot(model_switch=poped.db$design$model_switch,
 \seealso{
 For an easier function to use, please see \code{\link{evaluate.fim}}.
 
-Other FIM: \code{\link{LinMatrixH}},
-  \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
-  \code{\link{calc_ofv_and_fim}},
-  \code{\link{ed_laplace_ofv}}, \code{\link{ed_mftot}},
-  \code{\link{efficiency}},
-  \code{\link{evaluate.e.ofv.fim}},
-  \code{\link{evaluate.fim}}, \code{\link{gradf_eps}},
-  \code{\link{mf3}}, \code{\link{mf7}},
-  \code{\link{ofv_criterion}}, \code{\link{ofv_fim}}
+Other FIM: 
+\code{\link{LinMatrixH}()},
+\code{\link{LinMatrixLH}()},
+\code{\link{LinMatrixL_occ}()},
+\code{\link{calc_ofv_and_fim}()},
+\code{\link{ed_laplace_ofv}()},
+\code{\link{ed_mftot}()},
+\code{\link{efficiency}()},
+\code{\link{evaluate.e.ofv.fim}()},
+\code{\link{evaluate.fim}()},
+\code{\link{gradf_eps}()},
+\code{\link{mf3}()},
+\code{\link{mf7}()},
+\code{\link{ofv_criterion}()},
+\code{\link{ofv_fim}()}
 }
 \concept{FIM}
 \keyword{internal}

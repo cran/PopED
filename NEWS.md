@@ -1,10 +1,41 @@
+# PopED 0.5.0
+
+* Added the ability to incorporate limit of quantification information into FIM calculations (both upper and lower limits). See the new vignette on the webpage https://andrewhooker.github.io/PopED/articles/handling_loq.html 
+
+* Adding functionality to optimize groupsize and total size of the study. See `?optimize_groupsize`, ``?optimize_n_eff` and `?optimize_n_rse`.  This is also implemented in `poped_optim` through the `opt_inds=T` argument.
+
+* Updating Vignettes, including a new one about using other tools to use as simulators for design computations.  See https://andrewhooker.github.io/PopED/articles/model_def_other_pkgs.html 
+
+* Simplify RxODE syntax in the above vingette (#47, @mattfidler).
+
+* Added the ability to predict and plot model prediction intervals by computing the expected variance (using an FO approximation) and then computing a prediction interval based on an assumption of normality. See `?model_prediciton` and `?plot_model_prediction`. The computation is faster but less accurate compared to using `DV=TRUE` (and `groupsize_sim = 500`) in the two functions.
+
+* Named parameters are now passed to all calculations so that the FIM and RSE output is more readable with parameter names instead of default names.
+
+* Allow for parallel computation in `plot_efficiency_of_windows` (#50).
+
+* Make parallelization work with mrgsolve on windows (#37, #45, #46, #51, @Vincent-AC).
+
+* Updated the function for automatic building of parameter model function (see `build_sfg`).
+
+* Simplify derivative calculations (#34, @martin-gmx).
+
+* Allow for only simulating model_switch > 1 models.
+
+* Change the defult Ds calculation to be on log scale.
+
+* Updated the website at https://andrewhooker.github.io/PopED 
+
+* Remove options for discontinued dplyr commands `rbind_all` and `rbind_list`.
+
+* Minor bug fixes in shrinkage calculations (#44, #39, @martin-gmx).
+
+
 # PopED 0.4.0
 
 * New and improved vignettes (#30, @giulialestini)!
 
-* Added power evaluation script to test the power of a design to identify a prameter different
-than an assumed value.  The function also calculates the number of individuals needed in a design to have a specific
-power. See `?evaluate_power` for more information (#26, @martin-gmx).
+* Added power evaluation script to test the power of a design to identify a parameter different than an assumed value.  The function also calculates the number of individuals needed in a design to have a specific power. See `?evaluate_power` for more information (#26, @martin-gmx).
 
 * Added function to compute expected shrinkage of a design.  See `?shrinkage` for more information.
 
@@ -78,7 +109,7 @@ how to handle covariate distributions in optimal design, an example on how to in
 
 * Fixed bug in `plot_model_prediction()` that did not plot the optimized design, but instead the initial design
 
-* Reorganized the database created from `create.poped.database()`.  The output from this function is now a list with 5 sub-lists: design, design_space, model, parameters and settings.  Also removed duplicate entries in the database for easier manipulation.  This will cause some back compatibility issues when refering to elements in a database.
+* Reorganized the database created from `create.poped.database()`.  The output from this function is now a list with 5 sub-lists: design, design_space, model, parameters and settings.  Also removed duplicate entries in the database for easier manipulation.  This will cause some back compatibility issues when referring to elements in a database.
 
 * Added example 10 describing a PKPD design of hepatitis C virus (HCV) kinetics to the `system.file("examples",package="PopED")` directory of the PopED installation.
 
@@ -120,7 +151,7 @@ how to handle covariate distributions in optimal design, an example on how to in
   This can be orders of magnitude faster than the standard MC integration approach.
   See '?ed_laplace_ofv' and '?evaluate.e.ofv.fim' 
 
-* Added a general function to compute the FIM and OFV(FIM) for all avaialbale methods in PopED.
+* Added a general function to compute the FIM and OFV(FIM) for all available methods in PopED.
   See '?calc_ofv_and_fim'.
 
 * Added a general optimization algorithm 'RS_opt_gen()' that works for both D-family and 

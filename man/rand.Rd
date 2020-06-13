@@ -9,7 +9,7 @@ rand(dim1, dim2 = NULL)
 \arguments{
 \item{dim1}{The dimension of the matrix (if square), otherwise the number of rows.}
 
-\item{dim2}{The number of colums, if different from the number of rows.}
+\item{dim2}{The number of columns, if different from the number of rows.}
 }
 \value{
 Matrix of random generated samples.
@@ -24,12 +24,18 @@ rand(2,3)
 rand(5)
 }
 \seealso{
-Other MATLAB: \code{\link{cell}},
-  \code{\link{diag_matlab}}, \code{\link{feval}},
-  \code{\link{fileparts}}, \code{\link{isempty}},
-  \code{\link{ones}}, \code{\link{randn}},
-  \code{\link{size}}, \code{\link{tic}}, \code{\link{toc}},
-  \code{\link{zeros}}
+Other MATLAB: 
+\code{\link{cell}()},
+\code{\link{diag_matlab}()},
+\code{\link{feval}()},
+\code{\link{fileparts}()},
+\code{\link{isempty}()},
+\code{\link{ones}()},
+\code{\link{randn}()},
+\code{\link{size}()},
+\code{\link{tic}()},
+\code{\link{toc}()},
+\code{\link{zeros}()}
 }
 \concept{MATLAB}
 \keyword{internal}

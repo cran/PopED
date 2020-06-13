@@ -4,24 +4,37 @@
 \alias{poped_optim}
 \title{Optimize a design defined in a PopED database}
 \usage{
-poped_optim(poped.db, opt_xt = poped.db$settings$optsw[2],
+poped_optim(
+  poped.db,
+  opt_xt = poped.db$settings$optsw[2],
   opt_a = poped.db$settings$optsw[4],
   opt_x = poped.db$settings$optsw[3],
   opt_samps = poped.db$settings$optsw[1],
-  opt_inds = poped.db$settings$optsw[5], method = c("ARS", "BFGS",
-  "LS"), control = list(), trace = TRUE,
+  opt_inds = poped.db$settings$optsw[5],
+  method = c("ARS", "BFGS", "LS"),
+  control = list(),
+  trace = TRUE,
   fim.calc.type = poped.db$settings$iFIMCalculationType,
   ofv_calc_type = poped.db$settings$ofv_calc_type,
   approx_type = poped.db$settings$iApproximationMethod,
   d_switch = poped.db$settings$d_switch,
   ED_samp_size = poped.db$settings$ED_samp_size,
   bLHS = poped.db$settings$bLHS,
-  use_laplace = poped.db$settings$iEDCalculationType, out_file = "",
-  parallel = F, parallel_type = NULL, num_cores = NULL,
+  use_laplace = poped.db$settings$iEDCalculationType,
+  out_file = "",
+  parallel = F,
+  parallel_type = NULL,
+  num_cores = NULL,
+  mrgsolve_model = NULL,
   loop_methods = ifelse(length(method) > 1, TRUE, FALSE),
-  iter_max = 10, stop_crit_eff = 1.001, stop_crit_diff = NULL,
-  stop_crit_rel = NULL, ofv_fun = poped.db$settings$ofv_fun,
-  maximize = T, ...)
+  iter_max = 10,
+  stop_crit_eff = 1.001,
+  stop_crit_diff = NULL,
+  stop_crit_rel = NULL,
+  ofv_fun = poped.db$settings$ofv_fun,
+  maximize = T,
+  ...
+)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
@@ -98,6 +111,10 @@ See \code{\link{start_parallel}}.}
  output from 
 \code{parallel::detectCores()}. 
 See \code{\link{start_parallel}}.}
+
+\item{mrgsolve_model}{If the computations require a mrgsolve model and you
+are using the "snow" method then you need to specify the name of the model
+object created by \code{mread} or \code{mcode}.}
 
 \item{loop_methods}{Should the optimization methods be looped for
 \code{iter_max} iterations, or until the efficiency of the design after the
@@ -188,14 +205,14 @@ poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
-                                  sigma=c(0.01,0.25),
+                                  sigma=c(prop=0.01,add=0.25),
                                   groupsize=32,
                                   xt=c( 0.5,1,2,6,24,36,72,120),
                                   minxt=0.01,
                                   maxxt=120,
-                                  a=70,
-                                  mina=0.01,
-                                  maxa=100)
+                                  a=c(DOSE=70),
+                                  mina=c(DOSE=0.01),
+                                  maxa=c(DOSE=100))
 
 ############# END ###################
 ## Create PopED database
@@ -217,6 +234,7 @@ out_1 <- poped_optim(poped.db,opt_a =TRUE,
                                      BFGS=list(maxit=2),
                                      LS=list(line_length=2)),
                       iter_max = 1)
+
 
 # cost function
 # PRED at 120 hours
@@ -307,6 +325,34 @@ out_3 <- poped_optim(poped.db,opt_a =TRUE,
                        maximize = F,
                        evaluate_fim = F)
   
+  # optimize distribution of individuals in 3 groups
+  poped_db_2 <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                    fg_fun=sfg,
+                                    fError_fun=feps.add.prop,
+                                    bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
+                                    notfixed_bpop=c(1,1,1,0),
+                                    d=c(CL=0.07, V=0.02, KA=0.6), 
+                                    sigma=c(prop=0.01,add=0.25),
+                                    groupsize=32,
+                                    m=3,
+                                    xt=list(c( 0.5,1,2,6,8),c(36,72,120),
+                                            c(10,12,14,16,18,20,22,24)),
+                                    minxt=0.01,
+                                    maxxt=120,
+                                    a=c(DOSE=70),
+                                    mina=c(DOSE=0.01),
+                                    maxa=c(DOSE=100))
+  
+  opt_xt_inds <- 
+    poped_optim(poped_db_2,
+                opt_a =TRUE,
+                opt_inds = TRUE,
+                control = list(ARS=list(iter=2),
+                               BFGS=list(maxit=2),
+                               LS=list(line_length=2)),
+                iter_max = 1)
+  
+  
   
   ##############
   # E-family Optimization
@@ -364,13 +410,20 @@ out_3 <- poped_optim(poped.db,opt_a =TRUE,
   2012. }
 }
 \seealso{
-Other Optimize: \code{\link{Doptim}},
-  \code{\link{LEDoptim}}, \code{\link{RS_opt}},
-  \code{\link{a_line_search}}, \code{\link{bfgsb_min}},
-  \code{\link{calc_autofocus}},
-  \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
-  \code{\link{optim_ARS}}, \code{\link{optim_LS}},
-  \code{\link{poped_optim_1}}, \code{\link{poped_optim_2}},
-  \code{\link{poped_optim_3}}, \code{\link{poped_optimize}}
+Other Optimize: 
+\code{\link{Doptim}()},
+\code{\link{LEDoptim}()},
+\code{\link{RS_opt}()},
+\code{\link{a_line_search}()},
+\code{\link{bfgsb_min}()},
+\code{\link{calc_autofocus}()},
+\code{\link{calc_ofv_and_grad}()},
+\code{\link{mfea}()},
+\code{\link{optim_ARS}()},
+\code{\link{optim_LS}()},
+\code{\link{poped_optim_1}()},
+\code{\link{poped_optim_2}()},
+\code{\link{poped_optim_3}()},
+\code{\link{poped_optimize}()}
 }
 \concept{Optimize}

@@ -4,11 +4,24 @@
 \alias{evaluate.fim}
 \title{Evaluate the Fisher Information Matrix (FIM)}
 \usage{
-evaluate.fim(poped.db, fim.calc.type = NULL, approx.method = NULL,
-  FOCE.num = NULL, bpop.val = NULL, d_full = NULL,
-  docc_full = NULL, sigma_full = NULL, model_switch = NULL,
-  ni = NULL, xt = NULL, x = NULL, a = NULL, groupsize = NULL,
-  deriv.type = NULL, ...)
+evaluate.fim(
+  poped.db,
+  fim.calc.type = NULL,
+  approx.method = NULL,
+  FOCE.num = NULL,
+  bpop.val = NULL,
+  d_full = NULL,
+  docc_full = NULL,
+  sigma_full = NULL,
+  model_switch = NULL,
+  ni = NULL,
+  xt = NULL,
+  x = NULL,
+  a = NULL,
+  groupsize = NULL,
+  deriv.type = NULL,
+  ...
+)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
@@ -98,7 +111,8 @@ poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
                                   fg_file="sfg",
                                   fError_file="feps.prop",
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
-                                  notfixed_bpop=c(1,1,1,0),
+                                  # notfixed_bpop=c(1,1,1,0),
+                                  notfixed_bpop=c(CL=1,V=1,KA=1,Favail=0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
                                   sigma=0.01,
                                   groupsize=32,
@@ -150,24 +164,34 @@ all.equal(FIM.1.prior,FIM.1) # the FIM is only computed from the design in the p
 get_rse(FIM.1.prior,poped.db.prior) # the RSE is computed with the prior information
 }
 \seealso{
-Other FIM: \code{\link{LinMatrixH}},
-  \code{\link{LinMatrixLH}}, \code{\link{LinMatrixL_occ}},
-  \code{\link{calc_ofv_and_fim}},
-  \code{\link{ed_laplace_ofv}}, \code{\link{ed_mftot}},
-  \code{\link{efficiency}},
-  \code{\link{evaluate.e.ofv.fim}},
-  \code{\link{gradf_eps}}, \code{\link{mf3}},
-  \code{\link{mf7}}, \code{\link{mftot}},
-  \code{\link{ofv_criterion}}, \code{\link{ofv_fim}}
+Other FIM: 
+\code{\link{LinMatrixH}()},
+\code{\link{LinMatrixLH}()},
+\code{\link{LinMatrixL_occ}()},
+\code{\link{calc_ofv_and_fim}()},
+\code{\link{ed_laplace_ofv}()},
+\code{\link{ed_mftot}()},
+\code{\link{efficiency}()},
+\code{\link{evaluate.e.ofv.fim}()},
+\code{\link{gradf_eps}()},
+\code{\link{mf3}()},
+\code{\link{mf7}()},
+\code{\link{mftot}()},
+\code{\link{ofv_criterion}()},
+\code{\link{ofv_fim}()}
 
-Other evaluate_design: \code{\link{evaluate_design}},
-  \code{\link{evaluate_power}}, \code{\link{get_rse}},
-  \code{\link{model_prediction}},
-  \code{\link{plot_efficiency_of_windows}},
-  \code{\link{plot_model_prediction}}
+Other evaluate_design: 
+\code{\link{evaluate_design}()},
+\code{\link{evaluate_power}()},
+\code{\link{get_rse}()},
+\code{\link{model_prediction}()},
+\code{\link{plot_efficiency_of_windows}()},
+\code{\link{plot_model_prediction}()}
 
-Other evaluate_FIM: \code{\link{calc_ofv_and_fim}},
-  \code{\link{evaluate.e.ofv.fim}}, \code{\link{ofv_fim}}
+Other evaluate_FIM: 
+\code{\link{calc_ofv_and_fim}()},
+\code{\link{evaluate.e.ofv.fim}()},
+\code{\link{ofv_fim}()}
 }
 \concept{FIM}
 \concept{evaluate_FIM}

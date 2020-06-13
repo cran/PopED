@@ -152,6 +152,17 @@ poped_optim_3 <- function(poped.db,
                  trflag=trace,
                  ...)
   
+  # handle optimization of n distribution
+  if(opt_inds){
+    if(poped.db$design$m==1){
+      message("There is only one group, so proportions of individuals in each group cannot be optimized\n")
+      opt_inds <- FALSE
+    } else{
+      method <- c(method,"opt_n_dist")
+      if(missing(loop_methods) & (length(method)>1)) loop_methods <- TRUE
+      opt_inds <- FALSE
+    }
+  } 
   
   #------------ optimize
   if(!(fn=="")) sink(fn, append=TRUE, split=TRUE)
@@ -170,6 +181,8 @@ poped_optim_3 <- function(poped.db,
     while(length(method_loop)>0){
       cur_meth <- method_loop[1]
       method_loop <- method_loop[-1]
+      if(!(cur_meth %in% c("ARS","LS","GA","BFGS","opt_n_dist"))) 
+        stop("Current method ", cur_meth, " not defined")
       if(cur_meth=="ARS"){
         cat("*******************************************\n")
         cat("Running Adaptive Random Search Optimization\n")
@@ -189,30 +202,29 @@ poped_optim_3 <- function(poped.db,
                     parallel=parallel,
                     parallel_type=parallel_type,
                     num_cores = num_cores)
-        nmsC <- names(con)
-        con[(namc <- names(control$ARS))] <- control$ARS
-        #if (length(noNms <- namc[!namc %in% nmsC])) warning("unknown names in control: ", paste(noNms, collapse = ", "))
+        con[names(control$ARS)] <- control$ARS
+
+        tmp_ofv_fun <- function(par,...){
+          ofv_optim(par,ps_tbl,poped.db,
+                    d_switch=d_switch,
+                    ED_samp_size=ED_samp_size,
+                    bLHS=bLHS,
+                    use_laplace=use_laplace,
+                    ofv_calc_type=ofv_calc_type,
+                    fim.calc.type=fim.calc.type,
+                    ofv_fun = ofv_fun_user,
+                    ...)}
         
-        tmp_ofv_fun <- function(par,...){ofv_optim(par,ps_tbl,poped.db,
-                                                   d_switch=d_switch,
-                                                   ED_samp_size=ED_samp_size,
-                                                   bLHS=bLHS,
-                                                   use_laplace=use_laplace,
-                                                   ofv_calc_type=ofv_calc_type,
-                                                   fim.calc.type=fim.calc.type,
-                                                   ofv_fun = ofv_fun_user,
-                                                   ...)}
-        output <- do.call(optim_ARS,c(list(par=ps_tbl$par,
-                                           fn=tmp_ofv_fun,
-                                           lower=ps_tbl$lower,
-                                           upper=ps_tbl$upper,
-                                           allowed_values = ps_tbl$allowed_values,
-                                           maximize=maximize
-                                           #par_df_full=par_df
-        ),
-        #par_grouping=par_grouping),
-        con,
-        ...))
+        output <- 
+          do.call(optim_ARS,
+                  c(list(par=ps_tbl$par,
+                         fn=tmp_ofv_fun,
+                         lower=ps_tbl$lower,
+                         upper=ps_tbl$upper,
+                         allowed_values = ps_tbl$allowed_values,
+                         maximize=maximize),
+                    con,
+                    list(...)))
         
         poped.db <- add_to_poped_db(poped.db, ps_tbl, par = output$par)
 
@@ -236,10 +248,8 @@ poped_optim_3 <- function(poped.db,
                     parallel=parallel,
                     parallel_type=parallel_type,
                     num_cores = num_cores)
-        nmsC <- names(con)
-        con[(namc <- names(control$LS))] <- control$LS
-        #if (length(noNms <- namc[!namc %in% nmsC])) warning("unknown names in control: ", paste(noNms, collapse = ", "))
-        
+        con[names(control$LS)] <- control$LS
+
         tmp_ofv_fun <- function(par,...){ofv_optim(par,ps_tbl,poped.db,
                                                    d_switch=d_switch,
                                                    ED_samp_size=ED_samp_size,
@@ -249,17 +259,17 @@ poped_optim_3 <- function(poped.db,
                                                    fim.calc.type=fim.calc.type,
                                                    ofv_fun = ofv_fun_user,
                                                    ...)}
-        output <- do.call(optim_LS,c(list(par=ps_tbl$par,
-                                          fn=tmp_ofv_fun,
-                                          lower=ps_tbl$lower,
-                                          upper=ps_tbl$upper,
-                                          allowed_values = ps_tbl$allowed_values,
-                                          maximize=maximize
-                                          #par_df_full=par_df
-        ),
-        #par_grouping=par_grouping),
-        con,
-        ...))
+        output <- 
+          do.call(optim_LS,
+                  c(list(par=ps_tbl$par,
+                         fn=tmp_ofv_fun,
+                         lower=ps_tbl$lower,
+                         upper=ps_tbl$upper,
+                         allowed_values = ps_tbl$allowed_values,
+                         maximize=maximize
+                  ),
+                  con,
+                  list(...)))
         
         poped.db <- add_to_poped_db(poped.db, ps_tbl, par = output$par)
       }
@@ -315,6 +325,7 @@ poped_optim_3 <- function(poped.db,
         output <- optim(par=ps_tbl$par,
                         fn=tmp_ofv_fun,
                         gr=NULL,
+                        ...,
                         #par_full=par_full,
                         # only_cont=T,
                         method = "BFGS",
@@ -361,7 +372,7 @@ poped_optim_3 <- function(poped.db,
         if(!is.null(parallel_type))  parallel_ga <- parallel_type
         
         con <- list(parallel=parallel_ga)
-        dot_vals <- dots(...)
+        #dot_vals <- dots(...)
         #if(is.null(dot_vals[["monitor"]])){
           #if(packageVersion("GA")>="3.0.2" && packageVersion("GA")<"3.1.1") con$monitor <- GA::gaMonitor2
           #if(packageVersion("GA")>="3.1.1") con$monitor <- GA::gaMonitor
@@ -398,7 +409,7 @@ poped_optim_3 <- function(poped.db,
                                              suggestions=ps_tbl$par),
                                         #allowed_values = allowed_values),
                                         con,
-                                        ...))
+                                        list(...)))
         if(packageVersion("GA")>="3.1.1")
           output_ga <- do.call(GA::ga,c(list(type = "real-valued", 
                                              fitness = tmp_ofv_fun,
@@ -409,7 +420,7 @@ poped_optim_3 <- function(poped.db,
                                              suggestions=ps_tbl$par),
                                         #allowed_values = allowed_values),
                                         con,
-                                        ...))
+                                        list(...)))
         output$ofv <- output_ga@fitnessValue
         if(!maximize) output$ofv <- -output$ofv
         
@@ -421,6 +432,42 @@ poped_optim_3 <- function(poped.db,
         fprintf('\n')
         if(fn!="") fprintf(fn,'\n')
       }
+      if(cur_meth=="opt_n_dist"){
+        
+        cat("*******************************************\n")
+        cat("Running distribution of individuals optimization\n")
+        cat("*******************************************\n")
+          
+        
+        # Get parameters and space
+        # ps_tbl <- get_par_and_space_optim(poped.db,
+        #                                   opt_xt=opt_xt,
+        #                                   opt_a=opt_a,
+        #                                   opt_x=opt_x,
+        #                                   opt_samps=opt_samps,
+        #                                   opt_inds=opt_inds,
+        #                                   transform_parameters=F,
+        #                                   cont_cat = "cont",
+        #                                   warn_when_none=F)
+        # 
+        
+        # handle control arguments
+        con <- control$opt_n_dist
+        
+        output_opt_n_dist <- do.call(optimize_groupsize,
+                                     c(list(poped.db=poped.db),
+                                       con,
+                                       list(...)))
+        
+        poped.db <- create.poped.database(poped.db,
+                              groupsize = output_opt_n_dist$opt_n_per_group,
+                              mingroupsize = output_opt_n_dist$opt_n_per_group,
+                              maxgroupsize = output_opt_n_dist$opt_n_per_group)
+        
+        fprintf('\n')
+        if(fn!="") fprintf(fn,'\n')
+      }
+      
     }
     
     if(!loop_methods){
@@ -440,7 +487,7 @@ poped_optim_3 <- function(poped.db,
       # efficiency
       
       
-      eff <- efficiency(ofv_init, output$ofv, poped.db)
+      eff <- efficiency(ofv_init, output$ofv, poped.db,...)
       fprintf("Efficiency: \n  (%s) = %.5g\n",attr(eff,"description"),eff)
       #cat("Efficiency: \n  ", attr(eff,"description"), sprintf("%.5g",eff), "\n")
       #if(eff<=stop_crit_eff) stop_crit <- TRUE

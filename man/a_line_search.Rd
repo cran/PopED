@@ -4,14 +4,20 @@
 \alias{a_line_search}
 \title{Optimize using line search}
 \usage{
-a_line_search(poped.db, out_file = "", bED = FALSE, diff = 0,
-  fmf_initial = 0, dmf_initial = 0,
+a_line_search(
+  poped.db,
+  out_file = "",
+  bED = FALSE,
+  diff = 0,
+  fmf_initial = 0,
+  dmf_initial = 0,
   opt_xt = poped.db$settings$optsw[2],
   opt_a = poped.db$settings$optsw[4],
   opt_x = poped.db$settings$optsw[3],
   opt_samps = poped.db$settings$optsw[1],
   opt_inds = poped.db$settings$optsw[5],
-  ls_step_size = poped.db$settings$ls_step_size)
+  ls_step_size = poped.db$settings$ls_step_size
+)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
@@ -92,14 +98,14 @@ poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
-                                  sigma=c(0.01,0.25),
+                                  sigma=c(prop=0.01,add=0.25),
                                   groupsize=32,
                                   xt=c( 0.5,1,2,6,24,36,72,120),
                                   minxt=0.01,
                                   maxxt=120,
-                                  a=70,
-                                  mina=0.01,
-                                  maxa=100)
+                                  a=c(DOSE=70),
+                                  mina=c(DOSE=0.01),
+                                  maxa=c(DOSE=100))
 
 ############# END ###################
 ## Create PopED database
@@ -122,13 +128,20 @@ output <- a_line_search(poped.db, opt_xt=TRUE, opt_a=TRUE, ls_step_size=4)
 
 }
 \seealso{
-Other Optimize: \code{\link{Doptim}},
-  \code{\link{LEDoptim}}, \code{\link{RS_opt}},
-  \code{\link{bfgsb_min}}, \code{\link{calc_autofocus}},
-  \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
-  \code{\link{optim_ARS}}, \code{\link{optim_LS}},
-  \code{\link{poped_optim_1}}, \code{\link{poped_optim_2}},
-  \code{\link{poped_optim_3}},
-  \code{\link{poped_optimize}}, \code{\link{poped_optim}}
+Other Optimize: 
+\code{\link{Doptim}()},
+\code{\link{LEDoptim}()},
+\code{\link{RS_opt}()},
+\code{\link{bfgsb_min}()},
+\code{\link{calc_autofocus}()},
+\code{\link{calc_ofv_and_grad}()},
+\code{\link{mfea}()},
+\code{\link{optim_ARS}()},
+\code{\link{optim_LS}()},
+\code{\link{poped_optim_1}()},
+\code{\link{poped_optim_2}()},
+\code{\link{poped_optim_3}()},
+\code{\link{poped_optimize}()},
+\code{\link{poped_optim}()}
 }
 \concept{Optimize}

@@ -4,9 +4,29 @@
 \alias{calc_autofocus}
 \title{Compute the autofocus portion of the stochastic gradient routine}
 \usage{
-calc_autofocus(m, ni_var, dmf, varopt, varopto, maxvar, minvar, gradvar,
-  normgvar, avar, model_switch, groupsize, xtopt, xopt, aopt, ni, bpop, d,
-  sigma, docc, poped.db)
+calc_autofocus(
+  m,
+  ni_var,
+  dmf,
+  varopt,
+  varopto,
+  maxvar,
+  minvar,
+  gradvar,
+  normgvar,
+  avar,
+  model_switch,
+  groupsize,
+  xtopt,
+  xopt,
+  aopt,
+  ni,
+  bpop,
+  d,
+  sigma,
+  docc,
+  poped.db
+)
 }
 \arguments{
 \item{m}{Number of groups in the study.  Each individual in a group will have the same design.}
@@ -49,10 +69,13 @@ calc_autofocus(m, ni_var, dmf, varopt, varopto, maxvar, minvar, gradvar,
 \item column 3 defines the variance of the distribution (or length of uniform distribution).
 }
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
-parameter value is to be used.}
+parameter value is to be used. The parameter order of  'bpop' is defined in the 'fg_fun' or 'fg_file'. If you use named 
+arguments in 'bpop' then the order will be worked out automatically.}
 
 \item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
-matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}.}
+matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}. 
+The parameter order of 'd' is defined in the 'fg_fun' or 'fg_file'. If you use named 
+arguments in 'd' then the order will be worked out automatically.}
 
 \item{sigma}{Matrix defining the variances can covariances of the residual variability terms of the model.
 can also just supply the diagonal parameter values (variances) as a \code{c()}.}
@@ -106,14 +129,14 @@ poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
-                                  sigma=c(0.01,0.25),
+                                  sigma=c(prop=0.01,add=0.25),
                                   groupsize=32,
                                   xt=c( 0.5,1,2,6,24,36,72,120),
                                   minxt=0.01,
                                   maxxt=120,
-                                  a=70,
-                                  mina=0.01,
-                                  maxa=100)
+                                  a=c(DOSE=70),
+                                  mina=c(DOSE=0.01),
+                                  maxa=c(DOSE=100))
 
 ############# END ###################
 ## Create PopED database
@@ -134,14 +157,21 @@ sg.output <- poped_optimize(poped.db,opt_xt=1,opt_a=1,
 }
 }
 \seealso{
-Other Optimize: \code{\link{Doptim}},
-  \code{\link{LEDoptim}}, \code{\link{RS_opt}},
-  \code{\link{a_line_search}}, \code{\link{bfgsb_min}},
-  \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
-  \code{\link{optim_ARS}}, \code{\link{optim_LS}},
-  \code{\link{poped_optim_1}}, \code{\link{poped_optim_2}},
-  \code{\link{poped_optim_3}},
-  \code{\link{poped_optimize}}, \code{\link{poped_optim}}
+Other Optimize: 
+\code{\link{Doptim}()},
+\code{\link{LEDoptim}()},
+\code{\link{RS_opt}()},
+\code{\link{a_line_search}()},
+\code{\link{bfgsb_min}()},
+\code{\link{calc_ofv_and_grad}()},
+\code{\link{mfea}()},
+\code{\link{optim_ARS}()},
+\code{\link{optim_LS}()},
+\code{\link{poped_optim_1}()},
+\code{\link{poped_optim_2}()},
+\code{\link{poped_optim_3}()},
+\code{\link{poped_optimize}()},
+\code{\link{poped_optim}()}
 }
 \concept{Optimize}
 \keyword{internal}

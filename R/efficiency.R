@@ -7,6 +7,7 @@
 #' @param ofv_final A final objective function.
 #' @param npar The number of parameters to use for normalization.
 #' @param poped_db a poped database
+#' @param use_log Are the `ofv` arguments in the log space?
 #' @inheritParams ofv_fim
 #' @inheritParams poped_optim
 #' @inheritParams create.poped.database
@@ -26,7 +27,8 @@
 efficiency <- function(ofv_init, ofv_final, poped_db,
                        npar = get_fim_size(poped_db),
                        ofv_calc_type=poped_db$settings$ofv_calc_type,
-                       ds_index = poped_db$parameters$ds_index) {
+                       ds_index = poped_db$parameters$ds_index,
+                       use_log=TRUE,...) {
   
   
   eff = ofv_final/ofv_init
@@ -50,9 +52,13 @@ efficiency <- function(ofv_init, ofv_final, poped_db,
   # }
   # 
   if((ofv_calc_type==6) ){#Ds-Optimal design
-    eff = eff^(1/sum(!ds_index))
-    attr(eff,"description") <- "(ofv_final / ofv_init)^(1/sum(interesting_parameters))"
     
+    if(use_log){
+      eff = (exp(ofv_final)/exp(ofv_init))^(1/sum(!ds_index))
+      attr(eff,"description") <- "(exp(ofv_final) / exp(ofv_init))^(1/sum(interesting_parameters))"
+    } else {
+      eff = eff^(1/sum(!ds_index))
+      attr(eff,"description") <- "(ofv_final / ofv_init)^(1/sum(interesting_parameters))"    }
   }   
   
   return( eff ) 

@@ -26,7 +26,7 @@
 ## Author: Andrew Hooker
 
 ed_mftot <- function(model_switch,groupsize,ni,xtoptn,xoptn,aoptn,bpopdescr,ddescr,covd,sigma,docc,poped.db,
-                     calc_fim=TRUE){
+                     calc_fim=TRUE,...){
   #+++++++++++++++++++++++ ED OFV(MF) VALUE
   s=0
   s1=0
@@ -42,7 +42,7 @@ ed_mftot <- function(model_switch,groupsize,ni,xtoptn,xoptn,aoptn,bpopdescr,ddes
     for(ct in 1:poped.db$settings$ED_samp_size){
       d_gen = getfulld(pargen(ddescr,poped.db$model$user_distribution_pointer,1,poped.db$settings$bLHS,ct,poped.db),covd)
       docc_gen = getfulld(pargen(docc,poped.db$model$user_distribution_pointer,1,poped.db$settings$bLHS,ct,poped.db),poped.db$parameters$covdocc)
-      returnArgs <- mftot(model_switch,groupsize,ni,xtoptn,xoptn,aoptn,bpop_gen[ct,],d_gen,sigma,docc_gen,poped.db) 
+      returnArgs <- mftot(model_switch,groupsize,ni,xtoptn,xoptn,aoptn,bpop_gen[ct,],d_gen,sigma,docc_gen,poped.db,...) 
       mftmp <- returnArgs[[1]]
       poped.db <- returnArgs[[2]]
       s=s+ofv_fim(mftmp,poped.db)

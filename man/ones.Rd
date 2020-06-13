@@ -2,7 +2,7 @@
 % Please edit documentation in R/ones.R
 \name{ones}
 \alias{ones}
-\title{Creates a matrix of ones}
+\title{Create a matrix of ones}
 \usage{
 ones(dim1, dim2 = NULL)
 }
@@ -15,7 +15,7 @@ ones(dim1, dim2 = NULL)
 A matrix of ones
 }
 \description{
-Function creates a matrix of ones of size (dim1 x dim2). Written to match MATLAB's \code{ones} function.
+Create a matrix of ones of size (dim1 x dim2).
 }
 \examples{
 
@@ -23,11 +23,17 @@ ones(4)
 ones(3,4)
 }
 \seealso{
-Other MATLAB: \code{\link{cell}},
-  \code{\link{diag_matlab}}, \code{\link{feval}},
-  \code{\link{fileparts}}, \code{\link{isempty}},
-  \code{\link{randn}}, \code{\link{rand}},
-  \code{\link{size}}, \code{\link{tic}}, \code{\link{toc}},
-  \code{\link{zeros}}
+Other MATLAB: 
+\code{\link{cell}()},
+\code{\link{diag_matlab}()},
+\code{\link{feval}()},
+\code{\link{fileparts}()},
+\code{\link{isempty}()},
+\code{\link{randn}()},
+\code{\link{rand}()},
+\code{\link{size}()},
+\code{\link{tic}()},
+\code{\link{toc}()},
+\code{\link{zeros}()}
 }
 \concept{MATLAB}

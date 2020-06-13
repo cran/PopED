@@ -2,13 +2,27 @@
 % Please edit documentation in R/optim_LS.R
 \name{optim_LS}
 \alias{optim_LS}
-\title{Optimization Using a Line Search Algorithm.}
+\title{Optimize a function using a line search algorithm.}
 \usage{
-optim_LS(par, fn, lower = NULL, upper = NULL, allowed_values = NULL,
-  line_length = 50, trace = TRUE, maximize = F, parallel = F,
-  parallel_type = NULL, num_cores = NULL, seed = round(runif(1, 0,
-  1e+07)), replicates_index = seq(1, length(par)), ofv_initial = NULL,
-  closed_bounds = TRUE, ...)
+optim_LS(
+  par,
+  fn,
+  lower = NULL,
+  upper = NULL,
+  allowed_values = NULL,
+  line_length = 50,
+  trace = TRUE,
+  maximize = F,
+  parallel = F,
+  parallel_type = NULL,
+  num_cores = NULL,
+  mrgsolve_model = NULL,
+  seed = round(runif(1, 0, 1e+07)),
+  replicates_index = seq(1, length(par)),
+  ofv_initial = NULL,
+  closed_bounds = TRUE,
+  ...
+)
 }
 \arguments{
 \item{par}{A vector of initial values for the parameters to be optimized over.}
@@ -42,6 +56,10 @@ See \code{\link{start_parallel}}.}
  output from 
 \code{parallel::detectCores()}. 
 See \code{\link{start_parallel}}.}
+
+\item{mrgsolve_model}{If the computations require a mrgsolve model and you
+are using the "snow" method then you need to specify the name of the model
+object created by \code{mread} or \code{mcode}.}
 
 \item{seed}{The random seed to use in the algorithm,}
 
@@ -198,13 +216,20 @@ Computer Methods and Programs in Biomedicine, 108, 2012.
 }
 }
 \seealso{
-Other Optimize: \code{\link{Doptim}},
-  \code{\link{LEDoptim}}, \code{\link{RS_opt}},
-  \code{\link{a_line_search}}, \code{\link{bfgsb_min}},
-  \code{\link{calc_autofocus}},
-  \code{\link{calc_ofv_and_grad}}, \code{\link{mfea}},
-  \code{\link{optim_ARS}}, \code{\link{poped_optim_1}},
-  \code{\link{poped_optim_2}}, \code{\link{poped_optim_3}},
-  \code{\link{poped_optimize}}, \code{\link{poped_optim}}
+Other Optimize: 
+\code{\link{Doptim}()},
+\code{\link{LEDoptim}()},
+\code{\link{RS_opt}()},
+\code{\link{a_line_search}()},
+\code{\link{bfgsb_min}()},
+\code{\link{calc_autofocus}()},
+\code{\link{calc_ofv_and_grad}()},
+\code{\link{mfea}()},
+\code{\link{optim_ARS}()},
+\code{\link{poped_optim_1}()},
+\code{\link{poped_optim_2}()},
+\code{\link{poped_optim_3}()},
+\code{\link{poped_optimize}()},
+\code{\link{poped_optim}()}
 }
 \concept{Optimize}

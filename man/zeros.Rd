@@ -2,7 +2,7 @@
 % Please edit documentation in R/zeros.R
 \name{zeros}
 \alias{zeros}
-\title{Creates a matrix of zeros.}
+\title{Create a matrix of zeros.}
 \usage{
 zeros(dim1, dim2 = NULL)
 }
@@ -15,7 +15,7 @@ zeros(dim1, dim2 = NULL)
 A matrix of zeros.
 }
 \description{
-Function creates a matrix of zeros of size (dim1 x dim2). Written to match MATLAB's \code{zeros} function.
+Create a matrix of zeros of size (dim1 x dim2).
 }
 \examples{
 
@@ -25,11 +25,17 @@ zeros(4,7)
 zeros(1,4)
 }
 \seealso{
-Other MATLAB: \code{\link{cell}},
-  \code{\link{diag_matlab}}, \code{\link{feval}},
-  \code{\link{fileparts}}, \code{\link{isempty}},
-  \code{\link{ones}}, \code{\link{randn}},
-  \code{\link{rand}}, \code{\link{size}},
-  \code{\link{tic}}, \code{\link{toc}}
+Other MATLAB: 
+\code{\link{cell}()},
+\code{\link{diag_matlab}()},
+\code{\link{feval}()},
+\code{\link{fileparts}()},
+\code{\link{isempty}()},
+\code{\link{ones}()},
+\code{\link{randn}()},
+\code{\link{rand}()},
+\code{\link{size}()},
+\code{\link{tic}()},
+\code{\link{toc}()}
 }
 \concept{MATLAB}

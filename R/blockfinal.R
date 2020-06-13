@@ -26,6 +26,7 @@
 
 blockfinal <- function(fn,fmf,dmf,groupsize,ni,xt,x,a,model_switch,bpop,d,docc,sigma,poped.db,
                        opt_xt=poped.db$settings$optsw[2],opt_a=poped.db$settings$optsw[4],opt_x=poped.db$settings$optsw[3],
+                       opt_inds=poped.db$settings$optsw[5],
                        fmf_init=NULL,dmf_init=NULL,param_cvs_init=NULL,
                        compute_inv=TRUE,out_file=NULL,trflag=TRUE,footer_flag=TRUE,
                        run_time = NULL,
@@ -97,6 +98,31 @@ blockfinal <- function(fn,fmf,dmf,groupsize,ni,xt,x,a,model_switch,bpop,d,docc,s
       #     cat("Optimized a values:\n")
       #     print(a)
     }
+    if((opt_inds==TRUE)){
+      tmp_txt <- "\nOptimized groupsize"
+      tmp_txt <- paste(tmp_txt,':\n',sep="")
+      fprintf(fn,tmp_txt)
+      if(fn!="") fprintf(tmp_txt)
+      for(ct1 in 1:poped.db$design$m){
+        fprintf(fn,'Group %g: ', ct1)
+        if(fn!="") fprintf('Group %g: ', ct1)
+        for(ct2 in 1:size(poped.db$design$groupsize,2)){
+          tmp_txt <- '%g'
+          if(ct2<size(poped.db$design$groupsize,2)) tmp_txt <- paste(tmp_txt,' : ',sep="")
+          fprintf(fn,tmp_txt,groupsize[ct1,ct2])
+          if(fn!="") fprintf(tmp_txt,groupsize[ct1,ct2])
+        }
+        fprintf(fn,'\n')
+        if(fn!="") fprintf('\n')
+      }
+      #     fprintf(fn,'\n')
+      #     fprintf('\n')
+      #     
+      #     fprintf(fn,'a :\n')
+      #     fprintf(fn,'%g \n',a)
+      #     cat("Optimized a values:\n")
+      #     print(a)
+    }
     if((poped.db$settings$d_switch==TRUE && (fn!="" || trflag>1))){
       fprintf(fn,'\n FIM: \n')
       #write_matrix(fn,fmf)
@@ -131,7 +157,7 @@ blockfinal <- function(fn,fmf,dmf,groupsize,ni,xt,x,a,model_switch,bpop,d,docc,s
     # }
     
     if(!is.null(dmf_init)){
-      eff <- efficiency(dmf_init, dmf, poped.db)
+      eff <- efficiency(dmf_init, dmf, poped.db,...)
       fprintf(fn,"\nEfficiency: \n  (%s) = %.5g\n",attr(eff,"description"),eff,both=TRUE)
     }
     # fprintf(fn,'\nEfficiency (Final/Initial): %0.5g\n',
@@ -158,6 +184,8 @@ blockfinal <- function(fn,fmf,dmf,groupsize,ni,xt,x,a,model_switch,bpop,d,docc,s
         #params_init <- returnArgs[[1]]
         #param_cvs_init <- returnArgs[[2]]
         param_cvs_init <- get_rse(fim=fmf_init,poped.db,bpop,diag(d),docc,sigma)
+      } else {
+        param_cvs_init <- suppressMessages(suppressWarnings(get_rse(fim=fmf_init,poped.db,bpop,diag(d),docc,sigma)))
       }
     }
     
@@ -244,6 +272,11 @@ get_parnam <- function (poped.db) {
                     "D.occ_cov"=poped.db$parameters$notfixed_covdocc,
                     "SIGMA"=poped.db$parameters$notfixed_sigma,
                     "SIGMA_cov"=poped.db$parameters$notfixed_covsigma)
+  
+  bpop_names <- rownames(poped.db$parameters$bpop)
+  d_names <- rownames(poped.db$parameters$d)
+  sig_names <- rownames(poped.db$parameters$sigma)
+  
   parnam <- c()
   for(i in 1:size(not_fixed,2)){
     if(length(not_fixed[[i]])==0) next
@@ -257,11 +290,47 @@ get_parnam <- function (poped.db) {
       #       }
       #     }
       if(not_fixed[[i]][j]==1){ 
-        if(names(not_fixed[i])=="bpop") parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,"]",sep=""))  
-        if(any(names(not_fixed[i])==c("D","SIGMA","D.occ"))) parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,",",j,"]",sep=""))
-        if(length(grep("_cov",names(not_fixed[i])))!=0) parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,"]",sep="")) 
+        if(names(not_fixed[i])=="bpop"){
+          default_name <- TRUE
+          if(!is.null(bpop_names)){
+            if(bpop_names[j]!="") {
+              default_name <- FALSE
+              parnam <- c(parnam,bpop_names[j])
+            }
+          } 
+          if(default_name)  parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,"]",sep=""))    
+        } 
+        if(any(names(not_fixed[i])==c("D"))){
+          default_name <- TRUE
+          if(!is.null(d_names)){
+            if(d_names[j]!="") {
+              default_name <- FALSE
+              parnam <- c(parnam,paste0("d_",d_names[j]))
+            }
+          } 
+          if(default_name) parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,",",j,"]",sep=""))
+        }
+        if(any(names(not_fixed[i])==c("SIGMA"))){
+          default_name <- TRUE
+          if(!is.null(sig_names)){
+            if(sig_names[j]!="") {
+              default_name <- FALSE
+              parnam <- c(parnam,paste0("sig_",sig_names[j]))
+            }
+          } 
+          if(default_name) parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,",",j,"]",sep=""))
+        }
+        if(any(names(not_fixed[i])==c("D_cov"))){
+          mat_ind <- which(lower.tri(poped.db$parameters$param.pt.val$d, diag = FALSE), arr.ind=T)[j,]
+          parnam <- c(parnam,paste("D","[",mat_ind[1],",",mat_ind[2],"]",sep=""))
+        }
+        
+        if(any(names(not_fixed[i])==c("D.occ"))) parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,",",j,"]",sep=""))
+        if((length(grep("_cov",names(not_fixed[i])))!=0) && (!any(names(not_fixed[i])==c("D_cov")))) parnam <- c(parnam,paste(names(not_fixed[i]),"[",j,"]",sep="")) 
       }
     }
   }
+ 
+  
   return(parnam)
 }

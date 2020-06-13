@@ -29,7 +29,7 @@
 ## Then manually adjusted to make work
 ## Author: Andrew Hooker
 
-mftot <- function(model_switch,groupsize,ni,xt,x,a,bpop,d,sigma,docc,poped.db){
+mftot <- function(model_switch,groupsize,ni,xt,x,a,bpop,d,sigma,docc,poped.db,...){
   m=size(ni,1)
   s=0
   for(i in 1:m){
@@ -45,7 +45,16 @@ mftot <- function(model_switch,groupsize,ni,xt,x,a,bpop,d,sigma,docc,poped.db){
         a_i =  zeros(0,1)
       }
       # mf_all <- function(model_switch,xt,x,a,bpop,d,sigma,docc,poped.db){
-      returnArgs <- mf_all(t(model_switch[i,1:ni[i,drop=F],drop=F]),t(xt[i,1:ni[i,drop=F],drop=F]),x_i,a_i,bpop,d,sigma,docc,poped.db) 
+      extra_args <- list(...)
+      if(is.null(extra_args$loq) & is.null(extra_args$uloq)){ # no loq
+        returnArgs <- mf_all(t(model_switch[i,1:ni[i,drop=F],drop=F]),
+                             t(xt[i,1:ni[i,drop=F],drop=F]),
+                             x_i,a_i,bpop,d,sigma,docc,poped.db) 
+      } else { # handle LOQ 
+        returnArgs <- mf_all_loq(t(model_switch[i,1:ni[i,drop=F],drop=F]),
+                             t(xt[i,1:ni[i,drop=F],drop=F]),
+                             x_i,a_i,bpop,d,sigma,docc,poped.db,...) 
+      }
       if(is.null(returnArgs)) stop(sprintf('Unknown FIM-calculation type'))
       mf_tmp <- returnArgs[[1]]
       poped.db <- returnArgs[[2]]

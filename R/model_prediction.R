@@ -33,7 +33,10 @@
 #' evaluated using the code \code{for(i in 1:length(manipulation)){df <- within(df,{eval(manipulation[[i]])})}}. 
 #' Can be used to transform 
 #' or create new columns in the resulting data frame. Note that these transformations are created after any model predictions occur,
-#' so transformations in colums having to do with input to model predictions  will not affect the predictions.     
+#' so transformations in columns having to do with input to model predictions  will not affect the predictions.   
+#' @param PI Compute prediction intervals for the data given the model.  Predictions are based on first-order approximations to 
+#' the model variance and a normality assumption of that variance.
+#' @param PI_conf_level The confidence level for the prediction interval computed.   
 #' 
 #' @return A dataframe containing a design and (potentially) simulated data with some dense grid of samples and/or 
 #' based on the input design.
@@ -80,7 +83,9 @@ model_prediction <- function(poped.db=NULL,
                              groups_to_use="all",
                              include_a = TRUE,
                              include_x = TRUE,
-                             manipulation=NULL) 
+                             manipulation=NULL,
+                             PI = FALSE,
+                             PI_conf_level = 0.95) 
 {
   
   if(is.null(predictions)){
@@ -180,13 +185,15 @@ model_prediction <- function(poped.db=NULL,
             maxv = model_maxxt[j]
           }                #xt = t(seq(minv,maxv,length.out=model_num_points[i]))
           
-          xt_i= c(xt_i,seq(minv,maxv,length.out=model_num_points[j]))
+          tmp_num_pts <- model_num_points[j]
+          if(length(model_num_points)<j) tmp_num_pts <- model_num_points[1]
+          xt_i= c(xt_i,seq(minv,maxv,length.out=tmp_num_pts))
           
           #model.pred <- rbind(xt)
           #model.pred <- data.frame(Time=xt)
           #model.pred <- c(model.pred,foo=xt)
           #browser()
-          model_switch_i = c(model_switch_i,j*matrix(1,1,model_num_points[j]))
+          model_switch_i = c(model_switch_i,j*matrix(1,1,tmp_num_pts))
         }
         if(include_sample_times){
           xt_i_extra = xt[groups_to_use[i],1:ni[groups_to_use[i]]]
@@ -203,14 +210,49 @@ model_prediction <- function(poped.db=NULL,
           model_switch_i <- model_switch_i[tmp.order]
         }
       }
+      
+      
+      
       pred <- NA
-      if(predictions){
-        g0 = feval(model$fg_pointer,x_i,a_i,parameters$bpop[,2,drop=F],zeros(1,d_size),zeros(docc_size,NumOcc))
-        
-        pred <- feval(model$ff_pointer,model_switch_i,xt_i,g0,poped.db)
-        pred <- drop(pred[[1]])
-      }    
       group.df <- data.frame(Time=xt_i,PRED=pred,Group=groups_to_use[i],Model=model_switch_i)
+      
+      if(predictions){
+        bpop_val <- parameters$bpop[,2,drop=F]
+        b_ind = zeros(1,d_size)
+        bocc_ind = zeros(docc_size,NumOcc)
+        g0 = feval(model$fg_pointer,x_i,a_i,bpop_val,b_ind,bocc_ind)
+        
+        pred_list <- feval(model$ff_pointer,model_switch_i,xt_i,g0,poped.db)
+        pred_list$poped.db <- NULL
+        pred <- drop(pred_list[[1]])
+        group.df["PRED"] <- pred
+        
+        # TODO: add this to both IPRED and DV and chnage extra columns names to replct where
+        #       prediction comes from.
+        if(length(pred_list)>1){
+          # pred_list <- pred_list[sapply(pred_list, is.numeric)] 
+          extra_df <- data.frame(pred_list[-1])
+          group.df <- cbind(group.df,extra_df)
+        } 
+        
+        if(PI){
+          sigma_full = parameters$sigma
+          d_full = getfulld(parameters$d[,2],parameters$covd)
+          docc_full = getfulld(parameters$docc[,2,drop=F],parameters$covdocc)
+                    
+          cov <- v(as.matrix(model_switch_i),as.matrix(xt_i),
+                   t(x_i),t(a_i),bpop_val,t(b_ind),bocc_ind,d_full,
+                   sigma_full,docc_full,poped.db)[[1]]
+          
+          PI_alpha <- 1-PI_conf_level
+          z_val <- qnorm(1-PI_alpha/2)
+          se_val <- sqrt(diag(cov))
+          PI_u <- pred + z_val*se_val 
+          PI_l <- pred - z_val*se_val 
+          group.df <- data.frame(group.df,PI_l=PI_l,PI_u=PI_u)
+        }      
+      }    
+      
       #     group.df <- data.frame(Time=xt_i,PRED=drop(pred[[1]]),Group=groups_to_use[i],
       #                            ##paste("Group",i,sep="_"),
       #                            Model=model_switch_i)
@@ -292,11 +334,11 @@ model_prediction <- function(poped.db=NULL,
               if(length(unique(tmp.df[nam]))==1) dose.df[nam] <- tmp.df[1,nam]  
             }
             dose.df$dose_record_tmp <- 1
-            if(packageVersion("dplyr") >= "0.5.0"){
-              tmp.df <- dplyr::bind_rows(dose.df,tmp.df)
-            } else {
-              tmp.df <- dplyr::rbind_list(dose.df,tmp.df)
-            }
+            #if(packageVersion("dplyr") >= "0.5.0"){
+            tmp.df <- dplyr::bind_rows(dose.df,tmp.df)
+            #} else {
+            #  tmp.df <- dplyr::rbind_list(dose.df,tmp.df)
+            #}
             tmp.df <- tmp.df[order(tmp.df$Time,tmp.df$dose_record_tmp),]
             tmp.df$dose_record_tmp <- NULL
           }

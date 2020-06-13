@@ -27,8 +27,9 @@
 #' supplied then all xt values are given the same minimum value
 #' @param x_space Cell array \code{\link{cell}} defining the discrete variables for each x value.
 #' @param xt_space Cell array \code{\link{cell}} defining the discrete variables allowed for each xt value.
-#'   Can also be a list of values \code{list(1:10)} (same values allowed for all xt), or a list of lists 
-#'  \code{list(1:10, 2:23, 4:6)} (one for each value in xt).
+#'   Can also be a vector of values \code{c(1:10)} (same values allowed for all xt), or a list of lists 
+#'  \code{list(1:10, 2:23, 4:6)} (one for each value in xt in row major order or just for one row in xt, 
+#'  and all other rows will be duplicated).
 #' @param a_space Cell array \code{\link{cell}} defining the discrete variables allowed for each a value.
 #'   Can also be a list of values \code{list(1:10)} (same values allowed for all a), or a list of lists 
 #'  \code{list(1:10, 2:23, 4:6)} (one for each value in a).
@@ -364,11 +365,11 @@ create_design_space <- function(
     ## for a ---------
     if(!is.null(maxa)){
       if(is.list(maxa)){
-        if(packageVersion("dplyr") >= "0.5.0"){
-          maxa <- as.matrix(dplyr::bind_rows(lapply(maxa,function(x){data.frame(rbind(unlist(x)))})))
-        } else {
-          maxa <- as.matrix(dplyr::rbind_all(lapply(maxa,function(x){data.frame(rbind(unlist(x)))})))
-        }
+        #if(packageVersion("dplyr") >= "0.5.0"){
+        maxa <- as.matrix(dplyr::bind_rows(lapply(maxa,function(x){data.frame(rbind(unlist(x)))})))
+        #} else {
+        #  maxa <- as.matrix(dplyr::rbind_all(lapply(maxa,function(x){data.frame(rbind(unlist(x)))})))
+        #}
       }
       if(size(maxa,1)==1 && m!=1) maxa <- matrix(rep(maxa,m),ncol=length(maxa),nrow=m,byrow=T)
       if(!is.matrix(maxa)) maxa  <- rbind(maxa)
@@ -380,11 +381,11 @@ create_design_space <- function(
     
     if(!is.null(mina)){
       if(is.list(mina)){
-        if(packageVersion("dplyr") >= "0.5.0"){
-          mina <- as.matrix(dplyr::bind_rows(lapply(mina,function(x){data.frame(rbind(unlist(x)))})))
-        } else {
-          mina <- as.matrix(dplyr::rbind_all(lapply(mina,function(x){data.frame(rbind(unlist(x)))})))
-        }
+        #if(packageVersion("dplyr") >= "0.5.0"){
+        mina <- as.matrix(dplyr::bind_rows(lapply(mina,function(x){data.frame(rbind(unlist(x)))})))
+        #} else {
+        #  mina <- as.matrix(dplyr::rbind_all(lapply(mina,function(x){data.frame(rbind(unlist(x)))})))
+        #}
       }
       if(size(mina,1)==1 && m!=1) mina <- matrix(rep(mina,m),ncol=length(mina),nrow=m,byrow=T)
       if(!is.matrix(mina)) mina  <- rbind(mina)
@@ -439,8 +440,24 @@ create_design_space <- function(
     ## for xt_space
     if(!is.null(xt_space)){
       if(is.null(dim(xt_space))){ # then we have a vector or a list
-        if(is.list(xt_space)){ # then it is a list
-          
+        if(is.list(xt_space)){ 
+          # then it is a list with no dimensions
+          # need to convert to a cell
+          nspace <- length(xt_space)
+          nrow_xt <- nrow(xt)
+          ncol_xt <- ncol(xt)
+          if(nspace==1){ # all time points in all groups have the same space
+            xt_space_tmp <- xt_space
+            xt_space <- cell(size(xt))
+            xt_space[,] <- xt_space_tmp
+          } else if(nspace==ncol_xt){ # we assume that all groups have the same space
+            xt_space_tmp <- xt_space
+            xt_space <- cell(size(xt))
+            for (ii in 1:nrow_xt) xt_space[ii,] <- xt_space_tmp
+          } else if(nspace==(ncol_xt*nrow_xt)){ # we assume that spaces are entered in row major form
+            xt_space_tmp <- xt_space
+            xt_space <- matrix(xt_space_tmp,ncol = nrow_xt, byrow = T)
+          }
         } else { # assume the vector is the same for all xt's
           tmp_lst <- list(xt_space)
           xt_space <- cell(size(xt))

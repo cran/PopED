@@ -4,17 +4,30 @@
 \alias{blockheader}
 \title{Header function for optimization routines}
 \usage{
-blockheader(poped.db, name = "Default", iter = NULL,
+blockheader(
+  poped.db,
+  name = "Default",
+  iter = NULL,
   e_flag = !(poped.db$settings$d_switch),
   opt_xt = poped.db$settings$optsw[2],
   opt_a = poped.db$settings$optsw[4],
   opt_x = poped.db$settings$optsw[3],
   opt_samps = poped.db$settings$optsw[1],
-  opt_inds = poped.db$settings$optsw[5], fmf = 0, dmf = 0,
-  bpop = NULL, d = NULL, docc = NULL, sigma = NULL,
+  opt_inds = poped.db$settings$optsw[5],
+  fmf = 0,
+  dmf = 0,
+  bpop = NULL,
+  d = NULL,
+  docc = NULL,
+  sigma = NULL,
   name_header = poped.db$settings$strOutputFileName,
-  file_path = poped.db$settings$strOutputFilePath, out_file = NULL,
-  compute_inv = TRUE, trflag = TRUE, header_flag = TRUE, ...)
+  file_path = poped.db$settings$strOutputFilePath,
+  out_file = NULL,
+  compute_inv = TRUE,
+  trflag = TRUE,
+  header_flag = TRUE,
+  ...
+)
 }
 \arguments{
 \item{poped.db}{A PopED database.}
@@ -48,10 +61,13 @@ If \code{""} then output is to the screen.}
 \item column 3 defines the variance of the distribution (or length of uniform distribution).
 }
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
-parameter value is to be used.}
+parameter value is to be used. The parameter order of  'bpop' is defined in the 'fg_fun' or 'fg_file'. If you use named 
+arguments in 'bpop' then the order will be worked out automatically.}
 
 \item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
-matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}.}
+matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}. 
+The parameter order of 'd' is defined in the 'fg_fun' or 'fg_file'. If you use named 
+arguments in 'd' then the order will be worked out automatically.}
 
 \item{docc}{Matrix defining the IOV, the IOV variances and the IOV distribution as for d and bpop.}
 
@@ -117,14 +133,14 @@ poped.db <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
                                   bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
                                   notfixed_bpop=c(1,1,1,0),
                                   d=c(CL=0.07, V=0.02, KA=0.6), 
-                                  sigma=c(0.01,0.25),
+                                  sigma=c(prop=0.01,add=0.25),
                                   groupsize=32,
                                   xt=c( 0.5,1,2,6,24,36,72,120),
                                   minxt=0.01,
                                   maxxt=120,
-                                  a=70,
-                                  mina=0.01,
-                                  maxa=100)
+                                  a=c(DOSE=70),
+                                  mina=c(DOSE=0.01),
+                                  maxa=c(DOSE=100))
 
 ############# END ###################
 ## Create PopED database
@@ -190,8 +206,10 @@ blockheader(poped.db.1,name="",trflag=2,opt_xt=TRUE)
 
 }
 \seealso{
-Other Helper: \code{\link{blockexp}},
-  \code{\link{blockfinal}}, \code{\link{blockopt}}
+Other Helper: 
+\code{\link{blockexp}()},
+\code{\link{blockfinal}()},
+\code{\link{blockopt}()}
 }
 \concept{Helper}
 \keyword{internal}

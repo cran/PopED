@@ -31,6 +31,13 @@
 #'   simulated when DV=TRUE or IPRED=TRUE to create prediction intervals?
 #' @param model.names A vector of names of the response model/s (the length of the 
 #' vector should be equal to the number of response models). It is Null by default.
+#' @param PI Plot prediction intervals for the expected data given the model.  
+#' Predictions are based on first-order approximations to 
+#' the model variance and a normality assumption of that variance.  As such these computations are 
+#' more approximate than using \code{DV=T} and \code{groupsize_sim = some large number}.
+# @param PI_fill The color of the PI.
+#' @param PI_alpha The transparency of the PI.
+#' @param DV.mean.sd Plot the mean and standard deviation of simulated observations. 
 #' @param ... Additional arguments passed to the \code{\link{model_prediction}} function.
 #' 
 #' @return A \link[ggplot2]{ggplot} object.  If you would like to further edit this plot don't 
@@ -81,14 +88,19 @@ plot_model_prediction <- function(poped.db,
                                   facet_scales="fixed", # could be "free", "fixed", "free_x" or "free_y"
                                   facet_label_names = T, 
                                   model.names=NULL,
+                                  DV.mean.sd=FALSE,
+                                  PI=FALSE,
+                                  PI_alpha=0.3,
+                                  #PI_fill="blue",
                                   ...){
-  
+  PI_u <- PI_l <- NULL
   df <-  model_prediction(poped.db,
                           #models_to_use,
                           model_num_points=model_num_points,
                           ##model_minxt,
                           ##model_maxxt,
                           ##groups_to_plot,
+                          PI=PI,
                           ...)
   if(!is.null(model.names)){
     levels(df$Model) <- model.names
@@ -100,15 +112,17 @@ plot_model_prediction <- function(poped.db,
                               ##model_num_points=NULL,
                               ##model_minxt,model_maxxt,
                               ##groups_to_plot,
+                              PI=PI,
                               ...)
   }
   if(!is.null(model.names)){
     levels(df.2$Model) <- model.names
   }
   
-  if(IPRED || IPRED.lines || DV || IPRED.lines.pctls || sample.times.DV || sample.times.DV.points || sample.times.DV.lines){
+  if(IPRED || IPRED.lines || DV || IPRED.lines.pctls || sample.times.DV || sample.times.DV.points || sample.times.DV.lines 
+     || DV.mean.sd){
     dv_val <- FALSE
-    if(DV || sample.times.DV || sample.times.DV.points || sample.times.DV.lines) dv_val <- TRUE
+    if(DV || sample.times.DV || sample.times.DV.points || sample.times.DV.lines || DV.mean.sd) dv_val <- TRUE
     poped.db_tmp <- poped.db
     poped.db_tmp$design$groupsize <- poped.db$design$groupsize*0+groupsize_sim
     df.ipred <-  model_prediction(poped.db_tmp,
@@ -218,6 +232,25 @@ plot_model_prediction <- function(poped.db,
                    linetype="dotted")
       
   }
+  
+  if(DV.mean.sd){ 
+    p <- p + 
+      stat_summary(data=df.ipred,
+                   aes(x=Time,y=IPRED),
+                   geom="line",
+                   fun.y=function(y){mean(y)},
+                   linetype="solid")+
+      stat_summary(data=df.ipred,
+                   aes(x=Time,y=IPRED),
+                   geom="ribbon",
+                   fun.ymax=function(y){mean(y)+stats::sd(y)},
+                   fun.ymin=function(y){mean(y)-stats::sd(y)},
+                   alpha=0.3)
+
+  }
+  
+  if(PI) p <- p + geom_ribbon(data = df, aes(x=Time,ymin=PI_l,ymax=PI_u,color=NULL),alpha=PI_alpha)
+  
   if(DV) p <- p + stat_summary(data=df.ipred,aes(x=Time,y=DV,color=NULL),geom="ribbon",fun.data="median_hilow_poped",alpha=alpha.DV)
   if(PRED) p <- p + geom_line()
   if(sample.times) p <- p+geom_point(data=df.2,size=sample.times.size)#,aes(x=Time,y=DV,group=Group))#,color=Group))
