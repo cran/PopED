@@ -50,6 +50,13 @@
 #'   the series) is less than, or equal to, \code{stop_crit_rel} (if \code{maximize==FALSE} then -stop_crit_rel is the cut
 #'   off and the relative difference in criterion value must be greater than or equal to this value to stop the looping).
 #' @param maximize Should the objective function be maximized or minimized?
+#' @param allow_replicates Should the algorithm allow optimized design components to have the same value? If FALSE then
+#' all discrete optimizations will not allow replicates within variable types 
+#' (equivalent to \code{allow_replicates_xt=FALSE} and \code{allow_replicates_a=FALSE}). 
+#' @param allow_replicates_xt Should the algorithm allow optimized \code{xt} design components to have the same value? If FALSE then
+#' all discrete optimizations will not allow replicates.
+#' @param allow_replicates_a Should the algorithm allow optimized \code{a} design components to have the same value? If FALSE then
+#' all discrete optimizations will not allow replicates.
 #'   
 #' @references \enumerate{ \item M. Foracchia, A.C. Hooker, P. Vicini and A. 
 #'   Ruggeri, "PopED, a software fir optimal experimental design in population 
@@ -93,6 +100,9 @@ poped_optim <- function(poped.db,
                         stop_crit_rel = NULL,
                         ofv_fun = poped.db$settings$ofv_fun,
                         maximize=T,
+                        allow_replicates=TRUE,
+                        allow_replicates_xt=TRUE,
+                        allow_replicates_a=TRUE,
                         ...){
   
   
@@ -115,6 +125,15 @@ poped_optim <- function(poped.db,
   optim_ver <- dot_vals[["optim_ver"]]
   dot_vals[["optim_ver"]] <- NULL
   if(is.null(optim_ver)) optim_ver <- 3
+  if(optim_ver!=3 & (!allow_replicates | 
+                     !allow_replicates_xt | 
+                     !allow_replicates_a)){
+    msg <- stringr::str_glue(
+      'One or more of allow_replicates, allow_replicates_a, allow_replicates_xt are set to FALSE ', 
+      'This will only work with optim_ver=3'
+    )
+    message(msg)
+  } 
   
   if(optim_ver==1) results <- do.call(poped_optim_1,c(new.arg.list,dot_vals))
   if(optim_ver==2) results <- do.call(poped_optim_2,c(new.arg.list,dot_vals))

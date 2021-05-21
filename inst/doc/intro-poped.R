@@ -1,6 +1,6 @@
 ## ----setup, include = FALSE---------------------------------------------------
 
-if(Sys.getenv("LOGNAME")=="andrewhooker") devtools::load_all("~/Documents/_PROJECTS/PopED/repos/PopED/")
+if(Sys.getenv("LOGNAME")=="ancho179") devtools::load_all("~/Documents/_PROJECTS/PopED/repo/PopED/")
 
 set.seed(1234)
 
@@ -131,7 +131,7 @@ poped.db.new <- create.poped.database(
 (ds2 <- evaluate_design(poped.db.new))
 
 ## ----results='hide'-----------------------------------------------------------
-(design_eval <- round(data.frame(design_1=ds1$rse,design_2=ds2$rse)))
+(design_eval <- round(data.frame("Design 1"=ds1$rse,"Design 2"=ds2$rse)))
 
 ## ----design_summary,echo=FALSE------------------------------------------------
 knitr::kable(design_eval) #%>%  
@@ -177,6 +177,9 @@ output_cost <- poped_optim(poped.db, opt_a = TRUE, opt_xt = FALSE,
 
 ## ----simulate_cost_optmization------------------------------------------------
 summary(output_cost)
-get_rse(output_cost$FIM, output_cost$poped.db)
-plot_model_prediction(output_cost$poped.db, model_num_points = 300)
+
+## -----------------------------------------------------------------------------
+library(ggplot2)
+plot_model_prediction(output_cost$poped.db, model_num_points = 300)+
+  coord_cartesian(xlim=c(230,250))
 

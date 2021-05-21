@@ -1,0 +1,203 @@
+PopED Results 
+
+        2021-05-21 13:20:08
+
+==============================================================================
+Model description : PopED model 
+
+Model Sizes : 
+Number of individual model parameters                  g[j]    : Ng    = 5
+Number of population model fixed parameters            bpop[j] : Nbpop = 4
+Number of population model random effects parameters   b[j]    : Nb    = 3
+
+Typical Population Parameters:
+bpop[1]:  0.15 
+bpop[2]:     8 
+bpop[3]:     1 
+bpop[4]:     1 
+
+Between Subject Variability matrix D (variance units) 
+0.07 0.00 0.00
+0.00 0.02 0.00
+0.00 0.00 0.60
+
+Diagonal Elements of D [sqrt(param)]:
+D[1,1]:  0.07 [0.2646] 
+D[2,2]:  0.02 [0.1414] 
+D[3,3]:   0.6 [0.7746] 
+
+Residual Unexplained Variability matrix SIGMA (variance units) : 
+0.01 0.00
+0.00 0.25
+
+Diagonal Elements of SIGMA [sqrt(param)]:
+SIGMA[1,1]:  0.01 [  0.1] 
+SIGMA[2,2]:  0.25 [  0.5] 
+
+==============================================================================
+Experiment description (design and design space)
+
+Number of individuals: 32
+Number of groups (individuals with same design): 1
+Number of individuals per group:
+     Group 1: 32
+Number of samples per group:
+ Number of discrete experimental variables: 0
+Number of model covariates: 1
+
+Initial Sampling Schedule
+Group 1:    0.5      1      2      6     24     36     72    120
+
+Minimum allowed sampling values
+Group 1:   0.01   0.01   0.01   0.01   0.01   0.01   0.01   0.01
+
+Maximum allowed sampling values
+Group 1:    120    120    120    120    120    120    120    120
+
+Covariates:
+Group 1: 70
+
+===============================================================================
+Initial design evaluation
+
+Initial OFV = 55.3964
+
+Efficiency criterion [usually defined as OFV^(1/npar)]  = 1016.94
+
+Initial design
+expected relative standard error
+(%RSE, rounded to nearest integer)
+   Parameter   Values   RSE_0
+          CL     0.15       5
+           V        8       3
+          KA        1      14
+        d_CL     0.07      30
+         d_V     0.02      37
+        d_KA      0.6      27
+    sig_prop     0.01      32
+     sig_add     0.25      26
+
+==============================================================================
+Criterion Specification
+
+OFV calculation for FIM: 4 
+  1=Determinant of FIM,
+  4=log determinant of FIM,
+  6=determinant of interesting part of FIM (Ds)
+
+Approximation method: 0
+  0=FO, 
+  1=FOCE, 
+  2=FOCEI, 
+  3=FOI
+
+Fisher Information Matrix type: 1
+  0=Full FIM,
+  1=Reduced FIM,
+  2=weighted models,
+  3=Loc models,
+  4=reduced FIM with derivative of SD of sigma as pfim,
+  5=FULL FIM parameterized with A,B,C matrices & derivative of variance,
+  6=Calculate one model switch at a time, good for large matrices,
+  7=Reduced FIM parameterized with A,B,C matrices & derivative of variance
+
+Design family: 1
+  D-family design (1) or 
+  ED-family design (0) 
+  (with or without parameter uncertainty)
+
+==============================================================================
+Optimization of design parameters
+
+* Optimize Sampling Schedule
+
+MFEA - It. : 1
+Exchanged sample 2 in group/ind 1 from 1 to 5.0516
+Delta : 0.00814805   OFV. : 55.8478
+MFEA - It. : 2
+Exchanged sample 6 in group/ind 1 from 36 to 118.992
+Delta : 0.0075907   OFV. : 56.2717
+MFEA - It. : 3
+Exchanged sample 3 in group/ind 1 from 2 to 5.0516
+Delta : 0.00397759   OFV. : 56.4956
+MFEA - It. : 4
+Exchanged sample 5 in group/ind 1 from 24 to 6.05992
+Delta : 0.0026399   OFV. : 56.6447
+MFEA - It. : 5
+Exchanged sample 7 in group/ind 1 from 72 to 89.7504
+Delta : 0.000504905   OFV. : 56.6733
+MFEA - It. : 6
+Exchanged sample 8 in group/ind 1 from 120 to 99.8336
+Delta : 0.000249075   OFV. : 56.6874
+MFEA - It. : 7
+Exchanged sample 6 in group/ind 1 from 118.992 to 108.908
+Delta : 5.47899e-05   OFV. : 56.6905
+MFEA - It. : 8
+Exchanged sample 7 in group/ind 1 from 89.7504 to 99.8336
+Delta : 9.48833e-05   OFV. : 56.6959
+MFEA - It. : 9
+Exchanged sample 2 in group/ind 1 from 5.0516 to 6.05992
+Delta : 3.23664e-05   OFV. : 56.6978
+MFEA - It. : 10
+Exchanged sample 3 in group/ind 1 from 5.0516 to 6.05992
+Delta : 2.56586e-05   OFV. : 56.6992
+MFEA - It. : 11
+Exchanged sample 6 in group/ind 1 from 108.908 to 103.867
+Delta : 1.59013e-05   OFV. : 56.7001
+MFEA - It. : 12
+Exchanged sample 7 in group/ind 1 from 99.8336 to 101.85
+Delta : 4.51108e-06   OFV. : 56.7004
+MFEA - It. : 13
+Exchanged sample 8 in group/ind 1 from 99.8336 to 101.85
+Delta : 1.82907e-06   OFV. : 56.7005
+MFEA - It. : 14
+Exchanged sample 6 in group/ind 1 from 103.867 to 101.85
+Delta : 1.84847e-06   OFV. : 56.7006
+MFEA - It. : 15
+Delta : 0   OFV. : 56.7006
+===============================================================================
+FINAL RESULTS
+Optimized Sampling Schedule
+Group 1:    0.5      6   6.06   6.06   6.06  101.9  101.9  101.9
+
+ FIM: 
+ 1.696551e+04 -5.426344e+00  2.022872e-01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+-5.426344e+00  2.087914e+01 -1.276929e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 2.022872e-01 -1.276929e+00  4.862848e+01  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  2.276769e+03  6.625173e-01  1.438603e-05  3.165675e+02  1.132370e+02
+ 0.000000e+00  0.000000e+00  0.000000e+00  6.625173e-01  2.790007e+04  1.630548e+00  7.532117e+03  1.351413e+02
+ 0.000000e+00  0.000000e+00  0.000000e+00  1.438603e-05  1.630548e+00  3.694889e+01  7.397026e+01  5.490369e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  3.165675e+02  7.532117e+03  7.397026e+01  2.501916e+05  4.745531e+03
+ 0.000000e+00  0.000000e+00  0.000000e+00  1.132370e+02  1.351413e+02  5.490369e+00  4.745531e+03  5.166225e+02
+
+
+Inverse(FIM):
+ 5.894801e-05  1.532980e-05  1.573284e-07  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 1.532980e-05  4.797572e-02  1.259725e-03  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 1.573284e-07  1.259725e-03  2.059716e-02  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00  0.000000e+00
+ 0.000000e+00  0.000000e+00  0.000000e+00  4.445672e-04  1.115233e-07  1.351131e-05  1.552104e-06 -1.118733e-04
+ 0.000000e+00  0.000000e+00  0.000000e+00  1.115233e-07  3.613612e-05  5.150894e-07 -1.099972e-06  6.213651e-07
+ 0.000000e+00  0.000000e+00  0.000000e+00  1.351131e-05  5.150894e-07  2.710961e-02 -3.056889e-06 -2.631221e-04
+ 0.000000e+00  0.000000e+00  0.000000e+00  1.552104e-06 -1.099972e-06 -3.056889e-06  4.879534e-06 -4.484183e-05
+ 0.000000e+00  0.000000e+00  0.000000e+00 -1.118733e-04  6.213651e-07 -2.631221e-04 -4.484183e-05  2.374707e-03
+
+OFV = 56.7006
+
+Efficiency criterion [usually defined as det(FIM)^(1/npar)]  = 1197
+
+Efficiency: 
+  ((exp(ofv_final) / exp(ofv_init))^(1/n_parameters)) = 1.1771
+
+Expected relative standard error
+(%RSE, rounded to nearest integer):
+   Parameter   Values   RSE_0   RSE
+          CL     0.15       5     5
+           V        8       3     3
+          KA        1      14    14
+        d_CL     0.07       0     0
+         d_V     0.02      37    30
+        d_KA      0.6       0     0
+    sig_prop     0.01      32    22
+     sig_add     0.25      26    19
+
+Total running time: 124.611 seconds

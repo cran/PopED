@@ -33,6 +33,9 @@ poped_optim(
   stop_crit_rel = NULL,
   ofv_fun = poped.db$settings$ofv_fun,
   maximize = T,
+  allow_replicates = TRUE,
+  allow_replicates_xt = TRUE,
+  allow_replicates_a = TRUE,
   ...
 )
 }
@@ -146,6 +149,16 @@ argument and have "..." in its argument list.  Can be referenced as a function o
 e.g. "cost.txt" has a function named "cost" in it.}
 
 \item{maximize}{Should the objective function be maximized or minimized?}
+
+\item{allow_replicates}{Should the algorithm allow optimized design components to have the same value? If FALSE then
+all discrete optimizations will not allow replicates within variable types 
+(equivalent to \code{allow_replicates_xt=FALSE} and \code{allow_replicates_a=FALSE}).}
+
+\item{allow_replicates_xt}{Should the algorithm allow optimized \code{xt} design components to have the same value? If FALSE then
+all discrete optimizations will not allow replicates.}
+
+\item{allow_replicates_a}{Should the algorithm allow optimized \code{a} design components to have the same value? If FALSE then
+all discrete optimizations will not allow replicates.}
 
 \item{...}{arguments passed to other functions.}
 }

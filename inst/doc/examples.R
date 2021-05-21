@@ -1,6 +1,5 @@
 ## ----setup, include = FALSE, cache=FALSE--------------------------------------
-if(Sys.getenv("LOGNAME")=="andrewhooker") devtools::load_all("~/Documents/_PROJECTS/PopED/repos/PopED/")
-
+if(Sys.getenv("LOGNAME")=="ancho179") devtools::load_all("~/Documents/_PROJECTS/PopED/repo/PopED/")
 library(deSolve)
 library(Rcpp)
 
@@ -721,7 +720,7 @@ tb1 <- tibble::tibble(" "=names(ev1$rse),
 tb2 <- tibble::tibble(" "=names(ev2$rse),
          "Covariance in BSV"=ev2$rse)
 
-tb_final <- dplyr::right_join(tb1,tb2)
+tb_final <- dplyr::right_join(tb1,tb2,by=" ")
 
 knitr::kable(tb_final,digits = 0) #%>%  
   #kableExtra::kable_styling("striped",full_width = FALSE) 
@@ -740,7 +739,7 @@ tb1 <- tibble::tibble(" "=names(ev1$rse),
 tb2 <- tibble::tibble(" "=names(ev2$rse),
          "Covariance in BSV"=ev2$rse)
 
-tb_final <- dplyr::right_join(tb1,tb2)
+tb_final <- dplyr::right_join(tb1,tb2,by=" ")
 
 knitr::kable(tb_final,digits = 0) #%>%  
   #kableExtra::kable_styling("striped",full_width = FALSE) 

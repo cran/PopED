@@ -1,4 +1,8 @@
-#' Predict shrinkage of empirical Bayes estimates (EBEs) in a population model
+#' Compute the Bayesian Fisher information matrix 
+#' 
+#' Computation of the Bayesian Fisher information matrix for 
+#' individual parameters of a population model based on 
+#' Maximum A Posteriori (MAP) estimation of the empirical Bayes estimates (EBEs) in a population model 
 #'
 #' @param poped.db A PopED database
 #' @param num_sim_ids If \code{use_mc=TRUE}, how many individuals should be
@@ -7,9 +11,10 @@
 #'   not then then a first order approximation is used
 #' @param use_purrr If \code{use_mc=TRUE} then should the method use the package
 #'   purrr in calculations?  This may speed up computations (potentially).
-#'
-#' @return The shrinkage computed in variance units, standard deviation units
-#'   and the relative standard errors of the EBEs.
+#' @param shrink_mat Should the shrinkage matrix be returned.  Calculated as the
+#' inverse of the  Bayesian Fisher information matrix times the inverse of the 
+#' omega matrix (variance matrix of the between-subject variability).
+#' @return The Bayesian Fisher information matrix for each design group 
 #' @export
 #'
 #' @example tests/testthat/examples_fcn_doc/warfarin_basic.R
@@ -27,10 +32,11 @@
 #'   \doi{10.1177/0091270010397731}. 
 #'   }
 
-shrinkage <- function(poped.db,
+evaluate_fim_map <- function(poped.db,
                       use_mc = FALSE,
                       num_sim_ids = 1000,
-                      use_purrr = FALSE){
+                      use_purrr = FALSE,
+                      shrink_mat=F){
   
   # if (poped.db$design$m > 1) {
   #   warning("Shrinkage should only be computed for a single arm, please adjust your script accordingly.")
@@ -94,7 +100,7 @@ shrinkage <- function(poped.db,
     for(nam in names(tmp_design)[names(tmp_design)!="m"]){
       tmp_design[[nam]] <- tmp_design[[nam]][i,,drop=F]
     }
-
+    
     tmp_db <- poped.db_sh
     tmp_db$design <- tmp_design
     
@@ -149,54 +155,24 @@ shrinkage <- function(poped.db,
       fim_map <- evaluate.fim(poped.db_sh) + inv(fulld)
     }
     
-    rse <- get_rse(fim_map,poped.db = poped.db_sh)
     poped_db_tmp <- poped.db
     poped_db_tmp$parameters$notfixed_d <- notfixed_d_new
     parnam <- get_parnam(poped_db_tmp)
-    names(rse) <- parnam[grepl("^(D\\[|d\\_)",parnam)]
+    rownames(fim_map) <- parnam[grepl("^(D\\[|d\\_)",parnam)]
+    colnames(fim_map) <- parnam[grepl("^(D\\[|d\\_)",parnam)]
     
-    #names(rse) <- paste0("d[",1:length(rse),"]")
+    out_df_tmp <- tibble::tibble(group=names(db_list[i]),fim_map=list(fim_map))
     
-    # shrinkage on variance scale
-    shrink <- diag(inv(fim_map)%*%inv(fulld))
-    names(shrink) <-  names(rse)
-    # shrinkage on SD scale
-    var_n <- (1-shrink)*diag(fulld)
-    shrink_sd <- 1-sqrt(var_n)/sqrt(diag(fulld))
-    names(shrink_sd) <-  names(rse)
+    if(shrink_mat){
+      shrink_m <- inv(fim_map)%*%inv(fulld)
+      dimnames(shrink_m) <- dimnames(fim_map)
+      out_df_tmp$shrink_mat <- list(shrink_m)
+    } 
     
-    if(packageVersion("tibble") < "2.1.1"){
-      out_df_tmp <- tibble::as.tibble(rbind(shrink,shrink_sd,rse))
-    } else {
-      out_df_tmp <- tibble::as_tibble(rbind(shrink,shrink_sd,rse))
-    }
-    out_df_tmp$type <- c("shrink_var","shrink_sd","se")
-    out_df_tmp$group <- c(names(db_list[i]))
     out_df <- rbind(out_df,out_df_tmp)
     #out_list[[names(db_list[i])]] <- list(shrinkage_var=shrink,shrinkage_sd=shrink_sd, rse=rse)
   }
   
-  #return(list(shrinkage_var=shrink,shrinkage_sd=shrink_sd, rse=rse))
-  #return(out_list)
-  out_df <- dplyr::arrange(out_df,dplyr::desc(type),group)
-  
-  if(poped.db$design$m > 1){
-    weights <- poped.db$design$groupsize/sum(poped.db$design$groupsize)
-    data_tmp <- out_df 
-    data_tmp[data_tmp==1] <- NA 
-    if(packageVersion("dplyr") < "0.8.0"){
-      data_tmp <- data_tmp %>% dplyr::group_by(type) %>% 
-        dplyr::summarise_at(dplyr::vars(dplyr::starts_with(c('d[','d_'))),
-                            dplyr::funs(stats::weighted.mean(., weights,na.rm = T)))
-    } else {
-      data_tmp <- data_tmp %>% dplyr::group_by(type) %>% 
-        dplyr::summarise_at(dplyr::vars(dplyr::starts_with(c('d[','d_'))),
-                            list(~ stats::weighted.mean(., weights,na.rm = T)))
-    }
-    data_tmp$group <- "all_groups"
-    out_df <- rbind(out_df,data_tmp)
-    out_df <- dplyr::arrange(out_df,dplyr::desc(type),group)
-  }
   return(out_df)
   
   

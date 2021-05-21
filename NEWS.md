@@ -1,3 +1,16 @@
+# PopED 0.6.0
+
+* Added the options `allow_replicates=TRUE/FALSE`, `allow_replicates_xt=TRUE/FALSE` and `allow_replicates_a=TRUE/FALSE` to `poped_optim`.  This allows the optimization algorithm to avoid replicates (or not) in the design components.  Currently only works for discrete variable optimization. Future versions will also handle continuous optimization.
+
+* Exported a function for the computation of the Bayesian Fisher information matrix for individual parameters of a population model based on Maximum A Posteriori (MAP) estimation of the empirical Bayes estimates (EBEs) in a population model. See `?evaluate_fim_map` for more details.
+
+* Allowing for no covariates in the function that automatically builds a PopED parameter function from a model function (`?build_sfg`).
+
+* Updates to documentation and package testing.
+
+* Minor bug fixes.
+
+
 # PopED 0.5.0
 
 * Added the ability to incorporate limit of quantification information into FIM calculations (both upper and lower limits). See the new vignette on the webpage https://andrewhooker.github.io/PopED/articles/handling_loq.html 
