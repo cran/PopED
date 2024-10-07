@@ -32,10 +32,10 @@ packageVersion("PopED")
 ff <- function(model_switch,xt,parameters,poped.db){
   with(as.list(parameters),{
     N = floor(xt/TAU)+1
-    y=(DOSE*Favail/V)*(KA/(KA - CL/V)) * 
+    f=(DOSE*Favail/V)*(KA/(KA - CL/V)) * 
       (exp(-CL/V * (xt - (N - 1) * TAU)) * (1 - exp(-N * CL/V * TAU))/(1 - exp(-CL/V * TAU)) - 
          exp(-KA * (xt - (N - 1) * TAU)) * (1 - exp(-N * KA * TAU))/(1 - exp(-KA * TAU)))  
-    return(list( y=y,poped.db=poped.db))
+    return(list( f=f,poped.db=poped.db))
   })
 }
 
@@ -52,10 +52,10 @@ sfg <- function(x,a,bpop,b,bocc){
 ## -----------------------------------------------------------------------------
 feps <- function(model_switch,xt,parameters,epsi,poped.db){
   returnArgs <- ff(model_switch,xt,parameters,poped.db) 
-  y <- returnArgs[[1]]
+  f <- returnArgs[[1]]
   poped.db <- returnArgs[[2]]
  
-  y = y*(1+epsi[,1])+epsi[,2]
+  y = f*(1+epsi[,1])+epsi[,2]
   
   return(list(y=y,poped.db=poped.db)) 
 }
@@ -150,7 +150,7 @@ plot_model_prediction(output$poped.db)
 ## ----simulate_efficiency_windows,fig.width=6,fig.height=6---------------------
 plot_efficiency_of_windows(output$poped.db,xt_windows=0.5)
 
-## ---- message = FALSE,results='hide'------------------------------------------
+## ----message = FALSE,results='hide'-------------------------------------------
 poped.db.discrete <- create.poped.database(poped.db,discrete_xt = list(c(0:10,240:248)))
                                           
 output_discrete <- poped_optim(poped.db.discrete, opt_xt=TRUE)

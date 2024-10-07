@@ -63,7 +63,7 @@ f_Err <- function(model_switch,xt,parameters,epsi,poped.db){
   return(list( y= y,poped.db =poped.db )) 
 }
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 f_etaToParam <- function(x,a,bpop,b,bocc){
   parameters=c( 
     CL=bpop[1]*exp(b[1]),
@@ -152,7 +152,7 @@ ff.PK.2.comp.oral.md.ode <- function(model_switch, xt, parameters, poped.db){
 }
 
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 fg <- function(x,a,bpop,b,bocc){
   parameters=c( CL=bpop[1]*exp(b[1]),
                 V1=bpop[2],
@@ -253,7 +253,7 @@ poped.db.Rcpp <- create.poped.database(
 tic(); eval <- evaluate_design(poped.db); toc()
 tic(); eval <- evaluate_design(poped.db.Rcpp); toc()
 
-## ---- echo=FALSE, results="hide"----------------------------------------------
+## ----echo=FALSE, results="hide"-----------------------------------------------
 cppFunction('List tmdd_qss_one_target_model_ode
             (double Time, NumericVector A, NumericVector Pars) {
             int n = A.size();
@@ -345,7 +345,7 @@ tmdd_qss_one_target_model_compiled <- function(model_switch,xt,parameters,poped.
 }
 
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 tmdd_qss_one_target_model_ruv <- function(model_switch,xt,parameters,epsi,poped.db){
   returnArgs <- do.call(poped.db$model$ff_pointer,list(model_switch,xt,parameters,poped.db))
   y <- returnArgs[[1]]
@@ -503,7 +503,7 @@ round(ev$rse)
 knitr::kable(round(ev$rse),col.names = c("RSE in %")) #%>%  
   #kableExtra::kable_styling("striped",full_width = FALSE) 
 
-## ---- cache=TRUE,results='hide'-----------------------------------------------
+## ----cache=TRUE,results='hide'------------------------------------------------
 nsim <- 30
 rse_list <- c()
 for(i in 1:nsim){
@@ -629,7 +629,7 @@ round(ev$rse)
 knitr::kable(round(ev$rse),col.names = c("RSE in %")) #%>%  
   #kableExtra::kable_styling("striped",full_width = FALSE) 
 
-## ---- echo=FALSE, results="hide"----------------------------------------------
+## ----echo=FALSE, results="hide"-----------------------------------------------
 ff <- function(model_switch,xt,parameters,poped.db){
   ##-- Model: One comp first order absorption
   with(as.list(parameters),{
@@ -822,7 +822,7 @@ poped.db.all <- create.poped.database(
 ## -----------------------------------------------------------------------------
 evaluate_power(poped.db.all, bpop_idx=5, h0=1, out=out.all)
 
-## ---- echo=FALSE, results="hide"----------------------------------------------
+## ----echo=FALSE, results="hide"-----------------------------------------------
 sfg <- function(x,a,bpop,b,bocc){
   ## -- parameter definition function 
   parameters=c(
@@ -877,7 +877,7 @@ tic();evaluate_design(poped.db,d_switch=FALSE,ED_samp_size=20); toc()
 ## -----------------------------------------------------------------------------
 tic();evaluate_design(poped.db,d_switch=FALSE,ED_samp_size=20); toc()
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 sfg <- function(x,a,bpop,b,bocc){
   ## -- parameter definition function 
   parameters=c(CL=bpop[1]*exp(b[1]),
@@ -920,7 +920,7 @@ poped.db <-
 ## -----------------------------------------------------------------------------
 evaluate_design(poped.db)
 
-## ---- echo=FALSE, results="hide"----------------------------------------------
+## ----echo=FALSE, results="hide"-----------------------------------------------
 
 sfg <- function(x,a,bpop,b,bocc){
   ## -- parameter definition function 

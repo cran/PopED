@@ -6,7 +6,7 @@
 #' 
 #' @param parallel Should the parallel functionality start up?
 #' @param num_cores How many cores to use.  Default is
-#'   \code{parallel::detectCores()}. See \code{\link[parallel]{detectCores}} for more information.
+#'   \code{parallel::detectCores()}-1 . See \code{\link[parallel]{detectCores}} for more information.
 #' @param parallel_type Which type of parallelization should be used? Can be
 #'   "snow" or "multicore".  "snow"  works on Linux-like systems & Windows.
 #'   "multicore" works only on Linux-like systems.  By default this is chosen
@@ -38,7 +38,7 @@ start_parallel <- function(parallel=TRUE,
   # Start parallel computing for poped package
   # edited from GA package version startParallel.R
   
-  if(is.null(num_cores)) num_cores <- parallel::detectCores()
+  if(is.null(num_cores)) num_cores <- max(parallel::detectCores() - 1, 1)
   if(is.null(parallel_type)) parallel_type <- if(.Platform$OS.type == "windows") 
     "snow" else "multicore"
   attr(parallel, "type") <- parallel_type

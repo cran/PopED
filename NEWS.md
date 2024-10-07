@@ -1,3 +1,18 @@
+# PopED 0.7.0
+
+* `create.poped.database()` now uses a better method of identifying the total number of parameters of each type (bpop, d, sigma, etc.) in a user defined model parameter function (the `ff_fun` argument in `create.poped.database()`) (#73).
+
+* `create.poped.database()` has a new option `reorder_parameter_vectors`, which is turned off by default. When turned on, if you use named arguments in `bpop` or `d` then PopED will try to figure out the order of the parameters based on what is found in the `fg_fun`. See the resulting `poped_db$parameters` and make sure the order matches with `fg_fun`.
+
+* `start_parallel()` has a new default for`num_cores`, which is now one less than the number of cores available from `parallel::detectCores()`.
+
+* `model_prediction()` and therefore `plot_model_prediction()` allow for log-normal distributions when using the PI option. This makes sense if you expect the prediction interval of the model will be approximately log-normally distributed, which might often be the case in pop PK models. The new default is now `PI_ln_dist = TRUE`.
+
+* `poped_optim()` now has an explicit argument allowing for the specification of Ds-optimal parameters of interest. The option is `ds_index`.
+
+* Minor bug fixes 
+
+
 # PopED 0.6.0
 
 * Added the options `allow_replicates=TRUE/FALSE`, `allow_replicates_xt=TRUE/FALSE` and `allow_replicates_a=TRUE/FALSE` to `poped_optim`.  This allows the optimization algorithm to avoid replicates (or not) in the design components.  Currently only works for discrete variable optimization. Future versions will also handle continuous optimization.
@@ -69,7 +84,7 @@ how to handle covariate distributions in optimal design, an example on how to in
 
 * Updates to `optim_ARS()` for when to stop search.
 
-* Extended functionality of `plot.model.prediction()` (#23, @martin-gmx).
+* Extended functionality of `plot_model_prediction()` (#23, @martin-gmx).
 
 * Bug fixing.  See https://github.com/andrewhooker/PopED/commits/master for more information.
 

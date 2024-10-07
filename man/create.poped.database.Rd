@@ -56,8 +56,7 @@ create.poped.database(
   iEDCalculationType = poped.choose(popedInput$settings$iEDCalculationType, 0),
   ED_samp_size = poped.choose(popedInput$settings$ED_samp_size, 45),
   bLHS = poped.choose(popedInput$settings$bLHS, 1),
-  strUserDistributionFile = poped.choose(popedInput$model$user_distribution_pointer,
-    ""),
+  strUserDistributionFile = poped.choose(popedInput$model$user_distribution_pointer, ""),
   nbpop = popedInput$parameters$nbpop,
   NumRanEff = popedInput$parameters$NumRanEff,
   NumDocc = popedInput$parameters$NumDocc,
@@ -67,8 +66,8 @@ create.poped.database(
   covd = popedInput$parameters$covd,
   sigma = popedInput$parameters$sigma,
   docc = poped.choose(popedInput$parameters$docc, matrix(0, 0, 3)),
-  covdocc = poped.choose(popedInput$parameters$covdocc, zeros(1, length(docc[, 2, drop
-    = F]) * (length(docc[, 2, drop = F]) - 1)/2)),
+  covdocc = poped.choose(popedInput$parameters$covdocc, zeros(1, length(docc[, 2, drop =
+    F]) * (length(docc[, 2, drop = F]) - 1)/2)),
   notfixed_bpop = popedInput$parameters$notfixed_bpop,
   notfixed_d = popedInput$parameters$notfixed_d,
   notfixed_covd = popedInput$parameters$notfixed_covd,
@@ -79,12 +78,11 @@ create.poped.database(
     size(sigma, 2)))),
   notfixed_covsigma = poped.choose(popedInput$parameters$notfixed_covsigma, zeros(1,
     length(notfixed_sigma) * (length(notfixed_sigma) - 1)/2)),
+  reorder_parameter_vectors = FALSE,
   bUseRandomSearch = poped.choose(popedInput$settings$bUseRandomSearch, TRUE),
-  bUseStochasticGradient = poped.choose(popedInput$settings$bUseStochasticGradient,
-    TRUE),
+  bUseStochasticGradient = poped.choose(popedInput$settings$bUseStochasticGradient, TRUE),
   bUseLineSearch = poped.choose(popedInput$settings$bUseLineSearch, TRUE),
-  bUseExchangeAlgorithm = poped.choose(popedInput$settings$bUseExchangeAlgorithm,
-    FALSE),
+  bUseExchangeAlgorithm = poped.choose(popedInput$settings$bUseExchangeAlgorithm, FALSE),
   bUseBFGSMinimizer = poped.choose(popedInput$settings$bUseBFGSMinimizer, FALSE),
   EACriteria = poped.choose(popedInput$settings$EACriteria, 1),
   strRunFile = poped.choose(popedInput$settings$run_file_pointer, ""),
@@ -135,8 +133,7 @@ create.poped.database(
   bGreedyGroupOpt = poped.choose(popedInput$settings$bGreedyGroupOpt, FALSE),
   EAStepSize = poped.choose(popedInput$settings$EAStepSize, 0.01),
   EANumPoints = poped.choose(popedInput$settings$EANumPoints, FALSE),
-  EAConvergenceCriteria = poped.choose(popedInput$settings$EAConvergenceCriteria,
-    1e-20),
+  EAConvergenceCriteria = poped.choose(popedInput$settings$EAConvergenceCriteria, 1e-20),
   bEANoReplicates = poped.choose(popedInput$settings$bEANoReplicates, FALSE),
   BFGSConvergenceCriteriaMinStep = NULL,
   BFGSProjectedGradientTol = poped.choose(popedInput$settings$BFGSProjectedGradientTol,
@@ -147,24 +144,20 @@ create.poped.database(
   ED_diff_it = poped.choose(popedInput$settings$ED_diff_it, 30),
   ED_diff_percent = poped.choose(popedInput$settings$ED_diff_percent, 10),
   line_search_it = poped.choose(popedInput$settings$ls_step_size, 50),
-  Doptim_iter = poped.choose(popedInput$settings$iNumSearchIterationsIfNotLineSearch,
-    1),
+  Doptim_iter = poped.choose(popedInput$settings$iNumSearchIterationsIfNotLineSearch, 1),
   iCompileOption = poped.choose(popedInput$settings$parallel$iCompileOption, -1),
   iUseParallelMethod = poped.choose(popedInput$settings$parallel$iUseParallelMethod, 1),
   MCC_Dep = NULL,
   strExecuteName = poped.choose(popedInput$settings$parallel$strExecuteName,
     "calc_fim.exe"),
   iNumProcesses = poped.choose(popedInput$settings$parallel$iNumProcesses, 2),
- 
-    iNumChunkDesignEvals = poped.choose(popedInput$settings$parallel$iNumChunkDesignEvals,
+  iNumChunkDesignEvals = poped.choose(popedInput$settings$parallel$iNumChunkDesignEvals,
     -2),
   Mat_Out_Pre = poped.choose(popedInput$settings$parallel$strMatFileOutputPrefix,
     "parallel_output"),
-  strExtraRunOptions = poped.choose(popedInput$settings$parallel$strExtraRunOptions,
-    ""),
+  strExtraRunOptions = poped.choose(popedInput$settings$parallel$strExtraRunOptions, ""),
   dPollResultTime = poped.choose(popedInput$settings$parallel$dPollResultTime, 0.1),
- 
-    strFunctionInputName = poped.choose(popedInput$settings$parallel$strFunctionInputName,
+  strFunctionInputName = poped.choose(popedInput$settings$parallel$strFunctionInputName,
     "function_input"),
   bParallelRS = poped.choose(popedInput$settings$parallel$bParallelRS, FALSE),
   bParallelSG = poped.choose(popedInput$settings$parallel$bParallelSG, FALSE),
@@ -363,12 +356,14 @@ Number of typical values}
 }
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
 parameter value is to be used. The parameter order of  'bpop' is defined in the 'fg_fun' or 'fg_file'. If you use named 
-arguments in 'bpop' then the order will be worked out automatically.}
+arguments in 'bpop' then the order of this vector can be rearranged to match the 'fg_fun' or 'fg_file'. 
+See `reorder_parameter_vectors`.}
 
 \item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
 matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}. 
 The parameter order of 'd' is defined in the 'fg_fun' or 'fg_file'. If you use named 
-arguments in 'd' then the order will be worked out automatically.}
+arguments in 'd' then the order of this vector can be rearranged to match the 'fg_fun' or 'fg_file'. 
+See `reorder_parameter_vectors`.}
 
 \item{covd}{Column major vector defining the covariances of the IIV variances. 
 That is, from your full IIV matrix  \code{covd <-  IIV[lower.tri(IIV)]}.}
@@ -384,11 +379,13 @@ can also just supply the diagonal parameter values (variances) as a \code{c()}.}
 \item \bold{******START OF Model parameters fixed or not  SPECIFICATION OPTIONS**********}}
 Vector defining if a typical value is fixed or not (1=not fixed, 0=fixed). 
 The parameter order of 'notfixed_bpop' is defined in the 'fg_fun' or 'fg_file'. If you use named 
-arguments in 'notfixed_bpop' then the order will be worked out automatically.}
+arguments in 'notfixed_bpop' then the order of this vector can be rearranged to match the 'fg_fun' or 'fg_file'. 
+See `reorder_parameter_vectors`.}
 
 \item{notfixed_d}{Vector defining if a IIV is fixed or not (1=not fixed, 0=fixed). 
 The parameter order of 'notfixed_d' is defined in the 'fg_fun' or 'fg_file'. If you use named 
-arguments in 'notfixed_d' then the order will be worked out automatically.}
+arguments in 'notfixed_d' then the order of this vector can be rearranged to match the 'fg_fun' or 'fg_file'. 
+See `reorder_parameter_vectors`. .}
 
 \item{notfixed_covd}{Vector defining if a covariance IIV is fixed or not (1=not fixed, 0=fixed)}
 
@@ -400,6 +397,9 @@ arguments in 'notfixed_d' then the order will be worked out automatically.}
 
 \item{notfixed_covsigma}{Vector defining if a covariance residual error parameter is fixed or not (1=not fixed, 0=fixed). 
 Default is fixed.}
+
+\item{reorder_parameter_vectors}{If you use named arguments in 'bpop' or 'd' then PopED will try to figure out the order of the parameters 
+based on what is found in the 'fg_fun'. See the resulting `poped_db$parameters` and make sure the order matches with 'fg_fun'.}
 
 \item{bUseRandomSearch}{\itemize{
 \item \bold{******START OF Optimization algorithm  SPECIFICATION OPTIONS**********}}
@@ -605,18 +605,19 @@ sfg <- function(x,a,bpop,b,bocc){
 }
 
 ## -- Define initial design  and design space
-poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                  fg_file="sfg",
-                                  fError_file="feps.prop",
-                                  bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
-                                  notfixed_bpop=c(1,1,1,0),
-                                  d=c(CL=0.07, V=0.02, KA=0.6), 
-                                  sigma=0.01,
-                                  groupsize=32,
-                                  xt=c( 0.5,1,2,6,24,36,72,120),
-                                  minxt=0,
-                                  maxxt=120,
-                                  a=70)
+poped.db <- create.poped.database(
+  ff_fun=ff.PK.1.comp.oral.sd.CL,
+  fg_fun=sfg,
+  fError_fun=feps.prop,
+  bpop=c(CL=0.15, V=8, KA=1.0, Favail=1), 
+  notfixed_bpop=c(1,1,1,0),
+  d=c(CL=0.07, V=0.02, KA=0.6), 
+  sigma=0.01,
+  groupsize=32,
+  xt=c( 0.5,1,2,6,24,36,72,120),
+  minxt=0,
+  maxxt=120,
+  a=70)
 
 
 ## evaluate initial design
@@ -625,8 +626,8 @@ evaluate_design(poped.db)
 \seealso{
 Other poped_input: 
 \code{\link{convert_variables}()},
-\code{\link{create_design_space}()},
 \code{\link{create_design}()},
+\code{\link{create_design_space}()},
 \code{\link{downsizing_general_design}()},
 \code{\link{poped.choose}()}
 }

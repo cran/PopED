@@ -63,12 +63,14 @@ poped_optimize(
 }
 Can also just supply the parameter values as a vector \code{c()} if no uncertainty around the 
 parameter value is to be used. The parameter order of  'bpop' is defined in the 'fg_fun' or 'fg_file'. If you use named 
-arguments in 'bpop' then the order will be worked out automatically.}
+arguments in 'bpop' then the order of this vector can be rearranged to match the 'fg_fun' or 'fg_file'. 
+See `reorder_parameter_vectors`.}
 
 \item{d}{Matrix defining the diagonals of the IIV (same logic as for the fixed effects 
 matrix bpop to define uncertainty). One can also just supply the parameter values as a \code{c()}. 
 The parameter order of 'd' is defined in the 'fg_fun' or 'fg_file'. If you use named 
-arguments in 'd' then the order will be worked out automatically.}
+arguments in 'd' then the order of this vector can be rearranged to match the 'fg_fun' or 'fg_file'. 
+See `reorder_parameter_vectors`.}
 
 \item{maxxt}{Matrix or single value defining the maximum value for each xt sample.  If a single value is 
 supplied then all xt values are given the same maximum value.}
@@ -290,20 +292,21 @@ out_1 <- poped_optimize(poped.db,opt_a=TRUE,opt_xt=TRUE,
   bpop_vals_ed_ln
   
   ## -- Define initial design  and design space
-  poped.db <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                    fg_file="sfg",
-                                    fError_file="feps.add.prop",
-                                    bpop=bpop_vals_ed_ln, 
-                                    notfixed_bpop=c(1,1,1,0),
-                                    d=c(CL=0.07, V=0.02, KA=0.6), 
-                                    sigma=c(0.01,0.25),
-                                    groupsize=32,
-                                    xt=c( 0.5,1,2,6,24,36,72,120),
-                                    minxt=0,
-                                    maxxt=120,
-                                    a=70,
-                                    mina=0,
-                                    maxa=100)
+  poped.db <- create.poped.database(
+    ff_fun=ff.PK.1.comp.oral.sd.CL,
+    fg_fun=sfg,
+    fError_fun=feps.add.prop,
+    bpop=bpop_vals_ed_ln, 
+    notfixed_bpop=c(1,1,1,0),
+    d=c(CL=0.07, V=0.02, KA=0.6), 
+    sigma=c(0.01,0.25),
+    groupsize=32,
+    xt=c( 0.5,1,2,6,24,36,72,120),
+    minxt=0,
+    maxxt=120,
+    a=70,
+    mina=0,
+    maxa=100)
   
   # ED optimization using Random search (just a few samples here)
   output <- poped_optimize(poped.db,opt_xt=1,opt_a=1,rsit=10,d_switch=0)
@@ -339,9 +342,9 @@ Other Optimize:
 \code{\link{mfea}()},
 \code{\link{optim_ARS}()},
 \code{\link{optim_LS}()},
+\code{\link{poped_optim}()},
 \code{\link{poped_optim_1}()},
 \code{\link{poped_optim_2}()},
-\code{\link{poped_optim_3}()},
-\code{\link{poped_optim}()}
+\code{\link{poped_optim_3}()}
 }
 \concept{Optimize}

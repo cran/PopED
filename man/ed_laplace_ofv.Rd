@@ -61,7 +61,7 @@ can also just supply the diagonal parameter values (variances) as a \code{c()}.}
 
 \item{method}{If 0 then use an optimization routine translated from PopED code written in MATLAB to
 optimize the parameters in the Laplace approximation.  If 1 then use \code{\link{optim}} to compute both
-k and the hessian of k (see Dodds et al, JPP, 2005 for more information). If 2 then use \code{\link{fdHess}}
+k and the hessian of k (see Dodds et al, JPP, 2005 for more information). If 2 then use \code{\link[nlme]{fdHess}}
 to compute the hessian.}
 
 \item{return_gradient}{Should the gradient be returned.}
@@ -124,9 +124,9 @@ bpop_vals_ed_n["Favail",]  <- c(0,1,0)
 bpop_vals_ed_n
 
 ## -- Define initial design  and design space
-poped.db.n <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                    fg_file="sfg",
-                                    fError_file="feps.add.prop",
+poped.db.n <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                    fg_fun=sfg,
+                                    fError_fun=feps.add.prop,
                                     bpop=bpop_vals_ed_n, 
                                     notfixed_bpop=c(1,1,1,0),
                                     d=c(CL=0.07, V=0.02, KA=0.6), 
@@ -180,9 +180,9 @@ output$E_ofv
   bpop_vals_ed_ln
   
   ## -- Define initial design  and design space
-  poped.db.ln <- create.poped.database(ff_file="ff.PK.1.comp.oral.sd.CL",
-                                       fg_file="sfg",
-                                       fError_file="feps.add.prop",
+  poped.db.ln <- create.poped.database(ff_fun=ff.PK.1.comp.oral.sd.CL,
+                                       fg_fun=sfg,
+                                       fError_fun=feps.add.prop,
                                        bpop=bpop_vals_ed_ln, 
                                        notfixed_bpop=c(1,1,1,0),
                                        d=c(CL=0.07, V=0.02, KA=0.6), 

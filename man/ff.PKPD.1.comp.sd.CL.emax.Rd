@@ -27,7 +27,7 @@ A list consisting of:
 \description{
 This is a structural model function that encodes the model described above.
 The function is suitable for input to the \code{\link{create.poped.database}} function using the
- \code{ff_file} argument.
+ \code{ff_fun} or \code{ff_file} argument.
 }
 \examples{
 
@@ -100,8 +100,8 @@ get_rse(FIM,poped.db)
 }
 \seealso{
 Other models: 
-\code{\link{feps.add.prop}()},
 \code{\link{feps.add}()},
+\code{\link{feps.add.prop}()},
 \code{\link{feps.prop}()},
 \code{\link{ff.PK.1.comp.oral.md.CL}()},
 \code{\link{ff.PK.1.comp.oral.md.KE}()},
